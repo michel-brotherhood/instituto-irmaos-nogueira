@@ -27,7 +27,7 @@ const Tag = variant === 'teaser' ? 'a' : 'article';
       <span class="nuc__tags">{n.modalidades.map((m) => <span class="tag">{mod(m)}</span>)}</span>
     </div>
     {variant === 'full' ? <h2 class="display nuc__name">{n.nome}</h2> : <h3 class="display nuc__name">{n.nome}</h3>}
-    <p class="nuc__addr"><Icon name="pin" size={16} />{n.endereco}{n.cep && ` · ${ui.nucleo.zip} ${n.cep}`}{n.pendente && <span class="ph">{ui.nucleo.confirm}</span>}</p>
+    <p class="nuc__addr"><Icon name="pin" size={16} />{n.endereco}{n.cep && ` · ${ui.nucleo.zip} ${n.cep}`}</p>
     {variant === 'full' && (
       <>
         <ul class="nuc__tels" aria-label={ui.nucleo.phone}>
@@ -35,7 +35,7 @@ const Tag = variant === 'teaser' ? 'a' : 'article';
             <li><a href={`tel:+55${p.n}`} class="nuc__tel"><Icon name="phone" size={16} />{p.mod && <span class="nuc__telmod">{mod(p.mod)}</span>}{fmtTel(p.n)}</a></li>
           ))}
         </ul>
-        <p class="nuc__hours">{ui.nucleo.hours}: <span class="ph">{ui.nucleo.hoursPh}</span></p>
+        <p class="nuc__hours">{ui.nucleo.hours}: {ui.nucleo.hoursTxt}</p>
         <div class="nuc__actions">
           <Button href={signup ?? '#inscricao'} size="sm" block external={!!signup} data-track="signup_click" data-track-source={n.slug}>{ui.signup}</Button>
           <Button href={maps} variant="dark" size="sm" block icon="pin" external>{ui.directions}</Button>

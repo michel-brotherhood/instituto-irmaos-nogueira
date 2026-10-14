@@ -26,7 +26,7 @@ const ui = {
       more: 'Política de privacidade', deny: 'Recusar', accept: 'Aceitar',
     },
     nucleo: {
-      open: 'Inscrições abertas', hours: 'Horários', hoursPh: '[dias e horários]', confirm: 'confirmar', zip: 'CEP',
+      open: 'Inscrições abertas', hours: 'Horários', hoursTxt: 'consulte o núcleo pelo telefone', confirm: 'confirmar', zip: 'CEP',
       phone: 'Telefone', call: 'Ligar para o núcleo', approx: 'localização aproximada', see: 'Ver núcleo',
       mapArea: 'Área do mapa', mapLabel: 'Mapa interativo dos núcleos. Use a lista de núcleos para navegar pelo teclado.',
       mapLoading: 'Carregando mapa…', mapError: 'Não foi possível carregar o mapa. Use a lista de núcleos.', mapNoJs: 'O mapa precisa de JavaScript. Use a lista de núcleos.',
@@ -65,7 +65,7 @@ const ui = {
       more: 'Read our privacy policy', deny: 'Decline', accept: 'Accept',
     },
     nucleo: {
-      open: 'Enrollment open', hours: 'Schedule', hoursPh: '[days and times]', confirm: 'to be confirmed', zip: 'Postal code',
+      open: 'Enrollment open', hours: 'Schedule', hoursTxt: 'call the center for details', confirm: 'to be confirmed', zip: 'Postal code',
       phone: 'Phone', call: 'Call the center', approx: 'approximate location', see: 'See center',
       mapArea: 'Map area', mapLabel: 'Interactive map of our training centers. Use the list of centers to navigate with a keyboard.',
       mapLoading: 'Loading map…', mapError: 'The map could not be loaded. Please use the list of centers.', mapNoJs: 'The map requires JavaScript. Please use the list of centers.',
@@ -104,7 +104,7 @@ const ui = {
       more: 'Política de privacidad', deny: 'Rechazar', accept: 'Aceptar',
     },
     nucleo: {
-      open: 'Inscripciones abiertas', hours: 'Horarios', hoursPh: '[días y horarios]', confirm: 'por confirmar', zip: 'CP',
+      open: 'Inscripciones abiertas', hours: 'Horarios', hoursTxt: 'consulta al centro por teléfono', confirm: 'por confirmar', zip: 'CP',
       phone: 'Teléfono', call: 'Llamar al centro', approx: 'ubicación aproximada', see: 'Ver centro',
       mapArea: 'Área del mapa', mapLabel: 'Mapa interactivo de los centros. Usa la lista de centros para navegar con el teclado.',
       mapLoading: 'Cargando mapa…', mapError: 'No se pudo cargar el mapa. Usa la lista de centros.', mapNoJs: 'El mapa necesita JavaScript. Usa la lista de centros.',

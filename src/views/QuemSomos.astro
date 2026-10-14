@@ -28,7 +28,6 @@ const COPY = {
     foundersTitle: 'Os Irmãos Nogueira',
     foundersLead: 'Antônio Rodrigo Nogueira, o Minotauro, e Antônio Rogério Correia Nogueira, o Minotouro, idealizaram o Instituto para levar a crianças e jovens a mesma base que os formou: superação, disciplina e resiliência.',
     founderAlt: (nome: string, apelido: string) => `${nome}, o ${apelido}`,
-    photoPh: '[confirmar foto]',
     founderRole: 'Idealizador',
     cv: 'Currículo',
     tlEyebrow: 'Nossa trajetória',
@@ -41,7 +40,6 @@ const COPY = {
     metodTitle: 'Registro da Metodologia no Ministério da Cultura',
     metodCta: 'Ler o livro da metodologia',
     bookLabel: 'Metodologia IIN',
-    bookPh: '[capa do livro]',
     pledgeBtn: 'Leia o compromisso do aluno',
     accountsBtn: 'Prestação de contas',
     ctaTitle: 'Faça parte da próxima página dessa história.',
@@ -60,7 +58,6 @@ const COPY = {
     foundersTitle: 'The Nogueira Brothers',
     foundersLead: 'Antônio Rodrigo Nogueira, “Minotauro,” and Antônio Rogério Correia Nogueira, “Minotouro,” created the Institute to give children and young people the same foundation that shaped them: grit, discipline and resilience.',
     founderAlt: (nome: string, apelido: string) => `${nome}, known as ${apelido}`,
-    photoPh: '[confirm photo]',
     founderRole: 'Co-founder',
     cv: 'Career highlights',
     tlEyebrow: 'Our journey',
@@ -73,7 +70,6 @@ const COPY = {
     metodTitle: 'Our methodology, registered with Brazil’s Ministry of Culture',
     metodCta: 'Read the methodology book',
     bookLabel: 'IIN Methodology',
-    bookPh: '[book cover]',
     pledgeBtn: 'Read the student pledge',
     accountsBtn: 'Financial reports',
     ctaTitle: 'Help write the next chapter of this story.',
@@ -92,7 +88,6 @@ const COPY = {
     foundersTitle: 'Los hermanos Nogueira',
     foundersLead: 'Antônio Rodrigo Nogueira, el Minotauro, y Antônio Rogério Correia Nogueira, el Minotouro, crearon el Instituto para darles a niños y jóvenes la misma base que los formó a ellos: superación, disciplina y resiliencia.',
     founderAlt: (nome: string, apelido: string) => `${nome}, el ${apelido}`,
-    photoPh: '[confirmar foto]',
     founderRole: 'Cofundador',
     cv: 'Trayectoria',
     tlEyebrow: 'Nuestra trayectoria',
@@ -105,7 +100,6 @@ const COPY = {
     metodTitle: 'Metodología registrada ante el Ministerio de Cultura de Brasil',
     metodCta: 'Lee el libro de la metodología',
     bookLabel: 'Metodología IIN',
-    bookPh: '[portada del libro]',
     pledgeBtn: 'Lee el compromiso del alumno',
     accountsBtn: 'Rendición de cuentas',
     ctaTitle: 'Sé parte del próximo capítulo de esta historia.',
@@ -170,7 +164,6 @@ const breadcrumb = {
                 loading="lazy"
                 class="founder__img"
               />
-              <span class="ph founder__ph">{T.photoPh}</span>
             </div>
             <div class="founder__body">
               <p class="founder__nick">{f.apelido} · {T.founderRole}</p>
@@ -226,7 +219,6 @@ const breadcrumb = {
         <div class="metod__media" aria-hidden="true">
           <div class="metod__book">
             <span>{T.bookLabel}</span>
-            <span class="ph metod__book-ph">{T.bookPh}</span>
           </div>
         </div>
       </a>

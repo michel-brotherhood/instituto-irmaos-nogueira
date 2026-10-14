@@ -160,8 +160,8 @@ const TXT = {
         { t: 'Ata de nomeação da diretoria atual', meta: 'Mandato vigente' },
       ] },
       { id: 'financeiro', titulo: 'Demonstrações financeiras', docs: [
-        { t: 'Balanço patrimonial', meta: 'Exercício [ANO]', href: `${WP}BALANCO-PATRIMONIAL.pdf` },
-        { t: 'Demonstração do resultado do exercício', meta: 'Exercício [ANO]', href: `${WP}DEMONSTRACAO-DO-RESULTADO-DO-EXERCICIO.pdf` },
+        { t: 'Balanço patrimonial', meta: 'Documento contábil', href: `${WP}BALANCO-PATRIMONIAL.pdf` },
+        { t: 'Demonstração do resultado do exercício', meta: 'Documento contábil', href: `${WP}DEMONSTRACAO-DO-RESULTADO-DO-EXERCICIO.pdf` },
         { t: 'Declaração ECF 2019', meta: 'Escrituração Contábil Fiscal', href: `${WP}DECLARACAO-ECF-2019.pdf` },
         { t: 'Recibo ECF 2019', meta: 'Escrituração Contábil Fiscal', href: `${WP}RECIBO-ECF-2019.pdf` },
       ] },
@@ -244,8 +244,8 @@ const TXT = {
         { t: 'Current board appointment minutes', meta: 'Current term' },
       ] },
       { id: 'financeiro', titulo: 'Financial statements', docs: [
-        { t: 'Balance sheet', meta: 'Fiscal year [YEAR] · Portuguese', href: `${WP}BALANCO-PATRIMONIAL.pdf` },
-        { t: 'Income statement', meta: 'Fiscal year [YEAR] · Portuguese', href: `${WP}DEMONSTRACAO-DO-RESULTADO-DO-EXERCICIO.pdf` },
+        { t: 'Balance sheet', meta: 'Accounting document · Portuguese', href: `${WP}BALANCO-PATRIMONIAL.pdf` },
+        { t: 'Income statement', meta: 'Accounting document · Portuguese', href: `${WP}DEMONSTRACAO-DO-RESULTADO-DO-EXERCICIO.pdf` },
         { t: '2019 ECF tax filing', meta: 'Brazilian tax bookkeeping (ECF) · Portuguese', href: `${WP}DECLARACAO-ECF-2019.pdf` },
         { t: '2019 ECF filing receipt', meta: 'Brazilian tax bookkeeping (ECF) · Portuguese', href: `${WP}RECIBO-ECF-2019.pdf` },
       ] },
@@ -328,8 +328,8 @@ const TXT = {
         { t: 'Acta de nombramiento de la junta directiva actual', meta: 'Mandato vigente' },
       ] },
       { id: 'financeiro', titulo: 'Estados financieros', docs: [
-        { t: 'Balance general', meta: 'Ejercicio [AÑO] · En portugués', href: `${WP}BALANCO-PATRIMONIAL.pdf` },
-        { t: 'Estado de resultados del ejercicio', meta: 'Ejercicio [AÑO] · En portugués', href: `${WP}DEMONSTRACAO-DO-RESULTADO-DO-EXERCICIO.pdf` },
+        { t: 'Balance general', meta: 'Documento contable · En portugués', href: `${WP}BALANCO-PATRIMONIAL.pdf` },
+        { t: 'Estado de resultados del ejercicio', meta: 'Documento contable · En portugués', href: `${WP}DEMONSTRACAO-DO-RESULTADO-DO-EXERCICIO.pdf` },
         { t: 'Declaración ECF 2019', meta: 'Contabilidad fiscal brasileña (ECF) · En portugués', href: `${WP}DECLARACAO-ECF-2019.pdf` },
         { t: 'Recibo ECF 2019', meta: 'Contabilidad fiscal brasileña (ECF) · En portugués', href: `${WP}RECIBO-ECF-2019.pdf` },
       ] },
@@ -346,8 +346,8 @@ export function getContent(lang: Lang) {
   const NUCLEOS: Nucleo[] = NUCLEOS_BASE.map(({ reg, end, endPendente, ...n }) => ({
     ...n,
     regiao: x.regioes[reg],
-    // Endereço pendente mantém o marcador visível para o cliente completar
-    endereco: endPendente ? `[${lang === 'en' ? 'ADDRESS' : lang === 'es' ? 'DIRECCIÓN' : 'ENDEREÇO'}] · ${end}` : end,
+    // endPendente: só a cidade é publicada (como no site antigo) até o cliente enviar o endereço
+    endereco: end,
   }));
   return {
     STATS: x.stats,

@@ -21,7 +21,6 @@ const COPY = {
     title: 'Política de <span class="accent">Privacidade</span>',
     lead: 'Como tratamos e protegemos os dados pessoais de alunos, responsáveis, doadores e parceiros, de acordo com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018).',
     notice: '',
-    ph: '[validar com o jurídico]',
     updated: 'Última atualização: outubro de 2026',
     tocTitle: 'Nesta página',
     sumario: [
@@ -83,7 +82,6 @@ const COPY = {
     ],
     s8guardians: 'Os responsáveis legais exercem esses direitos em nome das crianças e adolescentes.',
     dpoTitle: 'Encarregado pelo tratamento de dados (DPO)',
-    dpoPh: '[NOME · E-MAIL DO DPO]',
     dpoReply: 'Responderemos à sua solicitação no prazo previsto na LGPD. Você também pode apresentar reclamação à ANPD.',
     s9a: 'Usamos cookies essenciais para o funcionamento do site e para lembrar a sua escolha sobre cookies. O Google Analytics 4 (medição de audiência) <strong>só é ativado com o seu consentimento</strong>. Você pode mudar sua escolha a qualquer momento:',
     s9btn: 'Preferências de cookies',
@@ -98,7 +96,6 @@ const COPY = {
     title: 'Privacy <span class="accent">Policy</span>',
     lead: 'How we process and protect the personal data of students, parents and guardians, donors and partners, in accordance with Brazil’s General Data Protection Law (LGPD, Law No. 13,709/2018).',
     notice: 'This is a courtesy translation. In case of any discrepancy, the Portuguese version prevails.',
-    ph: '[validate with legal counsel]',
     updated: 'Last updated: October 2026',
     tocTitle: 'On this page',
     sumario: [
@@ -160,7 +157,6 @@ const COPY = {
     ],
     s8guardians: 'Legal guardians exercise these rights on behalf of children and adolescents.',
     dpoTitle: 'Data Protection Officer (DPO)',
-    dpoPh: '[DPO NAME · EMAIL]',
     dpoReply: 'We will respond to your request within the time frame set by the LGPD. You may also file a complaint with the ANPD.',
     s9a: 'We use essential cookies to make the website work and to remember your cookie choice. Google Analytics 4 (audience measurement) <strong>is only enabled with your consent</strong>. You can change your choice at any time:',
     s9btn: 'Cookie preferences',
@@ -175,7 +171,6 @@ const COPY = {
     title: 'Política de <span class="accent">Privacidad</span>',
     lead: 'Cómo tratamos y protegemos los datos personales de alumnos, responsables, donantes y aliados, de acuerdo con la Ley General de Protección de Datos de Brasil (LGPD, Ley n.º 13.709/2018).',
     notice: 'Esta es una traducción de cortesía. En caso de discrepancia, prevalece la versión en portugués.',
-    ph: '[validar con el área jurídica]',
     updated: 'Última actualización: octubre de 2026',
     tocTitle: 'En esta página',
     sumario: [
@@ -237,7 +232,6 @@ const COPY = {
     ],
     s8guardians: 'Los responsables legales ejercen estos derechos en nombre de los niños, niñas y adolescentes.',
     dpoTitle: 'Encargado del tratamiento de datos (DPO)',
-    dpoPh: '[NOMBRE · CORREO DEL DPO]',
     dpoReply: 'Responderemos a tu solicitud en el plazo previsto en la LGPD. También puedes presentar una reclamación ante la ANPD.',
     s9a: 'Usamos cookies esenciales para el funcionamiento del sitio y para recordar tu elección sobre cookies. Google Analytics 4 (medición de audiencia) <strong>solo se activa con tu consentimiento</strong>. Puedes cambiar tu elección en cualquier momento:',
     s9btn: 'Preferencias de cookies',
@@ -265,7 +259,6 @@ const sumario = T.sumario;
       <article class="legal">
         {T.notice && <p class="legal__notice" role="note">{T.notice}</p>}
         <p class="legal__meta">
-          <span class="ph">{T.ph}</span>
           <span>{T.updated}</span>
         </p>
 
@@ -321,7 +314,7 @@ const sumario = T.sumario;
         <div class="legal__box">
           <h3>{T.dpoTitle}</h3>
           <p>
-            {dpo ? <a href={`mailto:${dpo}`}>{dpo}</a> : <span class="ph">{T.dpoPh}</span>}
+            <a href={`mailto:${dpo}`}>{dpo}</a>
           </p>
           <p>{T.dpoReply}</p>
         </div>

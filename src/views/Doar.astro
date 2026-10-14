@@ -13,7 +13,6 @@ const { lang, l } = i18n(Astro.url);
 const ui = t(lang);
 
 /** Divide um texto em partes normais e placeholders `[...]`. */
-const parts = (s: string) => s.split(/(\[[^\]]+\])/).filter(Boolean).map((t) => ({ t, ph: /^\[.*\]$/.test(t) }));
 
 const DEFAULT = { freq: 'mensal', valor: 50, metodo: 'pix' } as const;
 
@@ -33,21 +32,20 @@ const COPY = {
     otherField: 'Outro valor (R$)',
     otherPlaceholder: 'Ex.: 80',
     impactos: {
-      25: 'R$ 25 ajuda a garantir o lanche de um aluno por [X] dias.',
-      50: 'R$ 50 ajuda a manter um aluno no tatame por [X] mês.',
-      100: 'R$ 100 ajuda a comprar [X] quimonos para novos alunos.',
-      200: 'R$ 200 ajuda a custear o transporte de uma turma para [competição/evento].',
-      500: 'R$ 500 ajuda a equipar [X] alunos de um núcleo.',
+      25: 'R$ 25 ajuda a garantir o lanche dos alunos nos núcleos.',
+      50: 'R$ 50 ajuda a manter os alunos no tatame.',
+      100: 'R$ 100 ajuda na compra de material esportivo, como quimonos.',
+      200: 'R$ 200 ajuda a custear o transporte dos alunos.',
+      500: 'R$ 500 ajuda a manter os professores que dão aula nos núcleos.',
       0: 'Qualquer valor faz diferença na rotina dos núcleos.',
     } as Record<number, string>,
-    impactPh: '[validar valores de impacto]',
     methodLabel: 'Forma de pagamento',
     methods: { pix: 'PIX', card: 'Cartão de crédito' },
     recurringNote: 'Para doar todo mês de forma automática, prefira o cartão de crédito. Pelo PIX, a doação é feita uma vez.',
+    recurringNoteNoCard: 'Pelo PIX, a doação é feita uma vez. Para apoiar todo mês, repita o PIX mensalmente.',
     intl: null as null | { lead: string; card: string; or: string; write: string; help: string },
     cardTxt: 'Dados do cartão no checkout seguro',
-    cardOf: ' de ',
-    cardPh: '[checkout do gateway]',
+    cardSoon: 'Doação por cartão em breve. Por enquanto, doe pelo PIX ou escreva para ',
     cta: { donate: 'Doar', other: 'outro valor', monthly: ' por mês' },
     cnpj: 'CNPJ',
     accounts: 'Veja nossa prestação de contas',
@@ -74,17 +72,17 @@ const COPY = {
     otherField: 'Other amount (R$)',
     otherPlaceholder: 'e.g. 80',
     impactos: {
-      25: 'R$ 25 helps cover a student’s snacks for [X] days.',
-      50: 'R$ 50 helps keep a student on the mat for [X] month.',
-      100: 'R$ 100 helps buy [X] gis for new students.',
-      200: 'R$ 200 helps pay for a class to travel to [competition/event].',
-      500: 'R$ 500 helps equip [X] students at one of our training centers.',
+      25: 'R$ 25 helps provide snacks for students at our centers.',
+      50: 'R$ 50 helps keep students on the mat.',
+      100: 'R$ 100 helps buy sports equipment, such as gis.',
+      200: 'R$ 200 helps cover students’ transportation.',
+      500: 'R$ 500 helps support the instructors who teach at our centers.',
       0: 'Every amount makes a difference in the day-to-day life of our centers.',
     } as Record<number, string>,
-    impactPh: '[validate impact figures]',
     methodLabel: 'Payment method',
     methods: { pix: 'PIX', card: 'Credit card' },
     recurringNote: 'To give automatically every month, choose credit card. PIX donations are one-time only.',
+    recurringNoteNoCard: 'PIX donations are one-time only. To give every month, simply repeat your PIX monthly.',
     intl: {
       lead: 'PIX is a Brazilian payment method. Outside Brazil?',
       card: 'Donate by card',
@@ -93,8 +91,7 @@ const COPY = {
       help: ' and we’ll help you give.',
     } as null | { lead: string; card: string; or: string; write: string; help: string },
     cardTxt: 'Enter your card details at the secure checkout',
-    cardOf: ' of ',
-    cardPh: '[payment gateway checkout]',
+    cardSoon: 'Card donations are coming soon. For now, give via PIX or write to us at ',
     cta: { donate: 'Donate', other: 'a custom amount', monthly: ' a month' },
     cnpj: 'CNPJ',
     accounts: 'See our financial reports',
@@ -121,17 +118,17 @@ const COPY = {
     otherField: 'Otro monto (R$)',
     otherPlaceholder: 'Ej.: 80',
     impactos: {
-      25: 'R$ 25 ayuda a garantizar la merienda de un alumno durante [X] días.',
-      50: 'R$ 50 ayuda a mantener a un alumno en el tatami durante [X] mes.',
-      100: 'R$ 100 ayuda a comprar [X] kimonos para alumnos nuevos.',
-      200: 'R$ 200 ayuda a costear el transporte de un grupo a [competencia/evento].',
-      500: 'R$ 500 ayuda a equipar a [X] alumnos de un centro.',
+      25: 'R$ 25 ayuda a garantizar la merienda de los alumnos en los centros.',
+      50: 'R$ 50 ayuda a mantener a los alumnos en el tatami.',
+      100: 'R$ 100 ayuda a comprar material deportivo, como kimonos.',
+      200: 'R$ 200 ayuda a costear el transporte de los alumnos.',
+      500: 'R$ 500 ayuda a sostener a los profesores que dan clases en los centros.',
       0: 'Cualquier monto marca la diferencia en el día a día de los centros.',
     } as Record<number, string>,
-    impactPh: '[validar cifras de impacto]',
     methodLabel: 'Forma de pago',
     methods: { pix: 'PIX', card: 'Tarjeta de crédito' },
     recurringNote: 'Para donar automáticamente cada mes, elige la tarjeta de crédito. Por PIX, la donación se hace una sola vez.',
+    recurringNoteNoCard: 'Por PIX, la donación se hace una sola vez. Para apoyar cada mes, repite el PIX mensualmente.',
     intl: {
       lead: 'PIX es un medio de pago brasileño. ¿Estás fuera de Brasil?',
       card: 'Dona con tarjeta',
@@ -140,8 +137,7 @@ const COPY = {
       help: ' y te ayudamos a donar.',
     } as null | { lead: string; card: string; or: string; write: string; help: string },
     cardTxt: 'Ingresa los datos de tu tarjeta en el checkout seguro',
-    cardOf: ' de ',
-    cardPh: '[checkout de la pasarela de pago]',
+    cardSoon: 'Las donaciones con tarjeta llegan pronto. Por ahora, dona por PIX o escríbenos a ',
     cta: { donate: 'Donar', other: 'otro monto', monthly: ' al mes' },
     cnpj: 'CNPJ',
     accounts: 'Consulta nuestra rendición de cuentas',
@@ -215,8 +211,7 @@ const ctaLabel = (v: number, f: string) => `${T.cta.donate} ${v ? `R$ ${v}` : T.
           <div>
             {valores.map((v) => (
               <p class="impact__txt" data-impact={v} hidden={v !== DEFAULT.valor}>
-                {parts(impactos[v]).map((p) => (p.ph ? <span class="ph">{p.t}</span> : p.t))}{' '}
-                <span class="ph">{T.impactPh}</span>
+                {impactos[v]}
               </p>
             ))}
           </div>
@@ -248,15 +243,14 @@ const ctaLabel = (v: number, f: string) => `${T.cta.donate} ${v ? `R$ ${v}` : T.
           </p>
         )}
         <p class="note" data-recurring-note hidden>
-          {T.recurringNote}
+          {checkout ? T.recurringNote : T.recurringNoteNoCard}
         </p>
         <PixCard />
       </div>
 
       <div class="pane pane--card" data-pane="card" hidden>
         <p class="pane__txt">
-          {T.cardTxt}{checkout ? '.' : T.cardOf}
-          {!checkout && <span class="ph">{T.cardPh}</span>}
+          {checkout ? `${T.cardTxt}.` : <Fragment>{T.cardSoon}<a href={`mailto:${contactEmail}`}>{contactEmail}</a>.</Fragment>}
         </p>
       </div>
 

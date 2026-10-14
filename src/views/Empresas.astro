@@ -36,10 +36,8 @@ const COPY = {
       { n: '2', t: 'Destine o imposto', d: 'Empresas tributadas pelo lucro real destinam parte do IR devido. Contribuintes de ICMS usam a lei estadual. O valor é abatido do imposto.' },
       { n: '3', t: 'Acompanhe o impacto', d: 'Relatórios de execução, prestação de contas e conteúdo para seus relatórios de ESG.' },
     ],
-    howNote: 'Percentuais e regras variam por lei e regime tributário: ',
-    howNotePh: '[validar texto com o contador do Instituto]',
+    howNote: 'Percentuais e regras variam por lei e regime tributário. Confirme o enquadramento com a contabilidade da sua empresa.',
     getsTitle: 'O que sua marca recebe',
-    getsPh: '[confirmar contrapartidas]',
     contrapartidas: [
       { t: 'Marca no tatame', d: 'Logo em uniformes, quimonos e materiais do projeto.' },
       { t: 'Ídolos do esporte', d: 'Associação a Minotauro e Minotouro em ações e eventos.' },
@@ -51,8 +49,7 @@ const COPY = {
     odsLead: 'Indicadores de impacto social ligados aos ODS da ONU, prontos para o relatório da empresa.',
     contactEyebrow: 'Fale com a gente',
     contactTitle: 'Receba a apresentação e uma simulação para sua empresa.',
-    contactLeadA: 'Nossa equipe retorna em até ',
-    contactLeadPh: '[X] dias úteis',
+    contactLeadA: 'Nossa equipe retorna',
     contactLeadB: ' com os projetos aprovados disponíveis para patrocínio.',
     docsLink: 'Ver documentos de transparência →',
     f: {
@@ -110,10 +107,8 @@ const COPY = {
       { n: '2', t: 'Allocate your tax', d: 'Companies under Brazil’s actual-profit regime (lucro real) allocate part of the income tax they owe. ICMS taxpayers use the state law. The amount is deducted from the tax due.' },
       { n: '3', t: 'Track the impact', d: 'Execution reports, financial accountability and content for your ESG reporting.' },
     ],
-    howNote: 'These tax benefits apply only to companies taxed in Brazil. Percentages and rules vary by law and tax regime: ',
-    howNotePh: '[validate copy with the Institute’s accountant]',
+    howNote: 'These tax benefits apply only to companies taxed in Brazil. Percentages and rules vary by law and tax regime. Check eligibility with your company’s accountant.',
     getsTitle: 'What your brand gets',
-    getsPh: '[confirm sponsor benefits]',
     contrapartidas: [
       { t: 'Your brand on the mat', d: 'Logo on uniforms, gis and project materials.' },
       { t: 'Sports legends', d: 'Association with Minotauro and Minotouro at activations and events.' },
@@ -125,8 +120,7 @@ const COPY = {
     odsLead: 'Social impact indicators tied to the UN Sustainable Development Goals, ready for your company’s report.',
     contactEyebrow: 'Get in touch',
     contactTitle: 'Get our deck and a simulation for your company.',
-    contactLeadA: 'Our team will get back to you within ',
-    contactLeadPh: '[X] business days',
+    contactLeadA: 'Our team will get back to you',
     contactLeadB: ' with approved projects open for sponsorship.',
     docsLink: 'View transparency documents →',
     f: {
@@ -184,10 +178,8 @@ const COPY = {
       { n: '2', t: 'Destina el impuesto', d: 'Las empresas que tributan bajo el régimen de lucro real de Brasil destinan parte del impuesto sobre la renta adeudado. Los contribuyentes de ICMS usan la ley estatal. El monto se descuenta del impuesto.' },
       { n: '3', t: 'Sigue el impacto', d: 'Informes de ejecución, rendición de cuentas y contenido para tus informes ESG.' },
     ],
-    howNote: 'Estos beneficios fiscales se aplican solo a empresas que tributan en Brasil. Los porcentajes y las reglas varían según la ley y el régimen tributario: ',
-    howNotePh: '[validar el texto con el contador del Instituto]',
+    howNote: 'Estos beneficios fiscales se aplican solo a empresas que tributan en Brasil. Los porcentajes y las reglas varían según la ley y el régimen tributario. Confirma el encuadre con la contabilidad de tu empresa.',
     getsTitle: 'Lo que recibe tu marca',
-    getsPh: '[confirmar contrapartidas]',
     contrapartidas: [
       { t: 'Tu marca en el tatami', d: 'Logo en uniformes, kimonos y materiales del proyecto.' },
       { t: 'Ídolos del deporte', d: 'Asociación con Minotauro y Minotouro en acciones y eventos.' },
@@ -199,8 +191,7 @@ const COPY = {
     odsLead: 'Indicadores de impacto social vinculados a los Objetivos de Desarrollo Sostenible de la ONU, listos para el informe de tu empresa.',
     contactEyebrow: 'Hablemos',
     contactTitle: 'Recibe la presentación y una simulación para tu empresa.',
-    contactLeadA: 'Nuestro equipo te responde en un plazo de ',
-    contactLeadPh: '[X] días hábiles',
+    contactLeadA: 'Nuestro equipo te responde',
     contactLeadB: ' con los proyectos aprobados disponibles para patrocinio.',
     docsLink: 'Ver documentos de transparencia →',
     f: {
@@ -305,7 +296,7 @@ const action = endpoint ?? (email ? `mailto:${email}?subject=${encodeURIComponen
           </li>
         ))}
       </ol>
-      <p class="how__note">{T.howNote}<span class="ph">{T.howNotePh}</span></p>
+      <p class="how__note">{T.howNote}</p>
     </div>
   </section>
 
@@ -313,7 +304,6 @@ const action = endpoint ?? (email ? `mailto:${email}?subject=${encodeURIComponen
     <div class="container stack gets">
       <div class="gets__head">
         <h2 class="display h2">{T.getsTitle}</h2>
-        <span class="ph">{T.getsPh}</span>
       </div>
       <div class="grid-auto" style="--min:270px">
         {contrapartidas.map((c) => (
@@ -345,7 +335,7 @@ const action = endpoint ?? (email ? `mailto:${email}?subject=${encodeURIComponen
       <div class="stack contact__text">
         <p class="eyebrow">{T.contactEyebrow}</p>
         <h2 class="display h2">{T.contactTitle}</h2>
-        <p class="contact__lead">{T.contactLeadA}<span class="ph">{T.contactLeadPh}</span>{T.contactLeadB}</p>
+        <p class="contact__lead">{T.contactLeadA}{T.contactLeadB}</p>
         <a class="lnk" href={l('/transparencia/')}>{T.docsLink}</a>
       </div>
 

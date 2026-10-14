@@ -13,7 +13,10 @@ import { t } from '../i18n/ui';
 
 const { lang, l } = i18n(Astro.url);
 const ui = t(lang);
-const { DOCUMENTOS } = getContent(lang);
+// Só documentos publicados; grupos sem nenhum arquivo não aparecem
+const DOCUMENTOS = getContent(lang).DOCUMENTOS
+  .map((g) => ({ ...g, docs: g.docs.filter((d) => d.href) }))
+  .filter((g) => g.docs.length);
 
 type MapItem = { t: string; d: string; href: string; icone: IconName; red?: boolean };
 type Txt = { t: string; d: string };
@@ -35,7 +38,7 @@ const COPY = {
     mapaEsq: [
       { t: 'Documentos institucionais', d: 'Estatuto social e atas de nomeação da diretoria.' },
       { t: 'Demonstrações financeiras', d: 'Balanço patrimonial, DRE e ECF.' },
-      { t: 'Relatórios recentes', d: 'Balanços e relatórios de atividades mais novos.' },
+      { t: 'Dúvidas sobre as contas', d: 'Fale com o Instituto pelo e-mail oficial.' },
     ] as Txt[],
     mapaDir: [
       { t: 'Recursos públicos', d: 'Convênios e repasses no Portal da Transparência do Governo.' },
@@ -61,11 +64,9 @@ const COPY = {
     docsH: 'Baixe e confira.',
     docsLangNote: '',
     download: 'Baixar',
-    pending: '[aguardando envio]',
     lgpdEyebrow: 'LGPD · Proteção de dados',
     lgpdH: 'Cuidar das nossas crianças também é proteger os dados delas.',
     lgpdLead: 'Tratamos dados e imagens de crianças e adolescentes no seu melhor interesse, como determinam a Lei Geral de Proteção de Dados (Lei 13.709/2018, art. 14) e o Estatuto da Criança e do Adolescente (art. 17).',
-    lgpdPh: '[validar texto com o jurídico]',
     lgpd: [
       { t: 'Imagem só com autorização', d: 'Fotos e vídeos de alunos só são publicados com autorização por escrito de pai, mãe ou responsável legal.' },
       { t: 'Sem identificação exposta', d: 'Não publicamos nome completo, escola ou endereço de crianças junto às imagens.' },
@@ -76,7 +77,6 @@ const COPY = {
     ] as Txt[],
     panelT: 'É responsável por um aluno?',
     panelD: 'Peça acesso, correção ou exclusão dos dados, ou revogue a autorização de imagem a qualquer momento. Encarregado de dados:',
-    dpoPh: '[NOME · E-MAIL DO DPO]',
     dpoBtn: 'Falar com o encarregado',
     privacyBtn: 'Política de Privacidade',
     ctaTitle: 'Confiança se constrói no detalhe. E transforma vidas.',
@@ -98,7 +98,7 @@ const COPY = {
     mapaEsq: [
       { t: 'Institutional documents', d: 'Bylaws and board appointment minutes.' },
       { t: 'Financial statements', d: 'Balance sheet, income statement and ECF tax filing.' },
-      { t: 'Recent reports', d: 'Our latest financial statements and activity reports.' },
+      { t: 'Questions about our accounts', d: 'Contact the Institute through our official email.' },
     ] as Txt[],
     mapaDir: [
       { t: 'Public funding', d: 'Agreements and transfers on the government’s Transparency Portal.' },
@@ -124,11 +124,9 @@ const COPY = {
     docsH: 'Download and check.',
     docsLangNote: 'Official documents are available in Portuguese only.',
     download: 'Download',
-    pending: '[awaiting upload]',
     lgpdEyebrow: 'LGPD · Data protection',
     lgpdH: 'Caring for our kids means protecting their data, too.',
     lgpdLead: 'We handle the data and images of children and teenagers in their best interest, as required by Brazil’s General Data Protection Law (LGPD, Law 13.709/2018, art. 14) and the Brazilian Child and Adolescent Statute (ECA, art. 17).',
-    lgpdPh: '[have legal review this text]',
     lgpd: [
       { t: 'Images only with consent', d: 'Photos and videos of students are published only with written consent from a parent or legal guardian.' },
       { t: 'No exposed identities', d: 'We never publish a child’s full name, school or address alongside their image.' },
@@ -139,7 +137,6 @@ const COPY = {
     ] as Txt[],
     panelT: 'Are you a student’s parent or guardian?',
     panelD: 'Request access to, correction or deletion of the data, or withdraw image consent at any time. Data protection officer:',
-    dpoPh: '[DPO NAME · EMAIL]',
     dpoBtn: 'Contact the DPO',
     privacyBtn: 'Privacy policy',
     ctaTitle: 'Trust is built in the details. And it changes lives.',
@@ -161,7 +158,7 @@ const COPY = {
     mapaEsq: [
       { t: 'Documentos institucionales', d: 'Estatutos y actas de nombramiento de la junta directiva.' },
       { t: 'Estados financieros', d: 'Balance general, estado de resultados y declaración fiscal ECF.' },
-      { t: 'Informes recientes', d: 'Nuestros estados financieros e informes de actividades más recientes.' },
+      { t: 'Dudas sobre las cuentas', d: 'Contacta al Instituto por nuestro correo oficial.' },
     ] as Txt[],
     mapaDir: [
       { t: 'Recursos públicos', d: 'Convenios y transferencias en el Portal de la Transparencia del Gobierno.' },
@@ -187,11 +184,9 @@ const COPY = {
     docsH: 'Descarga y revisa.',
     docsLangNote: 'Los documentos oficiales están disponibles solo en portugués.',
     download: 'Descargar',
-    pending: '[pendiente de envío]',
     lgpdEyebrow: 'LGPD · Protección de datos',
     lgpdH: 'Cuidar a nuestros niños también es proteger sus datos.',
     lgpdLead: 'Tratamos los datos y las imágenes de niños y adolescentes en su mejor interés, como lo exigen la Ley General de Protección de Datos de Brasil (LGPD, Ley 13.709/2018, art. 14) y el Estatuto del Niño y del Adolescente de Brasil (ECA, art. 17).',
-    lgpdPh: '[validar el texto con el área jurídica]',
     lgpd: [
       { t: 'Imagen solo con permiso', d: 'Las fotos y videos de los alumnos solo se publican con autorización por escrito de la madre, el padre o el tutor legal.' },
       { t: 'Sin identificación expuesta', d: 'Nunca publicamos el nombre completo, la escuela ni la dirección de un niño junto a sus imágenes.' },
@@ -202,7 +197,6 @@ const COPY = {
     ] as Txt[],
     panelT: '¿Eres tutor de un alumno?',
     panelD: 'Solicita el acceso, la corrección o la eliminación de los datos, o revoca la autorización de imagen en cualquier momento. Encargado de protección de datos:',
-    dpoPh: '[NOMBRE · CORREO DEL DPO]',
     dpoBtn: 'Contactar al encargado',
     privacyBtn: 'Política de privacidad',
     ctaTitle: 'La confianza se construye en los detalles. Y transforma vidas.',
@@ -212,7 +206,6 @@ const COPY = {
 const T = COPY[lang];
 
 /** Divide um texto em partes normais e placeholders `[...]`. */
-const parts = (s: string) => s.split(/(\[[^\]]+\])/).filter(Boolean).map((t) => ({ t, ph: /^\[.*\]$/.test(t) }));
 
 const fatos = [
   { k: 'CNPJ', v: SITE.cnpj },
@@ -224,7 +217,7 @@ const fatos = [
 const iconesEsq: { href: string; icone: IconName; red?: boolean }[] = [
   { href: '#institucionais', icone: 'doc' },
   { href: '#financeiro', icone: 'chart' },
-  { href: '#recentes', icone: 'list' },
+  { href: `mailto:${SITE.contact.email}`, icone: 'mail' },
 ];
 const iconesDir: { href: string; icone: IconName; red?: boolean }[] = [
   { href: '#portal', icone: 'gov', red: true },
@@ -345,18 +338,14 @@ const dpo = SITE.contact.dpoEmail;
               const isPdf = !!d.href && /\.pdf$/i.test(d.href);
               return (
                 <li class="docs__item">
-                  <span class:list={['docs__type', !d.href && 'docs__type--pend']} aria-hidden="true">{d.tipo ?? 'PDF'}</span>
+                  <span class="docs__type" aria-hidden="true">{d.tipo ?? 'PDF'}</span>
                   <span class="docs__txt">
                     <span class="docs__t">{d.t}</span>
-                    <span class="docs__meta">{parts(d.meta).map((p) => (p.ph ? <span class="ph">{p.t}</span> : p.t))}</span>
+                    <span class="docs__meta">{d.meta}</span>
                   </span>
-                  {d.href ? (
-                    <Button href={d.href} variant="dark" size="sm" icon={d.externo ? 'external' : 'download'} external={isPdf || !!d.externo}>
-                      {d.acao ?? T.download}<span class="sr-only">: {d.t}</span>
-                    </Button>
-                  ) : (
-                    <span class="ph">{T.pending}</span>
-                  )}
+                  <Button href={d.href!} variant="dark" size="sm" icon={d.externo ? 'external' : 'download'} external={isPdf || !!d.externo}>
+                    {d.acao ?? T.download}<span class="sr-only">: {d.t}</span>
+                  </Button>
                 </li>
               );
             })}
@@ -373,7 +362,7 @@ const dpo = SITE.contact.dpoEmail;
           <p class="eyebrow">{T.lgpdEyebrow}</p>
           <h2 class="display h2">{T.lgpdH}</h2>
         </div>
-        <p class="lead">{T.lgpdLead} <span class="ph">{T.lgpdPh}</span></p>
+        <p class="lead">{T.lgpdLead}</p>
       </div>
       <div class="grid-auto" style="--min:280px">
         {lgpd.map((l) => (
@@ -389,7 +378,7 @@ const dpo = SITE.contact.dpoEmail;
           <p class="lgpd__panel-t">{T.panelT}</p>
           <p class="lgpd__panel-d">
             {T.panelD}{' '}
-            {dpo ? <a href={`mailto:${dpo}`}>{dpo}</a> : <span class="ph">{T.dpoPh}</span>}
+            <a href={`mailto:${dpo}`}>{dpo}</a>
           </p>
         </div>
         {dpo ? (

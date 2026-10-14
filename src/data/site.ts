@@ -20,7 +20,8 @@ export const SITE = {
   contact: {
     email: or(env.PUBLIC_CONTACT_EMAIL, 'contato@iinbrasil.org'),
     whatsapp: clean(env.PUBLIC_WHATSAPP),
-    dpoEmail: clean(env.PUBLIC_DPO_EMAIL),
+    // Sem encarregado nomeado, o canal de privacidade é o e-mail oficial
+    dpoEmail: or(env.PUBLIC_DPO_EMAIL, or(env.PUBLIC_CONTACT_EMAIL, 'contato@iinbrasil.org')),
   },
   social: {
     instagram: or(env.PUBLIC_INSTAGRAM_URL, 'https://www.instagram.com/institutoirmaosnogueira/'),

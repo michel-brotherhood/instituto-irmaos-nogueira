@@ -33,8 +33,7 @@ const COPY = {
     projFact1N: '+930',
     projFact1T: 'crianças previstas',
     projFact2N: 'Rede',
-    projFact2T: 'municipal de',
-    projCity: '[CIDADE]',
+    projFact2T: 'municipal de ensino',
     projCta: 'Conheça o projeto',
     projAlt: 'Turma do Luta Escola da Vida reunida no tatame, de camiseta do Instituto e luvas de Muay Thai, diante do banner do projeto',
     princEyebrow: 'Nosso compromisso',
@@ -79,8 +78,7 @@ const COPY = {
     projFact1N: '+930',
     projFact1T: 'children expected',
     projFact2N: 'Public',
-    projFact2T: 'schools in',
-    projCity: '[CITY]',
+    projFact2T: 'public schools',
     projCta: 'Explore the project',
     projAlt: 'A Luta Escola da Vida class gathered on the mat in Institute T-shirts and Muay Thai wraps, in front of the project banner',
     princEyebrow: 'Our commitment',
@@ -125,8 +123,7 @@ const COPY = {
     projFact1N: '+930',
     projFact1T: 'niños previstos',
     projFact2N: 'Red',
-    projFact2T: 'municipal de',
-    projCity: '[CIUDAD]',
+    projFact2T: 'escolar municipal',
     projCta: 'Conoce el proyecto',
     projAlt: 'Grupo de Luta Escola da Vida reunido en el tatami, con camiseta del Instituto y vendas de Muay Thai, frente al banner del proyecto',
     princEyebrow: 'Nuestro compromiso',
@@ -212,7 +209,7 @@ const pad = (i: number) => String(i + 1).padStart(2, '0');
         <p class="lead">{T.projLead}</p>
         <dl class="proj__facts">
           <div><dt class="display">{T.projFact1N}</dt><dd>{T.projFact1T}</dd></div>
-          <div><dt class="display">{T.projFact2N}</dt><dd>{T.projFact2T} <span class="ph">{T.projCity}</span></dd></div>
+          <div><dt class="display">{T.projFact2N}</dt><dd>{T.projFact2T}</dd></div>
         </dl>
         <div><Button href={l('/projetos-a-escola-da-vida/')} variant="light">{T.projCta}</Button></div>
       </div>
