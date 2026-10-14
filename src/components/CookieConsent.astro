@@ -1,0 +1,63 @@
+---
+/**
+ * Consentimento de cookies (LGPD). O GA4 só é carregado após "Aceitar".
+ * Expõe window.iinTrack(evento, params) e rastreia cliques em [data-track].
+ */
+import { i18n } from '../i18n/config';
+import { t } from '../i18n/ui';
+interface Props { gaId?: string }
+const { gaId } = Astro.props;
+const { lang, l } = i18n(Astro.url);
+const c = t(lang).consent;
+---
+<div class="consent" data-consent hidden role="dialog" aria-live="polite" aria-label={c.label}>
+  <p>{c.text} <a href={l('/politica-de-privacidade/')}>{c.more}</a>.</p>
+  <div class="consent__actions">
+    <button type="button" class="consent__btn consent__btn--ghost" data-consent-choice="denied">{c.deny}</button>
+    <button type="button" class="consent__btn" data-consent-choice="granted">{c.accept}</button>
+  </div>
+</div>
+
+<script define:vars={{ gaId }}>
+  (function () {
+    var KEY = 'iin-consent';
+    var box = document.querySelector('[data-consent]');
+    var get = function () { try { return localStorage.getItem(KEY); } catch (e) { return null; } };
+    var set = function (v) { try { localStorage.setItem(KEY, v); } catch (e) {} };
+    var queue = [];
+    window.iinTrack = function (name, params) {
+      if (window.gtag) window.gtag('event', name, params || {}); else queue.push([name, params]);
+    };
+    function loadGA() {
+      if (!gaId || window.gtag) return;
+      var s = document.createElement('script');
+      s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(gaId);
+      document.head.appendChild(s);
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { window.dataLayer.push(arguments); };
+      window.gtag('js', new Date());
+      window.gtag('config', gaId, { anonymize_ip: true });
+      queue.forEach(function (q) { window.gtag('event', q[0], q[1] || {}); }); queue = [];
+    }
+    var choice = get();
+    if (choice === 'granted') loadGA();
+    if (!choice && gaId && box) box.hidden = false;
+    document.addEventListener('click', function (e) {
+      var t = e.target.closest('[data-consent-choice]');
+      if (t) { var v = t.getAttribute('data-consent-choice'); set(v); box.hidden = true; if (v === 'granted') loadGA(); return; }
+      if (e.target.closest('[data-consent-open]') && box) { box.hidden = false; return; }
+      var tr = e.target.closest('[data-track]');
+      if (tr) window.iinTrack(tr.getAttribute('data-track'), { source: tr.getAttribute('data-track-source') || location.pathname });
+    });
+  })();
+</script>
+
+<style>
+  .consent { position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 60; max-width: 560px; margin-inline: auto; display: flex; flex-wrap: wrap; gap: 14px 20px; align-items: center; padding: 18px 20px; background: var(--ink); color: #e6e6e6; font-size: 14px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35); }
+  .consent[hidden] { display: none; }
+  .consent p { flex: 1 1 260px; }
+  .consent a { color: #fff; }
+  .consent__actions { display: flex; gap: 8px; }
+  .consent__btn { min-height: 44px; padding: 0 18px; border: 0; background: var(--red); color: #fff; font-weight: 800; cursor: pointer; }
+  .consent__btn--ghost { background: transparent; border: 1px solid #555; }
+</style>

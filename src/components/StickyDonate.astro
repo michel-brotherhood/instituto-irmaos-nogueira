@@ -1,0 +1,46 @@
+---
+/** Barra fixa no mobile: aparece só depois que o usuário passa do topo da página. */
+import Button from './Button.astro';
+import { i18n } from '../i18n/config';
+import { t } from '../i18n/ui';
+const { lang, l } = i18n(Astro.url);
+const ui = t(lang);
+---
+<div class="sticky-donate" data-sticky-donate aria-hidden="true">
+  <Button href={l('/nucleos/')} variant="light" size="sm" icon="pin" tabindex="-1">{ui.signup}</Button>
+  <Button href={l('/doar/')} size="sm" tabindex="-1" data-track="donate_click" data-track-source="sticky_bar">{ui.donatePix}</Button>
+</div>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-sticky-donate]');
+  if (bar) {
+    const links = bar.querySelectorAll('a');
+    let shown = false;
+    const update = () => {
+      const footer = document.querySelector('footer')?.getBoundingClientRect().top ?? Infinity;
+      const show = window.scrollY > window.innerHeight * 0.8 && footer > window.innerHeight;
+      if (show !== shown) {
+        shown = show;
+        bar.classList.toggle('is-visible', show);
+        bar.setAttribute('aria-hidden', String(!show));
+        links.forEach((a) => a.setAttribute('tabindex', show ? '0' : '-1'));
+      }
+    };
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  }
+</script>
+
+<style>
+  .sticky-donate { display: none; }
+  @media (max-width: 760px) {
+    .sticky-donate {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; display: grid; grid-template-columns: 1fr 1.3fr; gap: 10px;
+      padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: rgba(14, 14, 14, 0.96);
+      transform: translateY(110%); transition: transform 0.35s var(--ease-out);
+    }
+    .sticky-donate.is-visible { transform: translateY(0); }
+    .sticky-donate :global(.btn) { width: 100%; }
+    .sticky-donate :global(.btn__label) { flex: 1; justify-content: center; padding: 0 10px; }
+  }
+</style>

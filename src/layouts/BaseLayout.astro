@@ -1,0 +1,105 @@
+---
+import '@fontsource/saira-condensed/latin-600.css';
+import '@fontsource/saira-condensed/latin-700.css';
+import '@fontsource/saira-condensed/latin-800.css';
+import '@fontsource/manrope/latin-400.css';
+import '@fontsource/manrope/latin-500.css';
+import '@fontsource/manrope/latin-600.css';
+import '@fontsource/manrope/latin-700.css';
+import '@fontsource/manrope/latin-800.css';
+import '../styles/global.css';
+import sairaBold from '@fontsource/saira-condensed/files/saira-condensed-latin-800-normal.woff2?url';
+import manropeBody from '@fontsource/manrope/files/manrope-latin-500-normal.woff2?url';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import StickyDonate from '../components/StickyDonate.astro';
+import CookieConsent from '../components/CookieConsent.astro';
+import { SITE } from '../data/site';
+import { LANGS, LANG_META, DEFAULT_LANG, getLang, stripLang, localizePath } from '../i18n/config';
+import { t } from '../i18n/ui';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  noindex?: boolean;
+  stickyDonate?: boolean;
+  jsonLd?: Record<string, unknown>[];
+}
+const lang = getLang(Astro.url);
+const ui = t(lang);
+const { title, description = ui.siteDescription, image = '/og-image.jpg', noindex = false, stickyDonate = true, jsonLd = [] } = Astro.props;
+const fullTitle = title === SITE.name ? `${SITE.name} — ${ui.tagline}` : `${title} — ${SITE.name}`;
+// Versões da mesma página nos três idiomas (hreflang) — o 404 não tem alternativas
+const basePath = stripLang(Astro.url.pathname);
+const alternates = noindex ? [] : LANGS.map((l) => ({ hreflang: LANG_META[l].html, href: new URL(localizePath(basePath, l), SITE.url).href }));
+const canonical = new URL(Astro.url.pathname, SITE.url).href;
+const ogImage = new URL(image, SITE.url).href;
+
+const org = {
+  '@context': 'https://schema.org',
+  '@type': 'NGO',
+  name: SITE.name,
+  url: SITE.url,
+  logo: new URL('/favicon.svg', SITE.url).href,
+  foundingDate: String(SITE.foundingYear),
+  taxID: SITE.cnpj,
+  description: ui.siteDescription,
+  founder: [
+    { '@type': 'Person', name: 'Antônio Rodrigo Nogueira', alternateName: 'Minotauro' },
+    { '@type': 'Person', name: 'Antônio Rogério Correia Nogueira', alternateName: 'Minotouro' },
+  ],
+  sameAs: Object.values(SITE.social).filter(Boolean),
+};
+import IntroLoader from '../components/IntroLoader.astro';
+import ScrollTop from '../components/ScrollTop.astro';
+---
+<!doctype html>
+<html lang={LANG_META[lang].html}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>try{var d=document.documentElement;if(!sessionStorage.getItem('iin-intro')&&!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('intro-on');sessionStorage.setItem('iin-intro','1')}}catch(e){}</script>
+    {/* Sugere o idioma do navegador (pt/en/es) só se o visitante ainda não escolheu nem dispensou — antes da pintura, sem CLS */}
+    <script is:inline define:vars={{ pageLang: lang }}>try{if(!localStorage.getItem('iin-lang')&&!localStorage.getItem('iin-langbar')){var b=(navigator.languages||[navigator.language]).map(function(x){return String(x||'').slice(0,2).toLowerCase()}).filter(function(x){return x==='pt'||x==='en'||x==='es'})[0];if(b&&b!==pageLang)document.documentElement.classList.add('langbar-'+b)}}catch(e){}</script>
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="theme-color" content="#141414" />
+    <link rel="preload" href={sairaBold} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={manropeBody} as="font" type="font/woff2" crossorigin />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    {alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
+    {alternates.length > 0 && <link rel="alternate" hreflang="x-default" href={new URL(localizePath(basePath, DEFAULT_LANG), SITE.url).href} />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content={LANG_META[lang].og} />
+    {LANGS.filter((l) => l !== lang).map((l) => <meta property="og:locale:alternate" content={LANG_META[l].og} />)}
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(org)} />
+    {jsonLd.map((d) => <script type="application/ld+json" set:html={JSON.stringify(d)} />)}
+  </head>
+  <body>
+    <IntroLoader />
+    <a class="skip-link" href="#conteudo">{ui.skip}</a>
+    <Header />
+    <main id="conteudo">
+      <slot />
+    </main>
+    <Footer />
+    {stickyDonate && <StickyDonate />}
+    <ScrollTop />
+    <CookieConsent gaId={SITE.gaId} />
+  </body>
+</html>

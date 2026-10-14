@@ -1,0 +1,132 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Button from '../components/Button.astro';
+import Logo from '../components/Logo.astro';
+import { SITE } from '../data/site';
+import { getContent } from '../data/content';
+import { i18n } from '../i18n/config';
+
+const { lang, l } = i18n(Astro.url);
+const { PRINCIPIOS, COMPROMISSOS } = getContent(lang);
+
+const COPY = {
+  pt: {
+    home: 'Início',
+    crumb: 'Compromisso',
+    title: 'Compromisso do aluno',
+    description: 'Os 6 princípios da faixa preta e o compromisso que todo aluno do Instituto Irmãos Nogueira assume antes de aprender a primeira técnica.',
+    eyebrow: 'O Instituto · Compromisso',
+    heroTitle: 'A faixa preta começa por dentro.',
+    heroLead: 'Antes de aprender a primeira técnica, todo aluno do Instituto assume um compromisso.',
+    principlesTitle: 'Os 6 princípios da faixa preta',
+    docTitle: 'Compromisso do aluno',
+    docIntro: 'Ao vestir o quimono do Instituto Irmãos Nogueira, eu me comprometo a:',
+    ctaTitle: 'Quer que seu filho viva esses princípios?',
+    ctaBtn: 'Encontre um núcleo',
+  },
+  en: {
+    home: 'Home',
+    crumb: 'Our commitment',
+    title: 'Student pledge',
+    description: 'The 6 principles of the black belt, and the pledge every Instituto Irmãos Nogueira student makes before learning their very first technique.',
+    eyebrow: 'The Institute · Our commitment',
+    heroTitle: 'The black belt starts within.',
+    heroLead: 'Before learning their very first technique, every student at the Institute makes a pledge.',
+    principlesTitle: 'The 6 principles of the black belt',
+    docTitle: 'Student pledge',
+    docIntro: 'When I put on the Instituto Irmãos Nogueira gi, I pledge:',
+    ctaTitle: 'Want your child to live by these principles?',
+    ctaBtn: 'Find a center',
+  },
+  es: {
+    home: 'Inicio',
+    crumb: 'Compromiso',
+    title: 'Compromiso del alumno',
+    description: 'Los 6 principios del cinturón negro y el compromiso que todo alumno del Instituto Irmãos Nogueira asume antes de aprender su primera técnica.',
+    eyebrow: 'El Instituto · Compromiso',
+    heroTitle: 'El cinturón negro empieza por dentro.',
+    heroLead: 'Antes de aprender su primera técnica, todo alumno del Instituto asume un compromiso.',
+    principlesTitle: 'Los 6 principios del cinturón negro',
+    docTitle: 'Compromiso del alumno',
+    docIntro: 'Al ponerme el kimono del Instituto Irmãos Nogueira, me comprometo a:',
+    ctaTitle: '¿Quieres que tu hijo viva estos principios?',
+    ctaBtn: 'Encuentra un centro',
+  },
+};
+const T = COPY[lang];
+
+const breadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: T.home, item: new URL(l('/'), SITE.url).href },
+    { '@type': 'ListItem', position: 2, name: T.crumb, item: new URL(l('/compromisso/'), SITE.url).href },
+  ],
+};
+---
+<BaseLayout
+  title={T.title}
+  description={T.description}
+  jsonLd={[breadcrumb]}
+>
+  <PageHero
+    eyebrow={T.eyebrow}
+    title={T.heroTitle}
+    lead={T.heroLead}
+  />
+
+  <section class="section">
+    <div class="container stack cp-gap">
+      <h2 class="display h2">{T.principlesTitle}</h2>
+      <ol class="princ">
+        {PRINCIPIOS.map((p, i) => (
+          <li class="card-h chamfer princ__item">
+            <span class="oct princ__n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <span class="display princ__t">{p}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section--sand">
+    <div class="container cp-doc-wrap">
+      <div class="cp-doc">
+        <div class="cp-doc__head">
+          <Logo size={52} wordmark={false} />
+          <h2 class="display cp-doc__title">{T.docTitle}</h2>
+        </div>
+        <p class="cp-doc__intro">{T.docIntro}</p>
+        <ol class="cp-doc__list">
+          {COMPROMISSOS.map((c, i) => (
+            <li><span class="display cp-doc__n" aria-hidden="true">{i + 1}</span><span>{c}</span></li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand tone="red" title={T.ctaTitle}>
+    <Button href={l('/nucleos/')} variant="light-on-red" data-track="signup_click" data-track-source="compromisso-cta">{T.ctaBtn}</Button>
+  </CtaBand>
+</BaseLayout>
+
+<style>
+  .cp-gap { gap: 40px; }
+
+  .princ { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(360px, 100%), 1fr)); gap: 2px; background: var(--line-2); border: 2px solid var(--line-2); }
+  .princ__item { background: var(--white); padding: clamp(24px, 5vw, 40px) clamp(18px, 4vw, 32px); display: flex; align-items: center; gap: clamp(14px, 3vw, 28px); min-width: 0; }
+  .princ__n { flex: none; width: 76px; height: 76px; background: var(--red); color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: 30px; }
+  .princ__t { font-size: clamp(28px, 7vw, 46px); line-height: 1; min-width: 0; }
+
+  .cp-doc-wrap { max-width: 960px; }
+  .cp-doc { background: var(--white); border: 2px solid var(--ink); outline: 8px solid var(--white); padding: clamp(32px, 5vw, 64px); display: flex; flex-direction: column; gap: 28px; }
+  .cp-doc__head { display: flex; align-items: center; gap: 14px; }
+  .cp-doc__title { font-size: clamp(28px, 3vw, 34px); line-height: 1; }
+  .cp-doc__intro { font-size: clamp(18px, 1.8vw, 20px); font-weight: 600; }
+  .cp-doc__list { display: flex; flex-direction: column; gap: 18px; }
+  .cp-doc__list li { display: flex; gap: 18px; align-items: flex-start; font-size: clamp(16px, 1.6vw, 18px); color: #2a2a2a; }
+  .cp-doc__n { flex: none; font-size: 28px; line-height: 1; color: var(--red); }
+</style>

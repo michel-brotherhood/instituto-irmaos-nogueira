@@ -1,0 +1,96 @@
+---
+/** Manifesto da Home: vídeo de fundo em loop + gradiente + grão, botão de pausa e faixa com os princípios. */
+import Deco from '../Deco.astro';
+import { getContent } from '../../data/content';
+import { i18n } from '../../i18n/config';
+
+const { lang } = i18n(Astro.url);
+const { PRINCIPIOS } = getContent(lang);
+const COPY = {
+  pt: { aria: 'Manifesto', eyebrow: 'Quem somos', t1: 'Disciplina que transforma.', t2: 'Educação que liberta.', lead: 'O tatame como ferramenta de educação, cidadania e inclusão para crianças e jovens que mais precisam.', watch: 'Assista ao vídeo', pause: 'Pausar vídeo de fundo' },
+  en: { aria: 'Manifesto', eyebrow: 'Who we are', t1: 'Discipline that transforms.', t2: 'Education that sets free.', lead: 'The mat as a tool for education, citizenship and inclusion for the children and young people who need it most.', watch: 'Watch the video', pause: 'Pause background video' },
+  es: { aria: 'Manifiesto', eyebrow: 'Quiénes somos', t1: 'Disciplina que transforma.', t2: 'Educación que libera.', lead: 'El tatami como herramienta de educación, ciudadanía e inclusión para los niños y jóvenes que más lo necesitan.', watch: 'Mira el video', pause: 'Pausar el video de fondo' },
+};
+const T = COPY[lang];
+
+// Lista duplicada para o loop contínuo (a animação desloca -50%).
+const words = [...PRINCIPIOS, ...PRINCIPIOS];
+---
+<section class="man" aria-label={T.aria}>
+  <video class="man__bg" autoplay muted loop playsinline preload="metadata" poster="/media/bg-loop-poster.webp" aria-hidden="true" data-bg-video>
+    <source src="/media/bg-loop.mp4" type="video/mp4" />
+  </video>
+  <div class="man__shade" aria-hidden="true"></div>
+  <Deco grain="dark" />
+  <div class="container man__content on-dark">
+    <p class="eyebrow eyebrow--line">{T.eyebrow}</p>
+    <h2 class="display man__title">{T.t1} <span class="accent">{T.t2}</span></h2>
+    <p class="lead man__lead">{T.lead}</p>
+    <div class="man__actions">
+      <a class="btn btn--light man__watch" href="#video">
+        <span class="btn__icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg></span>
+        <span class="btn__label">{T.watch}</span>
+      </a>
+      <button type="button" class="man__toggle" aria-label={T.pause} aria-pressed="false" data-bg-toggle>
+        <svg class="man__ico man__ico--pause" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z" /></svg>
+        <svg class="man__ico man__ico--play" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+      </button>
+    </div>
+  </div>
+  <div class="man__marquee" aria-hidden="true">
+    <div class="marquee__track">
+      {words.map((w, i) => <span class:list={['man__word', i % 2 && 'man__word--outline']}>{w}</span>)}
+    </div>
+  </div>
+</section>
+
+<script>
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  document.querySelectorAll<HTMLElement>('.man').forEach((sec) => {
+    const video = sec.querySelector<HTMLVideoElement>('[data-bg-video]');
+    const btn = sec.querySelector<HTMLButtonElement>('[data-bg-toggle]');
+    if (!video || !btn) return;
+    const sync = () => btn.setAttribute('aria-pressed', String(video.paused));
+    if (reduced.matches) {
+      video.removeAttribute('autoplay');
+      video.pause();
+    }
+    video.addEventListener('play', sync);
+    video.addEventListener('pause', sync);
+    sync();
+    btn.addEventListener('click', () => {
+      if (video.paused) video.play().catch(() => {});
+      else video.pause();
+    });
+  });
+</script>
+
+<style>
+  .man { position: relative; min-height: clamp(560px, 60vw, 680px); background: #0b0b0b; color: var(--white); overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; }
+  .man__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .man__shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(11, 11, 11, 0.93) 0%, rgba(11, 11, 11, 0.62) 55%, rgba(11, 11, 11, 0.3) 100%); }
+  .man__content { position: relative; display: flex; flex-direction: column; gap: clamp(22px, 2.4vw, 28px); padding-block: clamp(72px, 10vw, 120px) clamp(40px, 6vw, 72px); }
+  .man__content .eyebrow { color: var(--red-lt); }
+  .man__title { max-width: 900px; font-size: clamp(42px, 7vw, 104px); line-height: 0.88; }
+  .man__lead { max-width: 560px; color: #d6d6d6; }
+  .man__actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .man__watch:hover { color: var(--white); }
+  .man__toggle { width: 52px; height: 52px; flex: none; display: flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.08); color: var(--white); border: 1px solid rgba(255, 255, 255, 0.3); cursor: pointer; clip-path: var(--oct); transition: background 0.3s; }
+  .man__toggle:hover { background: var(--red); }
+  .man__ico--play { display: none; }
+  .man__toggle[aria-pressed='true'] .man__ico--pause { display: none; }
+  .man__toggle[aria-pressed='true'] .man__ico--play { display: block; }
+
+  .man__marquee { position: relative; overflow: hidden; border-top: 1px solid rgba(255, 255, 255, 0.14); background: rgba(11, 11, 11, 0.55); backdrop-filter: blur(6px); }
+  .man__marquee .marquee__track { padding-block: clamp(16px, 2vw, 20px); }
+  .man__word { display: flex; align-items: center; gap: clamp(20px, 2.4vw, 28px); padding-right: clamp(20px, 2.4vw, 28px); font-family: var(--font-display); font-weight: 800; font-size: clamp(22px, 2.4vw, 30px); line-height: 1.1; text-transform: uppercase; letter-spacing: 0.04em; color: var(--white); }
+  .man__word::after { content: ""; width: 12px; height: 12px; background: var(--red); clip-path: var(--oct); }
+  .man__word--outline { color: transparent; -webkit-text-stroke: 1.2px var(--white); }
+
+  @media (max-width: 760px) {
+    .man__shade { background: linear-gradient(180deg, rgba(11, 11, 11, 0.55) 0%, rgba(11, 11, 11, 0.92) 100%); }
+    .man__actions { flex-wrap: nowrap; }
+    .man__watch { flex: 1; }
+    .man__watch .btn__label { flex: 1; justify-content: center; }
+  }
+</style>

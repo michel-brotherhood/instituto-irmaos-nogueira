@@ -1,0 +1,77 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { SITE } from '../data/site';
+import { i18n } from '../i18n/config';
+import { t } from '../i18n/ui';
+const { lang, l } = i18n(Astro.url);
+const ui = t(lang);
+const f = ui.footer;
+
+const { contact, social } = SITE;
+const year = new Date().getFullYear();
+const socials = [
+  social.instagram && { href: social.instagram, label: 'Instagram', icon: 'instagram' as const },
+  social.youtube && { href: social.youtube, label: 'YouTube', icon: 'youtube' as const },
+  social.facebook && { href: social.facebook, label: 'Facebook', icon: 'facebook' as const },
+].filter(Boolean) as { href: string; label: string; icon: 'instagram' | 'youtube' | 'facebook' }[];
+---
+<footer class="ftr">
+  <div aria-hidden="true" class="outline-word ftr__word">{f.word}</div>
+  <div class="container ftr__in">
+    <div class="ftr__grid">
+      <div class="stack" style="gap:18px">
+        <Logo variant="dark" size={48} />
+        <p class="ftr__about">{f.about}</p>
+      </div>
+      <nav aria-label={f.institute} class="ftr__col">
+        <h2 class="ftr__h">{f.institute}</h2>
+        <a class="ftr__a" href={l('/quem-somos/')}>{ui.nav.about}</a>
+        <a class="ftr__a" href={l('/compromisso/')}>{ui.nav.commitment}</a>
+        <a class="ftr__a" href={l('/ambiental/')}>{ui.nav.environment}</a>
+        <a class="ftr__a" href={l('/projetos-a-escola-da-vida/')}>{ui.nav.project}</a>
+        <a class="ftr__a" href={l('/nucleos/')}>{ui.nav.centers}</a>
+      </nav>
+      <nav aria-label={f.support} class="ftr__col">
+        <h2 class="ftr__h">{f.support}</h2>
+        <a class="ftr__a" href={l('/doar/')}>{ui.donate}</a>
+        <a class="ftr__a" href={l('/empresas/')}>{f.sponsor}</a>
+        <a class="ftr__a" href={l('/transparencia/')}>{ui.nav.transparency}</a>
+        <a class="ftr__a" href={SITE.links.ead} target="_blank" rel="noopener">{f.ead}<span class="sr-only"> {ui.newTab}</span></a>
+      </nav>
+      <div class="ftr__col">
+        <h2 class="ftr__h">{f.contact}</h2>
+        {contact.email ? <a class="ftr__a ftr__ico" href={`mailto:${contact.email}`}><Icon name="mail" size={16} />{contact.email}</a> : <span class="ph">[E-MAIL]</span>}
+        {contact.whatsapp && <a class="ftr__a ftr__ico" href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener"><Icon name="whatsapp" size={16} />WhatsApp</a>}
+        {socials.length ? (
+          <div class="ftr__social">
+            {socials.map((s) => <a href={s.href} target="_blank" rel="noopener" aria-label={s.label}><Icon name={s.icon} size={20} /></a>)}
+          </div>
+        ) : <span class="ph">[REDES SOCIAIS]</span>}
+      </div>
+    </div>
+    <div class="ftr__bottom">
+      <span>© {year} {SITE.name} · CNPJ {SITE.cnpj}</span>
+      <span class="ftr__legal"><a class="ftr__a" href={l('/politica-de-privacidade/')}>{f.privacy}</a><button type="button" class="ftr__a ftr__btn" data-consent-open>{f.cookies}</button></span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .ftr { position: relative; overflow: hidden; background: var(--ink-2); color: var(--on-dark-2); }
+  .ftr__word { left: 50%; bottom: -70px; transform: translateX(-50%); font-size: clamp(120px, 22vw, 300px); }
+  .ftr__in { position: relative; padding-block: 80px 32px; display: flex; flex-direction: column; gap: 56px; }
+  .ftr__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 40px; }
+  .ftr__about { font-size: 14px; color: #a8a8a8; max-width: 300px; }
+  .ftr__col { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; font-size: 15px; }
+  .ftr__h { margin-bottom: 8px; font-size: 13px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #fff; }
+  .ftr__a { display: inline-flex; align-items: center; min-height: 36px; color: var(--on-dark-2); text-decoration: none; background-image: linear-gradient(currentColor, currentColor); background-repeat: no-repeat; background-position: 0 calc(100% - 6px); background-size: 0 1px; transition: background-size 0.3s var(--ease); }
+  .ftr__a:hover { color: #fff; background-size: 100% 1px; }
+  .ftr__ico { gap: 8px; }
+  .ftr__social { display: flex; gap: 8px; }
+  .ftr__social a { width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #333; color: #fff; }
+  .ftr__social a:hover { background: var(--red); border-color: var(--red); }
+  .ftr__bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; padding-top: 24px; border-top: 1px solid #2e2e2e; font-size: 13px; color: #9a9a9a; }
+  .ftr__legal { display: flex; flex-wrap: wrap; gap: 20px; }
+  .ftr__btn { background: none; border: 0; padding: 0; cursor: pointer; font-size: 13px; }
+</style>

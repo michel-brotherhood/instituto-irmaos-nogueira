@@ -1,0 +1,46 @@
+---
+/**
+ * ODS (Agenda 2030) para os quais o Instituto contribui, com os ícones OFICIAIS da ONU em pt-BR
+ * (arquivos originais, sem alteração — conforme as diretrizes de uso dos ícones dos ODS).
+ */
+import { Image } from 'astro:assets';
+import { getContent } from '../data/content';
+import { i18n } from '../i18n/config';
+import { t } from '../i18n/ui';
+const { lang } = i18n(Astro.url);
+const { ODS } = getContent(lang);
+const ui = t(lang);
+const iconFor = (n: string) => icons[`../assets/ods/${lang}/ods-${n.padStart(2, '0')}.png`]?.default;
+const odsLabel = { pt: 'ODS', en: 'SDG', es: 'ODS' }[lang];
+
+// Ícones oficiais com o texto no idioma da página (pt/en/es)
+const icons = import.meta.glob<{ default: ImageMetadata }>('../assets/ods/*/*.png', { eager: true });
+interface Props { compact?: boolean }
+const { compact = false } = Astro.props;
+---
+<ul class:list={['ods', compact && 'ods--compact']}>
+  {ODS.map((o) => {
+    const src = iconFor(o.n);
+    return (
+      <li class="ods__item card-h" style={`--c:${o.cor}`}>
+        {src && <Image src={src} alt={`${odsLabel} ${o.n}: ${o.nome}`} widths={[160, 240, 320]} sizes="(max-width: 640px) 40vw, 200px" loading="lazy" class="ods__icon" />}
+        <p class="ods__how">{o.como}</p>
+      </li>
+    );
+  })}
+</ul>
+<p class="ods__credit">{ui.ods.credit} · <a href="https://brasil.un.org/pt-br/sdgs" target="_blank" rel="noopener">{ui.ods.un}</a></p>
+
+<style>
+  .ods { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .ods__item { display: flex; flex-direction: column; background: #fff; border-top: 6px solid var(--c); }
+  .ods__icon { width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; }
+  .ods__how { padding: 16px 18px 20px; font-size: 15px; font-weight: 600; line-height: 1.45; color: var(--text-2); }
+  .ods__credit { margin-top: 14px; font-size: 12px; color: var(--text-3); }
+  .ods__credit a { color: var(--text-2); }
+  .ods--compact .ods__how { font-size: 14px; padding: 12px 14px 16px; }
+  @media (max-width: 720px) {
+    .ods { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .ods__how, .ods--compact .ods__how { font-size: 14px; padding: 12px 12px 14px; }
+  }
+</style>

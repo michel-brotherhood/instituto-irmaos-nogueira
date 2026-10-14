@@ -1,0 +1,34 @@
+---
+/** Hero escuro das páginas internas. Título via prop (aceita <span class="accent">) e ações via slot. */
+import Deco from './Deco.astro';
+interface Props { eyebrow: string; title: string; lead?: string; tone?: 'dark' | 'red' | 'green' }
+const { eyebrow, title, lead, tone = 'dark' } = Astro.props;
+---
+<section class:list={['phero', `phero--${tone}`, 'on-dark']}>
+  <Deco rings={tone === 'red' ? 'red' : 'dark'} grain="dark" />
+  <div class="container phero__in">
+    <div class="phero__text">
+      <p class="eyebrow eyebrow--line">{eyebrow}</p>
+      <h1 class="display h1 phero__title" set:html={title} />
+      {lead && <p class="lead">{lead}</p>}
+      {Astro.slots.has('actions') && <div class="btn-row"><slot name="actions" /></div>}
+    </div>
+    {Astro.slots.has('aside') && <div class="phero__aside"><slot name="aside" /></div>}
+  </div>
+  <slot />
+</section>
+
+<style>
+  .phero { position: relative; overflow: hidden; color: #fff; }
+  .phero--dark { background: var(--ink); }
+  .phero--red { background: var(--red); }
+  .phero--green { background: #1f3a2a; }
+  .phero--red .eyebrow, .phero--green .eyebrow { color: #fff; }
+  .phero--green .eyebrow { color: #a7d8b5; }
+  .phero--red :global(.lead) { color: #fff; }
+  .phero--green :global(.lead) { color: #dcebe0; }
+  .phero__in { position: relative; padding-block: clamp(72px, 8vw, 96px) clamp(72px, 8vw, 104px); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(480px, 100%), 1fr)); gap: 56px; align-items: center; }
+  .phero__text { display: flex; flex-direction: column; gap: 24px; }
+  .phero__title { max-width: 1000px; }
+  .phero__text:only-child { grid-column: 1 / -1; }
+</style>

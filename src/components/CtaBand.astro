@@ -1,0 +1,22 @@
+---
+/** Faixa de chamada final (vermelha ou escura) com título e botões via slot. */
+import Deco from './Deco.astro';
+interface Props { tone?: 'red' | 'dark' | 'green'; title: string }
+const { tone = 'red', title } = Astro.props;
+---
+<section class:list={['cta', `cta--${tone}`]}>
+  <Deco rings={tone === 'red' ? 'red' : 'dark'} grain="dark" ringsStyle="left:-10%;top:-60%;width:50%;height:220%" />
+  <div class="container cta__in">
+    <h2 class="display h2 cta__title">{title}</h2>
+    <div class="btn-row"><slot /></div>
+  </div>
+</section>
+
+<style>
+  .cta { position: relative; overflow: hidden; color: #fff; }
+  .cta--red { background: var(--red); }
+  .cta--dark { background: var(--ink); }
+  .cta--green { background: #1f3a2a; }
+  .cta__in { position: relative; padding-block: clamp(64px, 7vw, 88px); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 28px; }
+  .cta__title { max-width: 760px; }
+</style>

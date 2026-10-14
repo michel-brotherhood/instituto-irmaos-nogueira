@@ -1,0 +1,537 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+import PartnerGrid from '../components/PartnerGrid.astro';
+import OdsGrid from '../components/OdsGrid.astro';
+import { SITE } from '../data/site';
+import { IMG } from '../data/content';
+import { i18n } from '../i18n/config';
+
+const { lang, l } = i18n(Astro.url);
+
+const COPY = {
+  pt: {
+    metaTitle: 'Patrocínio para empresas',
+    metaDescription: 'Transforme imposto em impacto: pelas leis de incentivo ao esporte, sua empresa patrocina o Instituto Irmãos Nogueira com parte do imposto devido.',
+    eyebrow: 'Para empresas · Patrocínio incentivado',
+    title: 'Transforme imposto em <span class="accent">impacto</span>.',
+    lead: 'Pelas leis de incentivo ao esporte, sua empresa direciona parte do imposto devido para um projeto social com mais de uma década de história, ao lado de dois ídolos do esporte brasileiro.',
+    ctaSponsor: 'Quero patrocinar',
+    ctaDeck: 'Baixar apresentação (PDF)',
+    altWhite: 'Um dos irmãos Nogueira de quimono branco',
+    altBlack: 'Um dos irmãos Nogueira de quimono preto',
+    proofLabel: 'Resultados do Instituto',
+    provas: [
+      { n: '+4.200', t: 'alunos atendidos em um único ciclo (2016–2020)' },
+      { n: '2010', t: 'mais de uma década de projetos incentivados' },
+      { n: '7', t: 'núcleos ativos e inscrições abertas' },
+    ],
+    howEyebrow: 'Como funciona',
+    howTitle: 'Três passos, sem custo adicional para o caixa.',
+    passos: [
+      { n: '1', t: 'Escolha o projeto', d: 'Apresentamos os projetos aprovados nas leis de incentivo ao esporte, federal e estadual (ICMS), disponíveis para captação.' },
+      { n: '2', t: 'Destine o imposto', d: 'Empresas tributadas pelo lucro real destinam parte do IR devido. Contribuintes de ICMS usam a lei estadual. O valor é abatido do imposto.' },
+      { n: '3', t: 'Acompanhe o impacto', d: 'Relatórios de execução, prestação de contas e conteúdo para seus relatórios de ESG.' },
+    ],
+    howNote: 'Percentuais e regras variam por lei e regime tributário: ',
+    howNotePh: '[validar texto com o contador do Instituto]',
+    getsTitle: 'O que sua marca recebe',
+    getsPh: '[confirmar contrapartidas]',
+    contrapartidas: [
+      { t: 'Marca no tatame', d: 'Logo em uniformes, quimonos e materiais do projeto.' },
+      { t: 'Ídolos do esporte', d: 'Associação a Minotauro e Minotouro em ações e eventos.' },
+      { t: 'Relatório ESG', d: 'Indicadores de impacto social ligados aos ODS da ONU (3, 4, 10, 11, 13, 15, 16 e 17), prontos para o relatório da empresa.' },
+      { t: 'Engajamento interno', d: 'Ações com colaboradores nos núcleos e eventos do Instituto.' },
+    ],
+    partnersTitle: 'Quem já patrocinou nossos projetos',
+    odsTitle: 'Impacto alinhado aos ODS da ONU',
+    odsLead: 'Indicadores de impacto social ligados aos ODS da ONU, prontos para o relatório da empresa.',
+    contactEyebrow: 'Fale com a gente',
+    contactTitle: 'Receba a apresentação e uma simulação para sua empresa.',
+    contactLeadA: 'Nossa equipe retorna em até ',
+    contactLeadPh: '[X] dias úteis',
+    contactLeadB: ' com os projetos aprovados disponíveis para patrocínio.',
+    docsLink: 'Ver documentos de transparência →',
+    f: {
+      nome: 'Nome', empresa: 'Empresa', cargo: 'Cargo', email: 'E-mail corporativo', telefone: 'Telefone / WhatsApp',
+      regime: 'Regime tributário', mensagem: 'Mensagem (opcional)', hp: 'Não preencha este campo',
+    },
+    regimes: [
+      { v: 'Lucro real', label: 'Lucro real' },
+      { v: 'Lucro presumido', label: 'Lucro presumido' },
+      { v: 'Simples Nacional', label: 'Simples Nacional' },
+      { v: 'Não sei', label: 'Não sei' },
+    ],
+    consentA: 'Autorizo o contato do Instituto Irmãos Nogueira, conforme a ',
+    consentLink: 'Política de Privacidade',
+    consentB: ' (LGPD).',
+    nonePh: '[configurar destino do formulário: PUBLIC_SPONSOR_FORM_ENDPOINT ou PUBLIC_CONTACT_EMAIL]',
+    submit: 'Quero receber a apresentação',
+    js: {
+      subject: 'Patrocínio incentivado',
+      honeypotOk: 'Recebemos seu contato. Obrigado!',
+      invalid: 'Confira os campos obrigatórios e o consentimento.',
+      sending: 'Enviando…',
+      success: 'Recebemos seu contato. Nossa equipe vai retornar em breve.',
+      failA: 'Não foi possível enviar agora. Tente novamente',
+      failEmail: ' ou escreva para ',
+      failB: '.',
+      mailConsent: 'Autorizo o contato conforme a Política de Privacidade (LGPD).',
+      mailOk: 'Abrimos seu aplicativo de e-mail com a mensagem pronta. É só enviar.',
+      notConfigured: 'O envio do formulário ainda não foi configurado.',
+      labels: {
+        nome: 'Nome', empresa: 'Empresa', cargo: 'Cargo', email: 'E-mail', telefone: 'Telefone / WhatsApp', regime: 'Regime tributário', mensagem: 'Mensagem',
+      },
+    },
+  },
+  en: {
+    metaTitle: 'Corporate sponsorship',
+    metaDescription: 'Turn taxes into impact: through Brazil’s sports incentive laws, companies taxed in Brazil can sponsor Instituto Irmãos Nogueira with part of the taxes they owe.',
+    eyebrow: 'For companies · Tax-incentive sponsorship',
+    title: 'Turn taxes into <span class="accent">impact</span>.',
+    lead: 'Through Brazil’s sports incentive laws, companies taxed in Brazil can direct part of the taxes they owe to a social project with over a decade of history, alongside two Brazilian sports legends.',
+    ctaSponsor: 'Become a sponsor',
+    ctaDeck: 'Download our deck (PDF)',
+    altWhite: 'One of the Nogueira brothers in a white gi',
+    altBlack: 'One of the Nogueira brothers in a black gi',
+    proofLabel: 'The Institute’s results',
+    provas: [
+      { n: '+4,200', t: 'students served in a single cycle (2016–2020)' },
+      { n: '2010', t: 'more than a decade of tax-incentive projects' },
+      { n: '7', t: 'active training centers with open enrollment' },
+    ],
+    howEyebrow: 'How it works',
+    howTitle: 'Three steps, no extra cost to your bottom line.',
+    passos: [
+      { n: '1', t: 'Pick a project', d: 'We present projects approved under Brazil’s Federal Sports Incentive Law and state tax-incentive (ICMS) laws that are open for funding.' },
+      { n: '2', t: 'Allocate your tax', d: 'Companies under Brazil’s actual-profit regime (lucro real) allocate part of the income tax they owe. ICMS taxpayers use the state law. The amount is deducted from the tax due.' },
+      { n: '3', t: 'Track the impact', d: 'Execution reports, financial accountability and content for your ESG reporting.' },
+    ],
+    howNote: 'These tax benefits apply only to companies taxed in Brazil. Percentages and rules vary by law and tax regime: ',
+    howNotePh: '[validate copy with the Institute’s accountant]',
+    getsTitle: 'What your brand gets',
+    getsPh: '[confirm sponsor benefits]',
+    contrapartidas: [
+      { t: 'Your brand on the mat', d: 'Logo on uniforms, gis and project materials.' },
+      { t: 'Sports legends', d: 'Association with Minotauro and Minotouro at activations and events.' },
+      { t: 'ESG report', d: 'Social impact indicators tied to the UN SDGs (3, 4, 10, 11, 13, 15, 16 and 17), ready for your company’s report.' },
+      { t: 'Employee engagement', d: 'Activities for your team at our training centers and Institute events.' },
+    ],
+    partnersTitle: 'Companies that have sponsored our projects',
+    odsTitle: 'Impact aligned with the UN SDGs',
+    odsLead: 'Social impact indicators tied to the UN Sustainable Development Goals, ready for your company’s report.',
+    contactEyebrow: 'Get in touch',
+    contactTitle: 'Get our deck and a simulation for your company.',
+    contactLeadA: 'Our team will get back to you within ',
+    contactLeadPh: '[X] business days',
+    contactLeadB: ' with approved projects open for sponsorship.',
+    docsLink: 'View transparency documents →',
+    f: {
+      nome: 'Name', empresa: 'Company', cargo: 'Job title', email: 'Work email', telefone: 'Phone / WhatsApp',
+      regime: 'Brazilian tax regime', mensagem: 'Message (optional)', hp: 'Do not fill out this field',
+    },
+    regimes: [
+      { v: 'Lucro real', label: 'Actual profit (Lucro Real)' },
+      { v: 'Lucro presumido', label: 'Presumed profit (Lucro Presumido)' },
+      { v: 'Simples Nacional', label: 'Simples Nacional' },
+      { v: 'Não sei', label: 'Not sure' },
+    ],
+    consentA: 'I authorize Instituto Irmãos Nogueira to contact me, as set out in the ',
+    consentLink: 'Privacy Policy',
+    consentB: ' (Brazil’s LGPD).',
+    nonePh: '[set up the form destination: PUBLIC_SPONSOR_FORM_ENDPOINT or PUBLIC_CONTACT_EMAIL]',
+    submit: 'Send me the deck',
+    js: {
+      subject: 'Patrocínio incentivado (EN)',
+      honeypotOk: 'We got your message. Thank you!',
+      invalid: 'Please check the required fields and the consent box.',
+      sending: 'Sending…',
+      success: 'We got your message. Our team will be in touch soon.',
+      failA: 'We couldn’t send your message right now. Please try again',
+      failEmail: ' or write to ',
+      failB: '.',
+      mailConsent: 'I authorize contact as set out in the Privacy Policy (LGPD).',
+      mailOk: 'We opened your email app with the message ready to go. Just hit send.',
+      notConfigured: 'Form submission hasn’t been set up yet.',
+      labels: {
+        nome: 'Name', empresa: 'Company', cargo: 'Job title', email: 'Email', telefone: 'Phone / WhatsApp', regime: 'Tax regime', mensagem: 'Message',
+      },
+    },
+  },
+  es: {
+    metaTitle: 'Patrocinio para empresas',
+    metaDescription: 'Convierte impuestos en impacto: con las leyes de incentivo al deporte de Brasil, las empresas que tributan en Brasil pueden patrocinar al Instituto Irmãos Nogueira con parte de sus impuestos.',
+    eyebrow: 'Para empresas · Patrocinio con incentivo fiscal',
+    title: 'Convierte impuestos en <span class="accent">impacto</span>.',
+    lead: 'Con las leyes de incentivo al deporte de Brasil, las empresas que tributan en Brasil pueden destinar parte de sus impuestos a un proyecto social con más de una década de historia, junto a dos ídolos del deporte brasileño.',
+    ctaSponsor: 'Quiero patrocinar',
+    ctaDeck: 'Descargar presentación (PDF)',
+    altWhite: 'Uno de los hermanos Nogueira con kimono blanco',
+    altBlack: 'Uno de los hermanos Nogueira con kimono negro',
+    proofLabel: 'Resultados del Instituto',
+    provas: [
+      { n: '+4.200', t: 'alumnos atendidos en un solo ciclo (2016–2020)' },
+      { n: '2010', t: 'más de una década de proyectos con incentivo fiscal' },
+      { n: '7', t: 'centros activos con inscripciones abiertas' },
+    ],
+    howEyebrow: 'Cómo funciona',
+    howTitle: 'Tres pasos, sin costo adicional para tu caja.',
+    passos: [
+      { n: '1', t: 'Elige el proyecto', d: 'Te presentamos los proyectos aprobados en la Ley Federal de Incentivo al Deporte de Brasil y en las leyes estatales de incentivo fiscal (ICMS) que están abiertos a financiamiento.' },
+      { n: '2', t: 'Destina el impuesto', d: 'Las empresas que tributan bajo el régimen de lucro real de Brasil destinan parte del impuesto sobre la renta adeudado. Los contribuyentes de ICMS usan la ley estatal. El monto se descuenta del impuesto.' },
+      { n: '3', t: 'Sigue el impacto', d: 'Informes de ejecución, rendición de cuentas y contenido para tus informes ESG.' },
+    ],
+    howNote: 'Estos beneficios fiscales se aplican solo a empresas que tributan en Brasil. Los porcentajes y las reglas varían según la ley y el régimen tributario: ',
+    howNotePh: '[validar el texto con el contador del Instituto]',
+    getsTitle: 'Lo que recibe tu marca',
+    getsPh: '[confirmar contrapartidas]',
+    contrapartidas: [
+      { t: 'Tu marca en el tatami', d: 'Logo en uniformes, kimonos y materiales del proyecto.' },
+      { t: 'Ídolos del deporte', d: 'Asociación con Minotauro y Minotouro en acciones y eventos.' },
+      { t: 'Informe ESG', d: 'Indicadores de impacto social vinculados a los ODS de la ONU (3, 4, 10, 11, 13, 15, 16 y 17), listos para el informe de tu empresa.' },
+      { t: 'Compromiso interno', d: 'Acciones con tus colaboradores en los centros y eventos del Instituto.' },
+    ],
+    partnersTitle: 'Quiénes ya patrocinaron nuestros proyectos',
+    odsTitle: 'Impacto alineado con los ODS de la ONU',
+    odsLead: 'Indicadores de impacto social vinculados a los Objetivos de Desarrollo Sostenible de la ONU, listos para el informe de tu empresa.',
+    contactEyebrow: 'Hablemos',
+    contactTitle: 'Recibe la presentación y una simulación para tu empresa.',
+    contactLeadA: 'Nuestro equipo te responde en un plazo de ',
+    contactLeadPh: '[X] días hábiles',
+    contactLeadB: ' con los proyectos aprobados disponibles para patrocinio.',
+    docsLink: 'Ver documentos de transparencia →',
+    f: {
+      nome: 'Nombre', empresa: 'Empresa', cargo: 'Cargo', email: 'Correo corporativo', telefone: 'Teléfono / WhatsApp',
+      regime: 'Régimen tributario en Brasil', mensagem: 'Mensaje (opcional)', hp: 'No completes este campo',
+    },
+    regimes: [
+      { v: 'Lucro real', label: 'Lucro real' },
+      { v: 'Lucro presumido', label: 'Lucro presumido' },
+      { v: 'Simples Nacional', label: 'Simples Nacional' },
+      { v: 'Não sei', label: 'No lo sé' },
+    ],
+    consentA: 'Autorizo al Instituto Irmãos Nogueira a contactarme, de acuerdo con la ',
+    consentLink: 'Política de Privacidad',
+    consentB: ' (LGPD de Brasil).',
+    nonePh: '[configurar el destino del formulario: PUBLIC_SPONSOR_FORM_ENDPOINT o PUBLIC_CONTACT_EMAIL]',
+    submit: 'Quiero recibir la presentación',
+    js: {
+      subject: 'Patrocínio incentivado (ES)',
+      honeypotOk: 'Recibimos tu mensaje. ¡Gracias!',
+      invalid: 'Revisa los campos obligatorios y el consentimiento.',
+      sending: 'Enviando…',
+      success: 'Recibimos tu mensaje. Nuestro equipo te responderá pronto.',
+      failA: 'No pudimos enviarlo en este momento. Inténtalo de nuevo',
+      failEmail: ' o escríbenos a ',
+      failB: '.',
+      mailConsent: 'Autorizo el contacto de acuerdo con la Política de Privacidad (LGPD).',
+      mailOk: 'Abrimos tu aplicación de correo con el mensaje listo. Solo tienes que enviarlo.',
+      notConfigured: 'El envío del formulario aún no está configurado.',
+      labels: {
+        nome: 'Nombre', empresa: 'Empresa', cargo: 'Cargo', email: 'Correo', telefone: 'Teléfono / WhatsApp', regime: 'Régimen tributario', mensagem: 'Mensaje',
+      },
+    },
+  },
+};
+const T = COPY[lang];
+
+const provas = T.provas;
+const passos = T.passos;
+const contrapartidas = T.contrapartidas;
+const regimes = T.regimes;
+
+const endpoint = SITE.links.sponsorEndpoint;
+const email = SITE.contact.email;
+const mode = endpoint ? 'endpoint' : email ? 'mailto' : 'none';
+const action = endpoint ?? (email ? `mailto:${email}?subject=${encodeURIComponent(T.js.subject)}` : undefined);
+---
+<BaseLayout
+  title={T.metaTitle}
+  description={T.metaDescription}
+>
+  <PageHero
+    eyebrow={T.eyebrow}
+    title={T.title}
+    lead={T.lead}
+  >
+    <Fragment slot="actions">
+      <Button href="#contato" data-track="sponsor_click" data-track-source="empresas_hero">{T.ctaSponsor}</Button>
+      <Button href="#contato" variant="light" icon="down">{T.ctaDeck}</Button>
+    </Fragment>
+    <div slot="aside" class="bros">
+      <Image
+        src={IMG.irmaoBranco}
+        alt={T.altWhite}
+        widths={[280, 420, 560]}
+        sizes="(max-width: 960px) 50vw, 300px"
+        loading="eager"
+        fetchpriority="high"
+        class="bros__img bros__img--l"
+      />
+      <Image
+        src={IMG.irmaoPreto}
+        alt={T.altBlack}
+        widths={[280, 420, 560]}
+        sizes="(max-width: 960px) 50vw, 300px"
+        loading="eager"
+        class="bros__img bros__img--r"
+      />
+    </div>
+  </PageHero>
+
+  <section class="container proof-wrap" aria-label={T.proofLabel}>
+    <ul class="proof chamfer">
+      {provas.map((p) => (
+        <li class="proof__item"><span class="proof__n">{p.n}</span><span class="proof__t">{p.t}</span></li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="section">
+    <div class="container stack how">
+      <div class="section-head">
+        <p class="eyebrow">{T.howEyebrow}</p>
+        <h2 class="display h2">{T.howTitle}</h2>
+      </div>
+      <ol class="grid-auto" style="--min:300px">
+        {passos.map((s) => (
+          <li class="step card chamfer card-h">
+            <span class="oct-badge oct-badge--red step__n">{s.n}</span>
+            <h3 class="step__t">{s.t}</h3>
+            <p class="step__d">{s.d}</p>
+          </li>
+        ))}
+      </ol>
+      <p class="how__note">{T.howNote}<span class="ph">{T.howNotePh}</span></p>
+    </div>
+  </section>
+
+  <section class="section section--sand">
+    <div class="container stack gets">
+      <div class="gets__head">
+        <h2 class="display h2">{T.getsTitle}</h2>
+        <span class="ph">{T.getsPh}</span>
+      </div>
+      <div class="grid-auto" style="--min:270px">
+        {contrapartidas.map((c) => (
+          <div class="perk chamfer card-h">
+            <h3 class="perk__t">{c.t}</h3>
+            <p class="perk__d">{c.d}</p>
+          </div>
+        ))}
+      </div>
+      <div class="stack partners-block">
+        <h3 class="partners-block__t">{T.partnersTitle}</h3>
+        <PartnerGrid />
+      </div>
+    </div>
+  </section>
+
+  <section class="section ods-sec">
+    <div class="container stack ods-wrap">
+      <div class="section-head">
+        <h2 class="display h3">{T.odsTitle}</h2>
+        <p class="ods-lead">{T.odsLead}</p>
+      </div>
+      <OdsGrid compact />
+    </div>
+  </section>
+
+  <section id="contato" class="section">
+    <div class="container contact">
+      <div class="stack contact__text">
+        <p class="eyebrow">{T.contactEyebrow}</p>
+        <h2 class="display h2">{T.contactTitle}</h2>
+        <p class="contact__lead">{T.contactLeadA}<span class="ph">{T.contactLeadPh}</span>{T.contactLeadB}</p>
+        <a class="lnk" href={l('/transparencia/')}>{T.docsLink}</a>
+      </div>
+
+      <form
+        class="form"
+        data-sponsor-form
+        data-mode={mode}
+        data-endpoint={endpoint ?? ''}
+        data-email={email ?? ''}
+        data-i18n={JSON.stringify(T.js)}
+        action={action}
+        method="post"
+        enctype={mode === 'mailto' ? 'text/plain' : undefined}
+
+      >
+        <label class="field" for="f-nome">{T.f.nome}<input id="f-nome" name="nome" autocomplete="name" /></label>
+        <label class="field" for="f-empresa">{T.f.empresa}<input id="f-empresa" name="empresa" autocomplete="organization" /></label>
+        <label class="field" for="f-cargo">{T.f.cargo}<input id="f-cargo" name="cargo" autocomplete="organization-title" /></label>
+        <label class="field" for="f-email">{T.f.email}<input id="f-email" name="email" type="email" autocomplete="email" required /></label>
+        <label class="field" for="f-telefone">{T.f.telefone}<input id="f-telefone" name="telefone" type="tel" autocomplete="tel" /></label>
+        <label class="field" for="f-regime">{T.f.regime}
+          <select id="f-regime" name="regime">
+            {regimes.map((r) => <option value={r.v}>{r.label}</option>)}
+          </select>
+        </label>
+        <label class="field form__full" for="f-mensagem">{T.f.mensagem}<textarea id="f-mensagem" name="mensagem" rows="4"></textarea></label>
+
+        <div class="form__hp" aria-hidden="true">
+          <label for="f-website">{T.f.hp}<input id="f-website" name="website" tabindex="-1" autocomplete="off" /></label>
+        </div>
+
+        <label class="consent form__full" for="f-consent">
+          <input id="f-consent" name="consentimento" type="checkbox" value="sim" required />
+          <span>{T.consentA}<a href={l('/politica-de-privacidade/')}>{T.consentLink}</a>{T.consentB}</span>
+        </label>
+
+        {mode === 'none' && (
+          <p class="form__full"><span class="ph">{T.nonePh}</span></p>
+        )}
+
+        <button type="submit" class="btn btn--lg btn--block form__full" data-track="sponsor_lead" data-track-source="empresas_form">
+          <span class="btn__label" data-submit-label>{T.submit}</span>
+          <span class="btn__icon"><Icon name="arrow" size={18} strokeWidth={2.4} /></span>
+        </button>
+        <p class="form__status form__full" role="status" aria-live="polite" data-form-status></p>
+      </form>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-sponsor-form]');
+  if (form) {
+    form.noValidate = true;
+    const status = form.querySelector<HTMLElement>('[data-form-status]')!;
+    const submitLabel = form.querySelector<HTMLElement>('[data-submit-label]')!;
+    const { mode = 'none', endpoint = '', email = '' } = form.dataset;
+    const TX = {
+      subject: 'Patrocínio incentivado',
+      honeypotOk: 'Recebemos seu contato. Obrigado!',
+      invalid: 'Confira os campos obrigatórios e o consentimento.',
+      sending: 'Enviando…',
+      success: 'Recebemos seu contato. Nossa equipe vai retornar em breve.',
+      failA: 'Não foi possível enviar agora. Tente novamente',
+      failEmail: ' ou escreva para ',
+      failB: '.',
+      mailConsent: 'Autorizo o contato conforme a Política de Privacidade (LGPD).',
+      mailOk: 'Abrimos seu aplicativo de e-mail com a mensagem pronta. É só enviar.',
+      notConfigured: 'O envio do formulário ainda não foi configurado.',
+      labels: {
+        nome: 'Nome', empresa: 'Empresa', cargo: 'Cargo', email: 'E-mail', telefone: 'Telefone / WhatsApp', regime: 'Regime tributário', mensagem: 'Mensagem',
+      } as Record<string, string>,
+    };
+    try { Object.assign(TX, JSON.parse(form.dataset.i18n ?? '{}')); } catch { /* mantém PT */ }
+    const LABELS: Record<string, string> = TX.labels;
+
+    const say = (msg: string, kind: 'ok' | 'error' | '' = '') => {
+      status.textContent = msg;
+      status.dataset.kind = kind;
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+
+      // Honeypot: bots preenchem o campo oculto; finge sucesso e descarta.
+      if (String(data.get('website') ?? '').trim()) { say(TX.honeypotOk, 'ok'); form.reset(); return; }
+
+      if (!form.checkValidity()) {
+        const invalid = form.querySelector<HTMLInputElement>(':invalid');
+        invalid?.focus();
+        form.reportValidity();
+        say(TX.invalid, 'error');
+        return;
+      }
+
+      const fields = Object.keys(LABELS).reduce<Record<string, string>>((acc, k) => {
+        acc[k] = String(data.get(k) ?? '').trim();
+        return acc;
+      }, {});
+
+      if (mode === 'endpoint' && endpoint) {
+        const original = submitLabel.textContent;
+        submitLabel.textContent = TX.sending;
+        form.setAttribute('aria-busy', 'true');
+        try {
+          const res = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify({ ...fields, consentimento: true, origem: location.href }),
+          });
+          if (!res.ok) throw new Error(String(res.status));
+          form.reset();
+          say(TX.success, 'ok');
+        } catch {
+          say(`${TX.failA}${email ? `${TX.failEmail}${email}` : ''}${TX.failB}`, 'error');
+        } finally {
+          submitLabel.textContent = original;
+          form.removeAttribute('aria-busy');
+        }
+        return;
+      }
+
+      if (mode === 'mailto' && email) {
+        const body = Object.entries(fields)
+          .filter(([, v]) => v)
+          .map(([k, v]) => `${LABELS[k]}: ${v}`)
+          .join('\n');
+        const href = `mailto:${email}?subject=${encodeURIComponent(`${TX.subject}: ${fields.empresa}`)}&body=${encodeURIComponent(`${body}\n\n${TX.mailConsent}`)}`;
+        window.location.href = href;
+        say(TX.mailOk, 'ok');
+        return;
+      }
+
+      say(TX.notConfigured, 'error');
+    });
+  }
+</script>
+
+<style>
+  /* Hero: irmãos sobre painel escuro chanfrado */
+  .bros { position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: end; height: clamp(320px, 42vw, 480px); background: var(--ink-3); clip-path: polygon(48px 0, calc(100% - 48px) 0, 100% 48px, 100% calc(100% - 48px), calc(100% - 48px) 100%, 48px 100%, 0 calc(100% - 48px), 0 48px); overflow: hidden; }
+  .bros :global(.bros__img) { width: 100%; height: 100%; object-fit: cover; object-position: 50% 15%; }
+  .bros :global(.bros__img--r) { object-position: 45% 15%; }
+
+  /* Faixa de provas */
+  .proof-wrap { position: relative; margin-top: -40px; }
+  .proof { position: relative; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); background: var(--white); border: 1px solid var(--line); }
+  .proof__item { display: flex; flex-direction: column; padding: 30px 32px; border-right: 1px solid var(--line-2); border-bottom: 1px solid var(--line-2); margin: 0 -1px -1px 0; }
+  .proof__n { font-family: var(--font-display); font-weight: 800; font-size: 52px; line-height: 1; color: var(--red); }
+  .proof__t { font-weight: 700; }
+
+  /* Como funciona */
+  .how { gap: 40px; }
+  .step { padding: 34px 30px; display: flex; flex-direction: column; gap: 14px; }
+  .step__n { width: 56px; height: 56px; font-size: 24px; }
+  .step__t { font-family: var(--font-display); font-weight: 800; font-size: 28px; line-height: 1; text-transform: uppercase; }
+  .step__d { font-size: 15.5px; color: var(--text-2); }
+  .how__note { font-size: 14px; color: var(--text-3); }
+
+  /* Contrapartidas */
+  .gets { gap: 40px; }
+  .gets__head { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+  .perk { background: var(--ink); color: var(--white); padding: 32px 28px; display: flex; flex-direction: column; gap: 12px; min-height: 180px; }
+  .perk__t { font-family: var(--font-display); font-weight: 800; font-size: 28px; line-height: 1; text-transform: uppercase; color: var(--red-lt); }
+  .perk__d { font-size: 15px; color: var(--on-dark-2); }
+  .partners-block { gap: 14px; }
+  .partners-block__t { font-size: 13px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-3); }
+
+  /* ODS */
+  .ods-sec { padding-block: clamp(56px, 7vw, 88px); }
+  .ods-wrap { gap: 32px; }
+  .ods-lead { font-size: 16px; color: var(--text-2); max-width: 620px; }
+
+  /* Contato */
+  .contact { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr)); gap: clamp(40px, 5vw, 56px); align-items: start; }
+  .contact__text { gap: 18px; }
+  .contact__lead { font-size: 17px; color: var(--text-2); }
+  .contact__text .lnk { align-self: flex-start; }
+  .form { background: var(--white); border: 1px solid var(--line); padding: clamp(20px, 4vw, 40px); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 16px; position: relative; }
+  .form__full { grid-column: 1 / -1; }
+  .form__hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+  .consent { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--text-2); }
+  .consent input { width: 20px; height: 20px; margin-top: 2px; flex: none; accent-color: var(--red); }
+  .form__status { font-size: 14px; font-weight: 700; }
+  .form__status:empty { display: none; }
+  .form__status[data-kind='ok'] { color: var(--green); }
+  .form__status[data-kind='error'] { color: var(--red-dk); }
+</style>

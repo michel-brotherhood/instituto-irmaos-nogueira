@@ -1,0 +1,53 @@
+---
+/**
+ * Apoiadores — logos oficiais, na ordem do site atual, em cores originais sobre fundo branco.
+ * Tamanho ótico: cada logo recebe a mesma ÁREA visual (horizontais ficam mais largos, quadrados mais altos),
+ * então nenhuma marca "grita" mais que a outra. Fileiras centralizadas: a última nunca parece sobra.
+ */
+import { getContent } from '../data/content';
+import { i18n } from '../i18n/config';
+import { t } from '../i18n/ui';
+
+const { lang } = i18n(Astro.url);
+const ui = t(lang);
+const { PARCEIROS } = getContent(lang);
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/parceiros/*.{svg,png,webp,jpg}', { eager: true });
+const logoFor = (slug: string) => Object.entries(files).find(([k]) => k.includes(`/${slug}.`))?.[1].default;
+
+// Caixa máxima de cada logo (px, desktop) e área-alvo
+const BOX_W = 184, BOX_H = 84, AREA = 6600;
+const size = (w: number, h: number) => {
+  const r = w / h;
+  let lw = Math.sqrt(AREA * r), lh = lw / r;
+  if (lh > BOX_H) { lh = BOX_H; lw = lh * r; }
+  if (lw > BOX_W) { lw = BOX_W; lh = lw / r; }
+  return { w: Math.round(lw), h: Math.round(lh) };
+};
+const items = PARCEIROS.map((p) => ({ ...p, logo: logoFor(p.slug) }));
+---
+<div class="partners-wrap">
+  <ul class="partners" aria-label={ui.partners.label}>
+    {items.map((p) => {
+      if (!p.logo) return <li class="partners__item partners__item--text"><span>{p.nome}</span></li>;
+      const s = size(p.logo.width, p.logo.height);
+      const img = <img src={p.logo.src} width={s.w} height={s.h} style={`--w:${s.w}px`} alt={p.nome} loading="lazy" decoding="async" />;
+      return (
+        <li class="partners__item">
+          {p.url ? <a href={p.url} target="_blank" rel="noopener" class="partners__link">{img}<span class="sr-only"> {ui.newTab}</span></a> : img}
+        </li>
+      );
+    })}
+  </ul>
+</div>
+
+<style>
+  .partners-wrap { background: #fff; padding: clamp(12px, 2.4vw, 28px); }
+  .partners { --s: 1; display: flex; flex-wrap: wrap; justify-content: center; gap: clamp(8px, 1.4vw, 16px); }
+  .partners__item { flex: 0 0 clamp(132px, 15vw, 192px); height: clamp(96px, 9vw, 120px); display: flex; align-items: center; justify-content: center; padding: 12px; border-radius: 0; transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease); }
+  .partners__item:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(20, 20, 20, 0.08); }
+  .partners__item img { width: calc(var(--w) * var(--s)); max-width: 100%; height: auto; object-fit: contain; }
+  .partners__link { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+  .partners__item--text { font-family: var(--font-display); font-weight: 800; font-size: 17px; line-height: 1.05; text-transform: uppercase; text-align: center; color: var(--text-2); border: 1px solid var(--line); }
+  @media (max-width: 760px) { .partners { --s: 0.66; gap: 6px; } .partners__item { flex-basis: calc(33.333% - 4px); height: 84px; padding: 8px; } }
+  @media (prefers-reduced-motion: reduce) { .partners__item, .partners__item:hover { transition: none; transform: none; } }
+</style>

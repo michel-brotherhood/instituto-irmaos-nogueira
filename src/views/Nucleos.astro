@@ -1,0 +1,291 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NucleoCard from '../components/NucleoCard.astro';
+import Deco from '../components/Deco.astro';
+import Icon from '../components/Icon.astro';
+import NucleosMap from '../components/NucleosMap.astro';
+import { SITE } from '../data/site';
+import { getContent, fmtTel, type Nucleo } from '../data/content';
+import { i18n } from '../i18n/config';
+import { t } from '../i18n/ui';
+
+const { lang, l } = i18n(Astro.url);
+const ui = t(lang);
+const { NUCLEOS } = getContent(lang);
+const NUCLEOS_PT = getContent('pt').NUCLEOS;
+
+const COPY = {
+  pt: {
+    title: 'Núcleos',
+    description: (n: number) => `Encontre o núcleo do Instituto Irmãos Nogueira mais perto de você: ${n} núcleos com inscrições abertas para Jiu-Jitsu, Muay Thai e Boxe.`,
+    eyebrow: 'Luta Escola da Vida · Academias de luta',
+    h1: 'Encontre o núcleo mais perto de você.',
+    lead: (n: number) => `${n} núcleos com inscrições abertas para Jiu-Jitsu, Muay Thai e Boxe.`,
+    listH: 'Lista de núcleos',
+    filterLabel: 'Filtrar por modalidade',
+    all: 'Todos',
+    liveAll: 'Mostrando todos os {n} núcleos.',
+    liveOne: '{n} núcleo encontrado com {mod}.',
+    liveMany: '{n} núcleos encontrados com {mod}.',
+    mapH: 'Núcleos por região',
+    stepsH: 'Como inscrever seu filho',
+    stepsPh: '[confirmar fluxo e documentos]',
+    step: 'Passo',
+    passos: [
+      { n: '1', t: 'Escolha o núcleo', d: 'Veja a modalidade e o endereço mais perto de casa.' },
+      { n: '2', t: 'Preencha a inscrição', d: 'Formulário online com os dados do aluno e do responsável.' },
+      { n: '3', t: 'Aguarde o contato', d: 'A equipe do núcleo confirma a vaga e o primeiro dia de aula.' },
+    ],
+    ldList: `Núcleos do ${SITE.name}`,
+    ldItem: (nome: string) => `Núcleo ${nome} — ${SITE.name}`,
+  },
+  en: {
+    title: 'Training centers',
+    description: (n: number) => `Find the Instituto Irmãos Nogueira training center closest to you: ${n} centers now enrolling for Jiu-Jitsu, Muay Thai and Boxing.`,
+    eyebrow: 'Luta Escola da Vida (“Fight, School of Life”) · Fight academies',
+    h1: 'Find the center closest to you.',
+    lead: (n: number) => `${n} training centers now enrolling for Jiu-Jitsu, Muay Thai and Boxing.`,
+    listH: 'List of training centers',
+    filterLabel: 'Filter by martial art',
+    all: 'All',
+    liveAll: 'Showing all {n} centers.',
+    liveOne: '{n} center found for {mod}.',
+    liveMany: '{n} centers found for {mod}.',
+    mapH: 'Centers by area',
+    stepsH: 'How to sign up your child',
+    stepsPh: '[confirm process and documents]',
+    step: 'Step',
+    passos: [
+      { n: '1', t: 'Pick a center', d: 'Check the martial art and the address closest to home.' },
+      { n: '2', t: 'Fill out the form', d: 'A short online form with the student’s and parent’s details.' },
+      { n: '3', t: 'We’ll be in touch', d: 'The center’s team confirms the spot and the first day of class.' },
+    ],
+    ldList: `${SITE.name} training centers`,
+    ldItem: (nome: string) => `${nome} training center — ${SITE.name}`,
+  },
+  es: {
+    title: 'Centros',
+    description: (n: number) => `Encuentra el centro del Instituto Irmãos Nogueira más cerca de ti: ${n} centros con inscripciones abiertas para Jiu-Jitsu, Muay Thai y Boxeo.`,
+    eyebrow: 'Luta Escola da Vida (“Lucha, Escuela de la Vida”) · Academias de lucha',
+    h1: 'Encuentra el centro más cerca de ti.',
+    lead: (n: number) => `${n} centros con inscripciones abiertas para Jiu-Jitsu, Muay Thai y Boxeo.`,
+    listH: 'Lista de centros',
+    filterLabel: 'Filtrar por disciplina',
+    all: 'Todos',
+    liveAll: 'Mostrando los {n} centros.',
+    liveOne: '{n} centro encontrado con {mod}.',
+    liveMany: '{n} centros encontrados con {mod}.',
+    mapH: 'Centros por zona',
+    stepsH: 'Cómo inscribir a tu hijo',
+    stepsPh: '[confirmar proceso y documentos]',
+    step: 'Paso',
+    passos: [
+      { n: '1', t: 'Elige el centro', d: 'Mira la disciplina y la dirección más cercana a tu casa.' },
+      { n: '2', t: 'Llena la inscripción', d: 'Un formulario en línea con los datos del alumno y de su tutor.' },
+      { n: '3', t: 'Espera nuestro contacto', d: 'El equipo del centro confirma el cupo y el primer día de clase.' },
+    ],
+    ldList: `Centros del ${SITE.name}`,
+    ldItem: (nome: string) => `Centro ${nome} — ${SITE.name}`,
+  },
+};
+const T = COPY[lang];
+
+// Valores internos (data-mod) ficam em português; só o rótulo visível é traduzido.
+const chips = ['Todos', 'Jiu-Jitsu', 'Muay Thai', 'Boxe'];
+const chipLabel = (c: string) => (c === 'Todos' ? T.all : ui.modalities[c] ?? c);
+
+const passos = T.passos;
+
+const mapsUrl = (n: Nucleo) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(n.mapsQuery ?? n.endereco)}`;
+
+// Agrupa por região mantendo a ordem de aparição.
+const regioes = [...new Set(NUCLEOS.map((n) => n.regiao))].map((r) => ({ regiao: r, itens: NUCLEOS.filter((n) => n.regiao === r) }));
+
+/** 21972702365 → +55 21 97270-2365 */
+const intlTel = (n: string) => `+55 ${n.slice(0, 2)} ${n.slice(2, -4)}-${n.slice(-4)}`;
+// Localidade decidida pelos dados em PT (as regiões da capital começam com "Zona").
+const locality = (n: Nucleo) => ((NUCLEOS_PT.find((p) => p.slug === n.slug)?.regiao ?? '').startsWith('Zona') ? 'Rio de Janeiro' : n.nome);
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: T.ldList,
+    itemListElement: NUCLEOS.map((n, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      item: {
+        '@type': 'SportsActivityLocation',
+        name: T.ldItem(n.nome),
+        url: new URL(l(`/nucleos/#${n.slug}`), SITE.url).href,
+        ...(n.tel[0] ? { telephone: intlTel(n.tel[0].n) } : {}),
+        address: {
+          '@type': 'PostalAddress',
+          ...(n.pendente ? {} : { streetAddress: n.endereco.split(' · ')[0] }),
+          ...(n.pendente || !n.cep ? {} : { postalCode: n.cep }),
+          addressLocality: locality(n),
+          addressRegion: 'RJ',
+          addressCountry: 'BR',
+        },
+      },
+    })),
+  },
+];
+---
+<BaseLayout
+  title={T.title}
+  description={T.description(NUCLEOS.length)}
+  jsonLd={jsonLd}
+>
+  <section class="nhero">
+    <Deco rings="light" ringsStyle="right:0;top:-30%;width:50%;height:170%" />
+    <div class="container nhero__in">
+      <p class="eyebrow">{T.eyebrow}</p>
+      <h1 class="display nhero__title">{T.h1}</h1>
+      <p class="lead">{T.lead(NUCLEOS.length)}</p>
+    </div>
+  </section>
+
+  <section class="container nlist" aria-labelledby="nlist-h">
+    <h2 id="nlist-h" class="sr-only">{T.listH}</h2>
+    <div class="nfilter" role="group" aria-label={T.filterLabel} data-filter hidden>
+      {chips.map((c) => (
+        <button type="button" class="nfilter__chip" aria-pressed={c === 'Todos' ? 'true' : 'false'} data-mod={c}>{chipLabel(c)}</button>
+      ))}
+    </div>
+    <p class="sr-only" aria-live="polite" data-count data-msg-all={T.liveAll} data-msg-one={T.liveOne} data-msg-many={T.liveMany}></p>
+
+    <div class="nlist__layout">
+      <NucleosMap />
+
+      <aside class="nmap" aria-labelledby="nmap-h">
+        <div class="nmap__head">
+          <Icon name="map" size={28} />
+          <h2 id="nmap-h" class="display nmap__title">{T.mapH}</h2>
+        </div>
+        {regioes.map((g) => (
+          <div class="nmap__group">
+            <h3 class="nmap__reg">{g.regiao}</h3>
+            <ul class="nmap__list">
+              {g.itens.map((n) => (
+                <li class="nmap__item">
+                  <div class="nmap__info">
+                    <a class="nmap__name" href={`#${n.slug}`} data-map-focus={n.slug}>{n.nome} <span class="nmap__mods">{n.modalidades.map((m) => ui.modalities[m] ?? m).join(' · ')}</span></a>
+                    {n.tel.length > 0 && (
+                      <span class="nmap__tels">
+                        {n.tel.map((tel) => (
+                          <a class="nmap__tel" href={`tel:+55${tel.n}`}>
+                            <span class="sr-only">{ui.nucleo.call} {n.nome}{tel.mod ? ' — ' : ': '}</span>{tel.mod && `${ui.modalities[tel.mod] ?? tel.mod}: `}{fmtTel(tel.n)}
+                          </a>
+                        ))}
+                      </span>
+                    )}
+                  </div>
+                  <a class="lnk nmap__lnk" href={mapsUrl(n)} target="_blank" rel="noopener">
+                    {ui.directions} <Icon name="external" size={14} />
+                    <span class="sr-only">— {n.nome} {ui.newTab}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </aside>
+    </div>
+
+    <div class="nlist__grid" data-grid>
+      {NUCLEOS.map((n) => <NucleoCard n={n} variant="full" />)}
+    </div>
+  </section>
+
+  <section id="inscricao" class="section--dark nsteps">
+    <Deco rings="dark" grain="dark" />
+    <div class="container nsteps__in">
+      <div class="nsteps__head">
+        <h2 class="display h2">{T.stepsH}</h2>
+        <span class="ph">{T.stepsPh}</span>
+      </div>
+      <ol class="grid-auto" style="--min:260px">
+        {passos.map((p) => (
+          <li class="nstep card-h chamfer">
+            <span class="display nstep__n" aria-hidden="true">{p.n}</span>
+            <h3 class="display nstep__t"><span class="sr-only">{T.step} {p.n}: </span>{p.t}</h3>
+            <p class="nstep__d">{p.d}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-filter]');
+  const grid = document.querySelector<HTMLElement>('[data-grid]');
+  const live = document.querySelector<HTMLElement>('[data-count]');
+  if (root && grid) {
+    const chips = Array.from(root.querySelectorAll<HTMLButtonElement>('button[data-mod]'));
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>('[data-mods]'));
+    root.hidden = false;
+    const fill = (tpl: string, n: number, mod: string) => tpl.replace('{n}', String(n)).replace('{mod}', mod);
+    const apply = (mod: string) => {
+      let visible = 0;
+      cards.forEach((card) => {
+        const show = mod === 'Todos' || (card.dataset.mods ?? '').split('|').includes(mod);
+        card.hidden = !show;
+        if (show) visible++;
+      });
+      chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.mod === mod)));
+      document.dispatchEvent(new CustomEvent('nucleos:filter', { detail: mod }));
+      if (live) {
+        // Rótulo visível (traduzido) da modalidade; o valor interno continua em PT.
+        const modLabel = chips.find((c) => c.dataset.mod === mod)?.textContent?.trim() ?? mod;
+        const tpl = mod === 'Todos' ? live.dataset.msgAll : visible === 1 ? live.dataset.msgOne : live.dataset.msgMany;
+        live.textContent = fill(tpl ?? '', visible, modLabel);
+      }
+    };
+    chips.forEach((c) => c.addEventListener('click', () => apply(c.dataset.mod ?? 'Todos')));
+  }
+</script>
+
+<style>
+  .nhero { position: relative; overflow: hidden; }
+  .nhero__in { position: relative; padding-block: clamp(56px, 7vw, 80px) 40px; display: flex; flex-direction: column; gap: 20px; }
+  .nhero__title { max-width: 900px; font-size: clamp(48px, 6.6vw, 96px); }
+
+  .nlist { padding-bottom: clamp(64px, 8vw, 96px); display: flex; flex-direction: column; gap: 24px; }
+  .nfilter { display: flex; flex-wrap: wrap; gap: 8px; }
+  .nfilter[hidden] { display: flex; visibility: hidden; } /* reserva o espaço: evita CLS quando o JS revela o filtro */
+  .nfilter__chip { min-height: 48px; padding: 0 22px; border: 2px solid var(--ink); background: var(--white); color: var(--ink); font-weight: 700; font-size: 15px; cursor: pointer; transition: background-color 0.2s, color 0.2s; }
+  .nfilter__chip:hover { background: var(--sand); }
+  .nfilter__chip[aria-pressed='true'] { background: var(--ink); color: var(--white); }
+
+  .nlist__layout { display: grid; grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr); gap: 24px; align-items: start; }
+  @media (max-width: 960px) { .nlist__layout { grid-template-columns: 1fr; } }
+  .nlist__grid { min-width: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 16px; }
+  .nlist__grid > :global([hidden]) { display: none; }
+
+  .nmap { min-width: 0; margin-top: 56px; background: var(--line-2); padding: clamp(20px, 3vw, 28px); display: flex; flex-direction: column; gap: 20px; }
+  @media (max-width: 960px) { .nmap { margin-top: 0; } }
+  .nmap__mods { display: block; font-size: 12px; font-weight: 600; color: var(--text-3); }
+  .nmap__head { display: flex; align-items: center; gap: 12px; }
+  .nmap__title { font-size: 28px; line-height: 1; }
+  .nmap__group { display: flex; flex-direction: column; gap: 6px; }
+  .nmap__reg { font-size: 13px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--red-dk); }
+  .nmap :global(.lnk) { color: var(--red-dk); }
+  .nmap__list { display: flex; flex-direction: column; }
+  .nmap__item { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 4px 12px; border-bottom: 1px solid var(--line); }
+  .nmap__name { font-weight: 800; text-decoration: none; min-height: 44px; display: inline-flex; flex-direction: column; justify-content: center; padding-block: 6px; }
+  .nmap__lnk { font-size: 14px; }
+  .nmap__info { display: flex; flex-direction: column; min-width: 0; padding-bottom: 8px; }
+  .nmap__name { min-height: 40px; }
+  .nmap__tels { display: flex; flex-direction: column; }
+  .nmap__tel { font-size: 14px; font-weight: 600; color: var(--text-2); text-decoration: none; min-height: 32px; display: inline-flex; align-items: center; }
+  .nmap__tel:hover { color: var(--red-dk); text-decoration: underline; }
+
+  .nsteps { position: relative; overflow: hidden; }
+  .nsteps__in { position: relative; padding-block: clamp(64px, 8vw, 96px); display: flex; flex-direction: column; gap: 40px; }
+  .nsteps__head { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+  .nstep { border: 1px solid #333; padding: 32px; display: flex; flex-direction: column; gap: 14px; }
+  .nstep__n { font-size: 64px; line-height: 1; color: var(--red-lt); }
+  .nstep__t { font-size: 28px; line-height: 1; }
+  .nstep__d { color: var(--on-dark-2); font-size: 15px; }
+</style>

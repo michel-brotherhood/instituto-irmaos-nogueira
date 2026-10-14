@@ -1,0 +1,10 @@
+# Alternativa SEM proxy instalado na VPS: Caddy faz HTTPS automático (Let's Encrypt) e renova sozinho.
+# Usado por deploy/compose.caddy.yml. Só use se as portas 80/443 da VPS estiverem livres.
+institutoirmaosnogueira.com.br {
+	redir https://www.institutoirmaosnogueira.com.br{uri} permanent
+}
+
+www.institutoirmaosnogueira.com.br {
+	encode zstd gzip
+	reverse_proxy web:80
+}

@@ -1,0 +1,85 @@
+---
+/**
+ * Cartão de doação via PIX: QR Code real (BR Code), chave para copiar e "Copia e Cola".
+ * Ouve o evento `pix:amount` (detail: número) para regenerar o QR com valor.
+ */
+import Icon from './Icon.astro';
+import { SITE } from '../data/site';
+import { i18n } from '../i18n/config';
+import { t } from '../i18n/ui';
+interface Props { title?: string; compact?: boolean }
+const { lang } = i18n(Astro.url);
+const p = t(lang).pix;
+const { title = p.title, compact = false } = Astro.props;
+const { pix, bank } = SITE;
+---
+<div class:list={['pix', compact && 'pix--compact']} data-pix data-key={pix.key} data-name={pix.merchantName} data-city={pix.merchantCity} data-t-qr={p.qr} data-t-qr-amount={p.qrAmount} data-t-copied={p.copied} data-t-fail={p.copyFail} data-t-key-ok={p.keyCopied} data-t-code-ok={p.codeCopied}>
+  <div class="pix__head">
+    <h3 class="display pix__title">{title}</h3>
+    <span class="pix__chip">{p.chip}</span>
+  </div>
+  <div class="pix__body">
+    <div class="pix__qr" data-pix-qr role="img" aria-label={p.qr}></div>
+    <div class="pix__fields">
+      <label class="field" for="pix-key">{p.keyLabel}
+        <input id="pix-key" readonly value={pix.keyLabel} />
+      </label>
+      <button type="button" class="btn btn--dark btn--block" data-copy="key" data-track="pix_copy_key">
+        <span class="btn__label" data-label>{p.copyKey}</span><span class="btn__icon"><Icon name="copy" size={18} /></span>
+      </button>
+      <button type="button" class="pix__cc" data-copy="payload" data-track="pix_copy_payload">{p.copyCode}</button>
+    </div>
+  </div>
+  <p class="pix__bank">{p.bank}: {bank.name} · {p.agency} {bank.agency} · {p.account} {bank.account} · {SITE.name}</p>
+  <p class="sr-only" aria-live="polite" data-pix-status></p>
+</div>
+
+<script>
+  import { pixPayload, pixQrSvg, copyText } from '../scripts/pix';
+
+  document.querySelectorAll<HTMLElement>('[data-pix]').forEach((card) => {
+    const { key = '', name = '', city = '' } = card.dataset;
+    const tx = card.dataset;
+    const qr = card.querySelector<HTMLElement>('[data-pix-qr]')!;
+    const status = card.querySelector<HTMLElement>('[data-pix-status]')!;
+    let payload = '';
+
+    const render = async (amount?: number) => {
+      payload = pixPayload({ key, name, city, amount });
+      qr.innerHTML = await pixQrSvg(payload);
+      qr.setAttribute('aria-label', amount ? `${tx.tQrAmount} ${amount}` : (tx.tQr ?? ''));
+    };
+    render();
+    document.addEventListener('pix:amount', (e) => render((e as CustomEvent<number>).detail || undefined));
+
+    card.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const ok = await copyText(btn.dataset.copy === 'key' ? key : payload);
+        const label = btn.querySelector<HTMLElement>('[data-label]') ?? btn;
+        const original = label.textContent;
+        label.textContent = ok ? (tx.tCopied ?? '') : (tx.tFail ?? '');
+        status.textContent = ok ? ((btn.dataset.copy === 'key' ? tx.tKeyOk : tx.tCodeOk) ?? '') : '';
+        btn.classList.toggle('is-done', ok);
+        setTimeout(() => { label.textContent = original; btn.classList.remove('is-done'); }, 2400);
+      });
+    });
+  });
+</script>
+
+<style>
+  .pix { background: #fff; color: var(--ink); padding: clamp(22px, 3vw, 32px); display: flex; flex-direction: column; gap: 20px; box-shadow: 0 30px 60px rgba(60, 0, 0, 0.25); clip-path: polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 28px 100%, 0 calc(100% - 28px)); }
+  .pix__head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .pix__title { font-size: 30px; line-height: 1; }
+  .pix__chip { padding: 4px 10px; background: var(--bg); font-size: 12px; font-weight: 700; white-space: nowrap; }
+  .pix__body { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; }
+  .pix__qr { width: 148px; height: 148px; flex: none; border: 1px solid var(--line); background: #fff; }
+  .pix__qr :global(svg) { width: 100%; height: 100%; }
+  .pix__fields { flex: 1 1 220px; display: flex; flex-direction: column; gap: 10px; }
+  .pix { min-width: 0; max-width: 100%; }
+  .pix__fields { min-width: 0; }
+  .pix__fields input { width: 100%; min-width: 0; font-size: 20px !important; font-weight: 800 !important; background: var(--bg) !important; border-color: var(--ink) !important; }
+  .pix__cc { min-height: 44px; background: none; border: 0; padding: 0; text-align: left; font-weight: 700; font-size: 14px; color: var(--red); text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+  .pix__bank { font-size: 14px; color: var(--text-3); border-top: 1px solid var(--line-2); padding-top: 16px; }
+  :global(.btn.is-done) { --btn-bg: var(--green); }
+  .pix--compact .pix__qr { width: 120px; height: 120px; }
+</style>

@@ -1,0 +1,260 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Button from '../components/Button.astro';
+import Deco from '../components/Deco.astro';
+import { SITE } from '../data/site';
+import { IMG, getContent } from '../data/content';
+import { i18n } from '../i18n/config';
+
+const { lang, l } = i18n(Astro.url);
+const { STATS, NUCLEOS } = getContent(lang);
+
+const COPY = {
+  pt: {
+    title: 'Projeto Luta Escola da Vida',
+    description: 'Luta Escola da Vida: Jiu-Jitsu, artes marciais e esporte como ferramenta de transformação pessoal para alunos da rede municipal de ensino.',
+    eyebrow: 'Projeto',
+    heroLead: 'Jiu-Jitsu, artes marciais e esporte como ferramenta de transformação pessoal para alunos da rede municipal de ensino.',
+    join: 'Quero participar',
+    support: 'Apoiar o projeto',
+    videoLabel: 'Vídeo do projeto Luta Escola da Vida',
+    statsLabel: 'Números do projeto',
+    childrenFallback: '+930',
+    children: 'crianças previstas',
+    networkN: 'Rede',
+    networkD: 'municipal de ensino ·',
+    cityPh: '[CIDADE]',
+    centers: 'núcleos nas comunidades',
+    objEyebrow: 'Objetivos',
+    objTitle: 'Do tatame para a sala de aula.',
+    objetivos: [
+      { n: '01', t: 'Transformação pessoal', d: 'Jiu-Jitsu, artes marciais e esporte como ferramenta de mudança.' },
+      { n: '02', t: 'Disciplina e valores', d: 'Habilidades práticas e valores que ficam para a vida.' },
+      { n: '03', t: 'Formação cidadã', d: 'Desenvolvimento ético, moral e cívico, na escola e fora dela.' },
+      { n: '04', t: 'Educação integral', d: 'Aprendizado acadêmico somado à formação de caráter.' },
+    ],
+    f1Alt: 'Alunos em sala de aula durante atividade do projeto',
+    f1Eyebrow: 'Frente 1',
+    f1Title: 'Na escola',
+    f1Desc: 'Aulas para alunos matriculados na rede municipal, em parceria com a Secretaria de Educação e com apoio da Prefeitura.',
+    f2Alt: 'Turma de jiu-jitsu do Luta Escola da Vida, de quimono, reunida no tatame diante do banner do projeto',
+    f2Eyebrow: 'Frente 2',
+    f2Title: 'Nas academias de luta',
+    f2Desc: 'Núcleos nas comunidades do Rio e em Macaé, com Jiu-Jitsu, Muay Thai e Boxe.',
+    f2Link: 'Ver os núcleos →',
+    inscTitle: 'Venha fazer parte da Escola da Vida.',
+    inscLead: 'Inscrições pelo formulário oficial do Instituto.',
+    inscBtn: 'Fazer inscrição',
+    formPh: '[link do formulário]',
+  },
+  en: {
+    title: 'Luta Escola da Vida Project',
+    description: 'Luta Escola da Vida (“Fight, School of Life”): Jiu-Jitsu, martial arts and sports as a tool for personal transformation for students in municipal public schools.',
+    eyebrow: 'Project',
+    heroLead: '“Fight, School of Life”: Jiu-Jitsu, martial arts and sports as a tool for personal transformation for students in municipal public schools.',
+    join: 'I want to join',
+    support: 'Support the project',
+    videoLabel: 'Video about the Luta Escola da Vida project',
+    statsLabel: 'The project in numbers',
+    childrenFallback: '930+',
+    children: 'children expected',
+    networkN: 'Public',
+    networkD: 'municipal schools ·',
+    cityPh: '[CITY]',
+    centers: 'community training centers',
+    objEyebrow: 'Goals',
+    objTitle: 'From the mat to the classroom.',
+    objetivos: [
+      { n: '01', t: 'Personal growth', d: 'Jiu-Jitsu, martial arts and sports as a tool for change.' },
+      { n: '02', t: 'Discipline and values', d: 'Practical skills and values that last a lifetime.' },
+      { n: '03', t: 'Civic education', d: 'Ethical, moral and civic growth, in school and beyond.' },
+      { n: '04', t: 'Whole-child education', d: 'Academic learning paired with character building.' },
+    ],
+    f1Alt: 'Students in a classroom during a project activity',
+    f1Eyebrow: 'Track 1',
+    f1Title: 'In school',
+    f1Desc: 'Classes for students enrolled in municipal public schools, in partnership with the local Department of Education and with support from City Hall.',
+    f2Alt: 'A Luta Escola da Vida jiu-jitsu class in gis, gathered on the mat in front of the project banner',
+    f2Eyebrow: 'Track 2',
+    f2Title: 'At the fight gyms',
+    f2Desc: 'Training centers in Rio’s communities and in Macaé, offering Jiu-Jitsu, Muay Thai and Boxing.',
+    f2Link: 'See our centers →',
+    inscTitle: 'Come be part of Escola da Vida.',
+    inscLead: 'Sign up through the Institute’s official form.',
+    inscBtn: 'Sign up',
+    formPh: '[form link]',
+  },
+  es: {
+    title: 'Proyecto Luta Escola da Vida',
+    description: 'Luta Escola da Vida (“Lucha, Escuela de la Vida”): Jiu-Jitsu, artes marciales y deporte como herramienta de transformación personal para alumnos de escuelas públicas municipales.',
+    eyebrow: 'Proyecto',
+    heroLead: '“Lucha, Escuela de la Vida”: Jiu-Jitsu, artes marciales y deporte como herramienta de transformación personal para alumnos de escuelas públicas municipales.',
+    join: 'Quiero participar',
+    support: 'Apoya el proyecto',
+    videoLabel: 'Video del proyecto Luta Escola da Vida',
+    statsLabel: 'El proyecto en cifras',
+    childrenFallback: '+930',
+    children: 'niños previstos',
+    networkN: 'Red',
+    networkD: 'escolar municipal ·',
+    cityPh: '[CIUDAD]',
+    centers: 'centros en las comunidades',
+    objEyebrow: 'Objetivos',
+    objTitle: 'Del tatami al aula.',
+    objetivos: [
+      { n: '01', t: 'Transformación personal', d: 'Jiu-Jitsu, artes marciales y deporte como herramienta de cambio.' },
+      { n: '02', t: 'Disciplina y valores', d: 'Habilidades prácticas y valores para toda la vida.' },
+      { n: '03', t: 'Formación ciudadana', d: 'Desarrollo ético, moral y cívico, dentro y fuera de la escuela.' },
+      { n: '04', t: 'Educación integral', d: 'Aprendizaje académico sumado a la formación del carácter.' },
+    ],
+    f1Alt: 'Alumnos en el aula durante una actividad del proyecto',
+    f1Eyebrow: 'Eje 1',
+    f1Title: 'En la escuela',
+    f1Desc: 'Clases para alumnos matriculados en la red municipal, en alianza con la Secretaría de Educación y con el apoyo de la Alcaldía.',
+    f2Alt: 'Grupo de jiu-jitsu de Luta Escola da Vida, con kimono, reunido en el tatami frente al banner del proyecto',
+    f2Eyebrow: 'Eje 2',
+    f2Title: 'En las academias de lucha',
+    f2Desc: 'Centros en las comunidades de Río y en Macaé, con Jiu-Jitsu, Muay Thai y Boxeo.',
+    f2Link: 'Ver los centros →',
+    inscTitle: 'Ven a ser parte de la Escola da Vida.',
+    inscLead: 'Inscripciones a través del formulario oficial del Instituto.',
+    inscBtn: 'Inscribirme',
+    formPh: '[enlace del formulario]',
+  },
+};
+const T = COPY[lang];
+
+// O índice vem da versão PT (rótulo estável); os STATS têm a mesma ordem nos três idiomas.
+const criancasIdx = getContent('pt').STATS.findIndex((s) => s.t === 'Crianças previstas');
+const criancas = STATS[criancasIdx]?.n ?? T.childrenFallback;
+const signup = SITE.links.signupForm;
+---
+<BaseLayout
+  title={T.title}
+  description={T.description}
+>
+  <PageHero eyebrow={T.eyebrow} title={'Luta<br><span class="accent">Escola</span><br>da Vida'} lead={T.heroLead}>
+    <Fragment slot="actions">
+      <Button href="#inscricao" data-track="signup_click" data-track-source="projeto-hero">{T.join}</Button>
+      <Button href={l('/doar/')} variant="light" data-track="donate_click" data-track-source="projeto-hero">{T.support}</Button>
+    </Fragment>
+    <div slot="aside" class="video-frame proj-video">
+      <video controls preload="none" playsinline poster="/media/poster-instituto-2022.webp" aria-label={T.videoLabel} data-track="video_play" data-track-source="projeto-hero">
+        <source src="/media/video-instituto-2022.mp4" type="video/mp4" />
+      </video>
+    </div>
+  </PageHero>
+
+  <section class="container proj-stats-wrap" aria-label={T.statsLabel}>
+    <dl class="proj-stats">
+      <div class="proj-stat">
+        <dt class="display proj-stat__n accent">{criancas}</dt>
+        <dd>{T.children}</dd>
+      </div>
+      <div class="proj-stat">
+        <dt class="display proj-stat__n">{T.networkN}</dt>
+        <dd>{T.networkD} <span class="ph">{T.cityPh}</span></dd>
+      </div>
+      <div class="proj-stat">
+        <dt class="display proj-stat__n">{NUCLEOS.length}</dt>
+        <dd>{T.centers}</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="section">
+    <div class="container proj-obj">
+      <div class="section-head">
+        <p class="eyebrow">{T.objEyebrow}</p>
+        <h2 class="display h2">{T.objTitle}</h2>
+      </div>
+      <ul class="grid-auto" style="--min:270px">
+        {T.objetivos.map((o) => (
+          <li class="card card-h chamfer obj">
+            <span class="oct-badge obj__n" aria-hidden="true">{o.n}</span>
+            <h3 class="display obj__t">{o.t}</h3>
+            <p class="obj__d">{o.d}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--sand">
+    <div class="container grid-auto" style="--min:480px">
+      <article class="frente frente--dark card-h chamfer on-dark">
+        <Image src={IMG.nucP62} alt={T.f1Alt} widths={[480, 800, 1200]} sizes="(max-width: 1040px) 100vw, 620px" loading="lazy" class="frente__img" />
+        <div class="frente__body">
+          <p class="eyebrow">{T.f1Eyebrow}</p>
+          <h2 class="display frente__t">{T.f1Title}</h2>
+          <p class="frente__d">{T.f1Desc}</p>
+        </div>
+      </article>
+      <article class="frente card card-h chamfer">
+        <Image src={IMG.escolaJiuJitsu} alt={T.f2Alt} widths={[480, 800, 1200]} sizes="(max-width: 1040px) 100vw, 620px" loading="lazy" class="frente__img" />
+        <div class="frente__body">
+          <p class="eyebrow">{T.f2Eyebrow}</p>
+          <h2 class="display frente__t">{T.f2Title}</h2>
+          <p class="frente__d">{T.f2Desc}</p>
+          <a class="lnk frente__lnk" href={l('/nucleos/')}>{T.f2Link}</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="inscricao" class="section--red insc">
+    <Deco rings="red" grain="dark" />
+    <div class="container insc__in">
+      <div class="insc__text">
+        <h2 class="display h2">{T.inscTitle}</h2>
+        <p class="insc__lead">{T.inscLead}</p>
+      </div>
+      {signup ? (
+        <Button href={signup} variant="light-on-red" external data-track="signup_click" data-track-source="projeto-inscricao">{T.inscBtn}</Button>
+      ) : (
+        <p class="insc__pending">
+          <span class="insc__label">{T.inscBtn}</span>
+          <span class="ph">{T.formPh}</span>
+        </p>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .proj-video { width: 100%; background: #000; }
+
+  .proj-stats-wrap { position: relative; z-index: 1; }
+  .proj-stats { margin: -48px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); background: var(--white); border: 1px solid var(--line); }
+  .proj-stat { padding: clamp(24px, 3vw, 32px); border-bottom: 1px solid var(--line-2); }
+  .proj-stat:last-child { border-bottom: 0; }
+  @media (min-width: 760px) {
+    .proj-stat { border-bottom: 0; border-right: 1px solid var(--line-2); }
+    .proj-stat:last-child { border-right: 0; }
+  }
+  .proj-stat__n { font-size: clamp(44px, 5vw, 56px); line-height: 1; }
+  .proj-stat dd { margin: 0; font-weight: 700; }
+
+  .proj-obj { display: flex; flex-direction: column; gap: 40px; }
+  .obj { padding: 30px 26px; display: flex; flex-direction: column; gap: 20px; }
+  .obj__n { width: 48px; height: 48px; font-size: 19px; }
+  .obj__t { font-size: 26px; line-height: 1; }
+  .obj__d { font-size: 15px; color: var(--text-2); }
+
+  .frente { display: flex; flex-direction: column; overflow: hidden; }
+  .frente--dark { background: var(--ink); color: var(--white); }
+  .frente :global(.frente__img) { width: 100%; aspect-ratio: 16 / 8; object-fit: cover; }
+  .frente__body { padding: clamp(28px, 4vw, 44px); padding-top: 24px; display: flex; flex-direction: column; gap: 16px; }
+  .frente__t { font-size: clamp(34px, 3.6vw, 44px); line-height: 0.95; }
+  .frente__d { color: var(--text-2); }
+  .frente--dark .frente__d { color: var(--on-dark-2); }
+  .frente__lnk { align-self: flex-start; }
+
+  .insc { position: relative; overflow: hidden; }
+  .insc__in { position: relative; padding-block: clamp(64px, 7vw, 80px); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 24px; }
+  .insc__text { display: flex; flex-direction: column; gap: 12px; max-width: 720px; }
+  .insc__lead { color: #ffe9e7; }
+  .insc__pending { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 10px; min-height: 58px; padding: 10px 22px; background: var(--white); color: var(--red-dk); font-weight: 800; clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px); }
+</style>

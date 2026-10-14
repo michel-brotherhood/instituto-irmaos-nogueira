@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://www.institutoirmaosnogueira.com.br/sitemap-index.xml

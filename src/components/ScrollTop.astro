@@ -1,0 +1,53 @@
+---
+import { getLang } from '../i18n/config';
+import { t } from '../i18n/ui';
+const ui = t(getLang(Astro.url));
+/** Voltar ao topo — canto inferior ESQUERDO (o direito/inferior fica livre para a barra de doação no mobile). */
+---
+<a href="#" class="totop" data-totop aria-label={ui.backToTop} tabindex="-1" aria-hidden="true">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6" /></svg>
+</a>
+
+<script>
+  const btn = document.querySelector<HTMLAnchorElement>('[data-totop]');
+  if (btn) {
+    let shown = false;
+    const update = () => {
+      const show = window.scrollY > window.innerHeight * 1.2;
+      if (show === shown) return;
+      shown = show;
+      btn.classList.toggle('is-visible', show);
+      btn.setAttribute('aria-hidden', String(!show));
+      btn.tabIndex = show ? 0 : -1;
+    };
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+      // Leva o foco ao topo (link "pular para o conteúdo") para quem navega por teclado
+      document.querySelector<HTMLElement>('.skip-link')?.focus({ preventScroll: true });
+    });
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  }
+</script>
+
+<style>
+  .totop {
+    position: fixed; left: 20px; bottom: 20px; z-index: 45; width: 52px; height: 52px; display: grid; place-items: center;
+    background: var(--red); color: #fff; text-decoration: none; clip-path: var(--oct);
+    opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity 0.3s, transform 0.3s var(--ease-out), background-color 0.2s;
+  }
+  .totop.is-visible { opacity: 1; transform: none; pointer-events: auto; }
+  .totop:hover { background: var(--red-dk); }
+  .totop:focus-visible { outline: none; background: var(--ink); box-shadow: inset 0 0 0 3px #fff; }
+  .totop svg { transition: transform 0.3s var(--ease-out); }
+  .totop:hover svg { transform: translateY(-3px); }
+  /* No mobile a barra fixa de doação ocupa o rodapé: o botão sobe acima dela */
+  @media (max-width: 760px) {
+    .totop { left: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); width: 48px; height: 48px; transition: opacity 0.3s, transform 0.3s var(--ease-out), bottom 0.35s var(--ease-out); }
+    :global(html:has(.sticky-donate.is-visible)) .totop { bottom: calc(84px + env(safe-area-inset-bottom)); }
+  }
+  @media (prefers-reduced-motion: reduce) { .totop, .totop svg { transition: none; } }
+  :global(html.menu-open) .totop { display: none; }
+</style>

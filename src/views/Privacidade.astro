@@ -1,0 +1,363 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import { SITE } from '../data/site';
+import { i18n } from '../i18n/config';
+
+const { lang, l } = i18n(Astro.url);
+
+const dpo = SITE.contact.dpoEmail;
+const nucleosHref = l('/nucleos/');
+
+/**
+ * Textos da política. Trechos com <strong>/<a> são HTML (renderizados com set:html).
+ * Os ids das seções (âncoras) são os mesmos nos três idiomas.
+ */
+const COPY = {
+  pt: {
+    metaTitle: 'Política de Privacidade',
+    metaDescription: 'Como o Instituto Irmãos Nogueira coleta, usa, protege e elimina dados pessoais de alunos, responsáveis, doadores e parceiros, conforme a LGPD.',
+    eyebrow: 'LGPD',
+    title: 'Política de <span class="accent">Privacidade</span>',
+    lead: 'Como tratamos e protegemos os dados pessoais de alunos, responsáveis, doadores e parceiros, de acordo com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018).',
+    notice: '',
+    ph: '[validar com o jurídico]',
+    updated: 'Última atualização: outubro de 2026',
+    tocTitle: 'Nesta página',
+    sumario: [
+      { id: 'quem-somos', t: 'Quem somos' },
+      { id: 'dados', t: 'Quais dados coletamos' },
+      { id: 'finalidades', t: 'Finalidades e bases legais' },
+      { id: 'imagem', t: 'Uso de imagem de crianças e adolescentes' },
+      { id: 'compartilhamento', t: 'Compartilhamento' },
+      { id: 'retencao', t: 'Retenção e eliminação' },
+      { id: 'seguranca', t: 'Segurança' },
+      { id: 'direitos', t: 'Seus direitos e como exercê-los' },
+      { id: 'cookies', t: 'Cookies' },
+      { id: 'atualizacoes', t: 'Atualizações desta política' },
+    ],
+    s1: [
+      `O ${SITE.name}, associação sem fins lucrativos inscrita no CNPJ ${SITE.cnpj}, é o <strong>controlador</strong> dos dados pessoais tratados neste site e em suas atividades. Isso significa que é o Instituto quem decide como e para que esses dados são usados.`,
+      'Esta política explica quais dados coletamos, por que coletamos, com quem compartilhamos, por quanto tempo guardamos e como você pode exercer seus direitos.',
+    ],
+    s2: [
+      { h: 'Matrícula de alunos e responsáveis', p: 'Nome, data de nascimento, escola e série do aluno; nome, documento, telefone e e-mail do responsável legal; núcleo e modalidade escolhidos. Quando necessário para a prática esportiva segura, podemos pedir informações de saúde, como restrições médicas ou alergias.' },
+      { h: 'Doadores', p: 'Nome, e-mail, telefone, CPF ou CNPJ e dados da doação (valor, data e forma de pagamento). Dados de cartão são processados diretamente pela instituição de pagamento e não ficam armazenados com o Instituto.' },
+      { h: 'Contatos de empresas', p: 'Nome, cargo, empresa, e-mail e telefone de quem entra em contato para patrocínio ou parceria.' },
+      { h: 'Navegação e cookies', p: 'Dados técnicos de uso do site, como páginas visitadas, tipo de dispositivo e origem do acesso. Cookies de medição só são ativados com o seu consentimento (veja a seção <a href="#cookies">Cookies</a>).' },
+    ],
+    s3intro: 'Só tratamos dados pessoais quando há uma finalidade clara e uma base legal prevista nos artigos 7º e 11 da LGPD:',
+    s3list: [
+      '<strong>Matrícula e acompanhamento dos alunos:</strong> execução das atividades do projeto e cumprimento de obrigações legais e contratuais, inclusive prestação de contas de projetos incentivados.',
+      '<strong>Dados de saúde (dado sensível):</strong> usados apenas para proteger a integridade física do aluno durante as atividades, com consentimento específico do responsável ou para tutela da saúde (art. 11).',
+      '<strong>Doações:</strong> processamento da doação, emissão de recibos e cumprimento de obrigações fiscais e contábeis.',
+      '<strong>Contatos de empresas:</strong> resposta à solicitação e procedimentos preliminares a um contrato de patrocínio ou parceria.',
+      '<strong>Medição de audiência do site:</strong> consentimento, que pode ser retirado a qualquer momento.',
+    ],
+    s3kidsH: 'Crianças e adolescentes',
+    s3kids: 'A maior parte dos nossos alunos são crianças e adolescentes. Conforme o artigo 14 da LGPD, os dados deles são tratados sempre no seu <strong>melhor interesse</strong> e com <strong>consentimento específico e em destaque de ao menos um dos pais ou do responsável legal</strong>, dado no momento da matrícula. Coletamos apenas o mínimo necessário para as atividades.',
+    s4list: [
+      'Fotos e vídeos de alunos só são usados com <strong>autorização escrita do responsável legal</strong>, que pode ser revogada a qualquer momento.',
+      'Respeitamos o direito à preservação da imagem e da identidade previsto no artigo 17 do Estatuto da Criança e do Adolescente (ECA).',
+      'Nunca publicamos o nome completo, a escola ou o endereço do aluno junto com a sua imagem.',
+      'Se você é responsável e deseja retirar uma imagem publicada, fale com o encarregado (veja a seção <a href="#direitos">Seus direitos</a>).',
+    ],
+    s5intro: '<strong>Os dados pessoais nunca são vendidos.</strong> Podem ser compartilhados apenas nestes casos:',
+    s5list: [
+      '<strong>Patrocinadores e poder público:</strong> somente na prestação de contas exigida por lei em projetos incentivados, e de forma agregada (sem identificar as pessoas) sempre que possível.',
+      '<strong>Prestadores de serviço:</strong> empresas que nos ajudam a operar, como hospedagem do site, formulários, meios de pagamento e medição de audiência, que tratam os dados apenas conforme nossas instruções.',
+      '<strong>Autoridades:</strong> quando houver obrigação legal ou ordem judicial.',
+    ],
+    s6: 'Mantemos os dados apenas pelo tempo necessário para cumprir a finalidade para a qual foram coletados ou pelo prazo exigido por lei, como os prazos de prestação de contas de projetos incentivados e as obrigações fiscais. Encerrado esse prazo, os dados são eliminados ou anonimizados.',
+    s7: 'Adotamos medidas técnicas e administrativas para proteger os dados contra acesso não autorizado, perda ou vazamento, como controle de acesso restrito à equipe que precisa dos dados, conexão criptografada (HTTPS) e orientação da equipe. Em caso de incidente de segurança que possa gerar risco ou dano relevante, comunicaremos os titulares afetados e a Autoridade Nacional de Proteção de Dados (ANPD).',
+    s8intro: 'Conforme o artigo 18 da LGPD, você pode, a qualquer momento:',
+    s8list: [
+      'confirmar se tratamos seus dados e acessá-los;',
+      'corrigir dados incompletos, inexatos ou desatualizados;',
+      'pedir a anonimização, o bloqueio ou a eliminação de dados desnecessários ou tratados em desconformidade com a lei;',
+      'pedir a portabilidade dos dados;',
+      'pedir a eliminação dos dados tratados com base no consentimento;',
+      'saber com quem compartilhamos seus dados;',
+      'ser informado sobre a possibilidade de não dar consentimento e suas consequências;',
+      'revogar o consentimento.',
+    ],
+    s8guardians: 'Os responsáveis legais exercem esses direitos em nome das crianças e adolescentes.',
+    dpoTitle: 'Encarregado pelo tratamento de dados (DPO)',
+    dpoPh: '[NOME · E-MAIL DO DPO]',
+    dpoReply: 'Responderemos à sua solicitação no prazo previsto na LGPD. Você também pode apresentar reclamação à ANPD.',
+    s9a: 'Usamos cookies essenciais para o funcionamento do site e para lembrar a sua escolha sobre cookies. O Google Analytics 4 (medição de audiência) <strong>só é ativado com o seu consentimento</strong>. Você pode mudar sua escolha a qualquer momento:',
+    s9btn: 'Preferências de cookies',
+    s9b: `O mapa da página <a href="${nucleosHref}">Núcleos</a> carrega imagens de mapa do serviço CARTO (dados do OpenStreetMap) somente quando você chega até ele. Nesse momento, o seu navegador envia ao provedor o endereço IP e dados técnicos necessários para exibir o mapa; não usamos esse serviço para criar perfis.`,
+    s10: 'Esta política pode ser atualizada para refletir mudanças na lei ou nas nossas atividades. A versão vigente estará sempre nesta página, com a data da última atualização.',
+    s10date: 'Última atualização: outubro de 2026.',
+  },
+  en: {
+    metaTitle: 'Privacy Policy',
+    metaDescription: 'How Instituto Irmãos Nogueira collects, uses, protects and deletes the personal data of students, parents and guardians, donors and partners, in accordance with Brazil’s General Data Protection Law (LGPD).',
+    eyebrow: 'LGPD',
+    title: 'Privacy <span class="accent">Policy</span>',
+    lead: 'How we process and protect the personal data of students, parents and guardians, donors and partners, in accordance with Brazil’s General Data Protection Law (LGPD, Law No. 13,709/2018).',
+    notice: 'This is a courtesy translation. In case of any discrepancy, the Portuguese version prevails.',
+    ph: '[validate with legal counsel]',
+    updated: 'Last updated: October 2026',
+    tocTitle: 'On this page',
+    sumario: [
+      { id: 'quem-somos', t: 'Who we are' },
+      { id: 'dados', t: 'What data we collect' },
+      { id: 'finalidades', t: 'Purposes and legal bases' },
+      { id: 'imagem', t: 'Use of images of children and adolescents' },
+      { id: 'compartilhamento', t: 'Sharing' },
+      { id: 'retencao', t: 'Retention and deletion' },
+      { id: 'seguranca', t: 'Security' },
+      { id: 'direitos', t: 'Your rights and how to exercise them' },
+      { id: 'cookies', t: 'Cookies' },
+      { id: 'atualizacoes', t: 'Updates to this policy' },
+    ],
+    s1: [
+      `${SITE.name}, a nonprofit association registered under CNPJ (Brazilian corporate taxpayer ID) ${SITE.cnpj}, is the <strong>controller</strong> of the personal data processed on this website and in its activities. This means the Institute decides how and for what purposes this data is used.`,
+      'This policy explains what data we collect, why we collect it, who we share it with, how long we keep it and how you can exercise your rights.',
+    ],
+    s2: [
+      { h: 'Student enrollment and parents or guardians', p: 'The student’s name, date of birth, school and grade; the legal guardian’s name, identity document, phone number and email; the training center and martial art chosen. When necessary for safe sports practice, we may ask for health information, such as medical restrictions or allergies.' },
+      { h: 'Donors', p: 'Name, email, phone number, CPF or CNPJ (Brazilian individual or corporate taxpayer ID) and donation details (amount, date and payment method). Card data is processed directly by the payment institution and is not stored by the Institute.' },
+      { h: 'Business contacts', p: 'Name, job title, company, email and phone number of anyone who contacts us about sponsorship or partnership.' },
+      { h: 'Browsing and cookies', p: 'Technical data on website use, such as pages visited, device type and traffic source. Analytics cookies are only enabled with your consent (see the <a href="#cookies">Cookies</a> section).' },
+    ],
+    s3intro: 'We only process personal data when there is a clear purpose and a legal basis provided for in Articles 7 and 11 of the LGPD:',
+    s3list: [
+      '<strong>Student enrollment and follow-up:</strong> carrying out the project’s activities and complying with legal and contractual obligations, including financial accountability for tax-incentive projects.',
+      '<strong>Health data (sensitive data):</strong> used solely to protect the student’s physical safety during activities, with the specific consent of the parent or guardian or for the protection of health (Art. 11).',
+      '<strong>Donations:</strong> processing the donation, issuing receipts and complying with tax and accounting obligations.',
+      '<strong>Business contacts:</strong> responding to the request and taking preliminary steps toward a sponsorship or partnership agreement.',
+      '<strong>Website audience measurement:</strong> consent, which may be withdrawn at any time.',
+    ],
+    s3kidsH: 'Children and adolescents',
+    s3kids: 'Most of our students are children and adolescents. Under Article 14 of the LGPD, their data is always processed in their <strong>best interest</strong> and with the <strong>specific and prominent consent of at least one parent or legal guardian</strong>, given at enrollment. We collect only the minimum necessary for the activities.',
+    s4list: [
+      'Photos and videos of students are used only with the <strong>written authorization of the legal guardian</strong>, which may be revoked at any time.',
+      'We respect the right to preservation of image and identity set out in Article 17 of Brazil’s Child and Adolescent Statute (ECA).',
+      'We never publish a student’s full name, school or address together with their image.',
+      'If you are a parent or guardian and want a published image removed, contact our Data Protection Officer (see the <a href="#direitos">Your rights</a> section).',
+    ],
+    s5intro: '<strong>Personal data is never sold.</strong> It may be shared only in the following cases:',
+    s5list: [
+      '<strong>Sponsors and public authorities:</strong> only for the financial accountability required by law for tax-incentive projects, and in aggregate form (without identifying individuals) whenever possible.',
+      '<strong>Service providers:</strong> companies that help us operate, such as website hosting, forms, payment methods and audience measurement, which process the data only in accordance with our instructions.',
+      '<strong>Authorities:</strong> when required by a legal obligation or court order.',
+    ],
+    s6: 'We keep data only for as long as necessary to fulfill the purpose for which it was collected or for the period required by law, such as the accountability periods for tax-incentive projects and tax obligations. Once that period ends, the data is deleted or anonymized.',
+    s7: 'We adopt technical and administrative measures to protect data against unauthorized access, loss or leakage, such as access restricted to staff who need the data, encrypted connections (HTTPS) and staff training. In the event of a security incident that may result in significant risk or harm, we will notify the affected data subjects and Brazil’s National Data Protection Authority (ANPD).',
+    s8intro: 'Under Article 18 of the LGPD, you may, at any time:',
+    s8list: [
+      'confirm whether we process your data and access it;',
+      'correct incomplete, inaccurate or outdated data;',
+      'request the anonymization, blocking or deletion of unnecessary data or data processed in breach of the law;',
+      'request data portability;',
+      'request the deletion of data processed on the basis of consent;',
+      'find out with whom we share your data;',
+      'be informed of the possibility of not giving consent and the consequences of refusing;',
+      'revoke your consent.',
+    ],
+    s8guardians: 'Legal guardians exercise these rights on behalf of children and adolescents.',
+    dpoTitle: 'Data Protection Officer (DPO)',
+    dpoPh: '[DPO NAME · EMAIL]',
+    dpoReply: 'We will respond to your request within the time frame set by the LGPD. You may also file a complaint with the ANPD.',
+    s9a: 'We use essential cookies to make the website work and to remember your cookie choice. Google Analytics 4 (audience measurement) <strong>is only enabled with your consent</strong>. You can change your choice at any time:',
+    s9btn: 'Cookie preferences',
+    s9b: `The map on the <a href="${nucleosHref}">Training centers</a> page loads map images from the CARTO service (OpenStreetMap data) only when you scroll to it. At that point, your browser sends the provider your IP address and the technical data needed to display the map; we do not use this service to build profiles.`,
+    s10: 'This policy may be updated to reflect changes in the law or in our activities. The current version will always be available on this page, with the date of the last update.',
+    s10date: 'Last updated: October 2026.',
+  },
+  es: {
+    metaTitle: 'Política de Privacidad',
+    metaDescription: 'Cómo el Instituto Irmãos Nogueira recopila, usa, protege y elimina los datos personales de alumnos, responsables, donantes y aliados, conforme a la Ley General de Protección de Datos de Brasil (LGPD).',
+    eyebrow: 'LGPD',
+    title: 'Política de <span class="accent">Privacidad</span>',
+    lead: 'Cómo tratamos y protegemos los datos personales de alumnos, responsables, donantes y aliados, de acuerdo con la Ley General de Protección de Datos de Brasil (LGPD, Ley n.º 13.709/2018).',
+    notice: 'Esta es una traducción de cortesía. En caso de discrepancia, prevalece la versión en portugués.',
+    ph: '[validar con el área jurídica]',
+    updated: 'Última actualización: octubre de 2026',
+    tocTitle: 'En esta página',
+    sumario: [
+      { id: 'quem-somos', t: 'Quiénes somos' },
+      { id: 'dados', t: 'Qué datos recopilamos' },
+      { id: 'finalidades', t: 'Finalidades y bases legales' },
+      { id: 'imagem', t: 'Uso de la imagen de niños, niñas y adolescentes' },
+      { id: 'compartilhamento', t: 'Comunicación de datos' },
+      { id: 'retencao', t: 'Conservación y eliminación' },
+      { id: 'seguranca', t: 'Seguridad' },
+      { id: 'direitos', t: 'Tus derechos y cómo ejercerlos' },
+      { id: 'cookies', t: 'Cookies' },
+      { id: 'atualizacoes', t: 'Actualizaciones de esta política' },
+    ],
+    s1: [
+      `El ${SITE.name}, asociación sin fines de lucro inscrita en el CNPJ (registro fiscal de personas jurídicas de Brasil) ${SITE.cnpj}, es el <strong>controlador</strong> (responsable del tratamiento) de los datos personales tratados en este sitio y en sus actividades. Esto significa que es el Instituto quien decide cómo y para qué se usan esos datos.`,
+      'Esta política explica qué datos recopilamos, por qué los recopilamos, con quién los compartimos, durante cuánto tiempo los conservamos y cómo puedes ejercer tus derechos.',
+    ],
+    s2: [
+      { h: 'Inscripción de alumnos y responsables', p: 'Nombre, fecha de nacimiento, escuela y grado del alumno; nombre, documento de identidad, teléfono y correo electrónico del responsable legal; centro y modalidad elegidos. Cuando sea necesario para la práctica deportiva segura, podemos solicitar información de salud, como restricciones médicas o alergias.' },
+      { h: 'Donantes', p: 'Nombre, correo electrónico, teléfono, CPF o CNPJ (registro fiscal brasileño de personas físicas o jurídicas) y datos de la donación (monto, fecha y forma de pago). Los datos de tarjeta son procesados directamente por la institución de pago y no quedan almacenados en el Instituto.' },
+      { h: 'Contactos de empresas', p: 'Nombre, cargo, empresa, correo electrónico y teléfono de quienes nos contactan para patrocinio o alianzas.' },
+      { h: 'Navegación y cookies', p: 'Datos técnicos de uso del sitio, como páginas visitadas, tipo de dispositivo y origen del acceso. Las cookies de medición solo se activan con tu consentimiento (consulta la sección <a href="#cookies">Cookies</a>).' },
+    ],
+    s3intro: 'Solo tratamos datos personales cuando existe una finalidad clara y una base legal prevista en los artículos 7 y 11 de la LGPD:',
+    s3list: [
+      '<strong>Inscripción y seguimiento de los alumnos:</strong> ejecución de las actividades del proyecto y cumplimiento de obligaciones legales y contractuales, incluida la rendición de cuentas de proyectos con incentivo fiscal.',
+      '<strong>Datos de salud (dato sensible):</strong> se usan únicamente para proteger la integridad física del alumno durante las actividades, con el consentimiento específico del responsable o para la tutela de la salud (art. 11).',
+      '<strong>Donaciones:</strong> procesamiento de la donación, emisión de recibos y cumplimiento de obligaciones fiscales y contables.',
+      '<strong>Contactos de empresas:</strong> respuesta a la solicitud y procedimientos preliminares a un contrato de patrocinio o alianza.',
+      '<strong>Medición de audiencia del sitio:</strong> consentimiento, que puede retirarse en cualquier momento.',
+    ],
+    s3kidsH: 'Niños, niñas y adolescentes',
+    s3kids: 'La mayoría de nuestros alumnos son niños, niñas y adolescentes. Conforme al artículo 14 de la LGPD, sus datos se tratan siempre en su <strong>interés superior</strong> y con el <strong>consentimiento específico y destacado de al menos uno de los padres o del responsable legal</strong>, otorgado en el momento de la inscripción. Recopilamos solo lo mínimo necesario para las actividades.',
+    s4list: [
+      'Las fotos y los videos de los alumnos solo se usan con <strong>autorización escrita del responsable legal</strong>, que puede revocarse en cualquier momento.',
+      'Respetamos el derecho a la preservación de la imagen y de la identidad previsto en el artículo 17 del Estatuto del Niño y del Adolescente (ECA) de Brasil.',
+      'Nunca publicamos el nombre completo, la escuela ni la dirección del alumno junto con su imagen.',
+      'Si eres responsable de un alumno y deseas que se retire una imagen publicada, comunícate con el encargado (consulta la sección <a href="#direitos">Tus derechos</a>).',
+    ],
+    s5intro: '<strong>Los datos personales nunca se venden.</strong> Solo pueden compartirse en estos casos:',
+    s5list: [
+      '<strong>Patrocinadores y poder público:</strong> únicamente en la rendición de cuentas exigida por ley en proyectos con incentivo fiscal, y de forma agregada (sin identificar a las personas) siempre que sea posible.',
+      '<strong>Prestadores de servicios:</strong> empresas que nos ayudan a operar, como alojamiento del sitio, formularios, medios de pago y medición de audiencia, que tratan los datos únicamente conforme a nuestras instrucciones.',
+      '<strong>Autoridades:</strong> cuando exista una obligación legal u orden judicial.',
+    ],
+    s6: 'Conservamos los datos solo durante el tiempo necesario para cumplir la finalidad para la que fueron recopilados o durante el plazo exigido por ley, como los plazos de rendición de cuentas de proyectos con incentivo fiscal y las obligaciones fiscales. Finalizado ese plazo, los datos se eliminan o se anonimizan.',
+    s7: 'Adoptamos medidas técnicas y administrativas para proteger los datos contra accesos no autorizados, pérdidas o filtraciones, como el acceso restringido al personal que necesita los datos, la conexión cifrada (HTTPS) y la capacitación del equipo. En caso de un incidente de seguridad que pueda generar un riesgo o daño relevante, lo comunicaremos a los titulares afectados y a la Autoridad Nacional de Protección de Datos (ANPD) de Brasil.',
+    s8intro: 'Conforme al artículo 18 de la LGPD, puedes, en cualquier momento:',
+    s8list: [
+      'confirmar si tratamos tus datos y acceder a ellos;',
+      'corregir datos incompletos, inexactos o desactualizados;',
+      'solicitar la anonimización, el bloqueo o la eliminación de datos innecesarios o tratados en disconformidad con la ley;',
+      'solicitar la portabilidad de los datos;',
+      'solicitar la eliminación de los datos tratados con base en el consentimiento;',
+      'saber con quién compartimos tus datos;',
+      'ser informado sobre la posibilidad de no otorgar el consentimiento y sus consecuencias;',
+      'revocar el consentimiento.',
+    ],
+    s8guardians: 'Los responsables legales ejercen estos derechos en nombre de los niños, niñas y adolescentes.',
+    dpoTitle: 'Encargado del tratamiento de datos (DPO)',
+    dpoPh: '[NOMBRE · CORREO DEL DPO]',
+    dpoReply: 'Responderemos a tu solicitud en el plazo previsto en la LGPD. También puedes presentar una reclamación ante la ANPD.',
+    s9a: 'Usamos cookies esenciales para el funcionamiento del sitio y para recordar tu elección sobre cookies. Google Analytics 4 (medición de audiencia) <strong>solo se activa con tu consentimiento</strong>. Puedes cambiar tu elección en cualquier momento:',
+    s9btn: 'Preferencias de cookies',
+    s9b: `El mapa de la página <a href="${nucleosHref}">Centros</a> carga imágenes de mapa del servicio CARTO (datos de OpenStreetMap) solo cuando llegas a él. En ese momento, tu navegador envía al proveedor la dirección IP y los datos técnicos necesarios para mostrar el mapa; no usamos este servicio para crear perfiles.`,
+    s10: 'Esta política puede actualizarse para reflejar cambios en la ley o en nuestras actividades. La versión vigente estará siempre disponible en esta página, con la fecha de la última actualización.',
+    s10date: 'Última actualización: octubre de 2026.',
+  },
+};
+const T = COPY[lang];
+const sumario = T.sumario;
+---
+<BaseLayout
+  title={T.metaTitle}
+  description={T.metaDescription}
+  stickyDonate={false}
+>
+  <PageHero
+    eyebrow={T.eyebrow}
+    title={T.title}
+    lead={T.lead}
+  />
+
+  <section class="section section--white">
+    <div class="container">
+      <article class="legal">
+        {T.notice && <p class="legal__notice" role="note">{T.notice}</p>}
+        <p class="legal__meta">
+          <span class="ph">{T.ph}</span>
+          <span>{T.updated}</span>
+        </p>
+
+        <nav class="legal__toc" aria-labelledby="toc-h">
+          <h2 id="toc-h" class="legal__toc-h">{T.tocTitle}</h2>
+          <ol>
+            {sumario.map((s, i) => <li><a href={`#${s.id}`}>{i + 1}. {s.t}</a></li>)}
+          </ol>
+        </nav>
+
+        <h2 id="quem-somos">1. {sumario[0].t}</h2>
+        {T.s1.map((p) => <p set:html={p} />)}
+
+        <h2 id="dados">2. {sumario[1].t}</h2>
+        {T.s2.map((b) => (
+          <Fragment>
+            <h3>{b.h}</h3>
+            <p set:html={b.p} />
+          </Fragment>
+        ))}
+
+        <h2 id="finalidades">3. {sumario[2].t}</h2>
+        <p>{T.s3intro}</p>
+        <ul>
+          {T.s3list.map((li) => <li set:html={li} />)}
+        </ul>
+        <h3>{T.s3kidsH}</h3>
+        <p set:html={T.s3kids} />
+
+        <h2 id="imagem">4. {sumario[3].t}</h2>
+        <ul>
+          {T.s4list.map((li) => <li set:html={li} />)}
+        </ul>
+
+        <h2 id="compartilhamento">5. {sumario[4].t}</h2>
+        <p set:html={T.s5intro} />
+        <ul>
+          {T.s5list.map((li) => <li set:html={li} />)}
+        </ul>
+
+        <h2 id="retencao">6. {sumario[5].t}</h2>
+        <p>{T.s6}</p>
+
+        <h2 id="seguranca">7. {sumario[6].t}</h2>
+        <p>{T.s7}</p>
+
+        <h2 id="direitos">8. {sumario[7].t}</h2>
+        <p>{T.s8intro}</p>
+        <ul>
+          {T.s8list.map((li) => <li>{li}</li>)}
+        </ul>
+        <p>{T.s8guardians}</p>
+        <div class="legal__box">
+          <h3>{T.dpoTitle}</h3>
+          <p>
+            {dpo ? <a href={`mailto:${dpo}`}>{dpo}</a> : <span class="ph">{T.dpoPh}</span>}
+          </p>
+          <p>{T.dpoReply}</p>
+        </div>
+
+        <h2 id="cookies">9. {sumario[8].t}</h2>
+        <p set:html={T.s9a} />
+        <p><button type="button" class="btn btn--dark btn--sm" data-consent-open><span class="btn__label">{T.s9btn}</span></button></p>
+        <p set:html={T.s9b} />
+
+        <h2 id="atualizacoes">10. {sumario[9].t}</h2>
+        <p>{T.s10}</p>
+        <p><strong>{T.s10date}</strong></p>
+      </article>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .legal { max-width: 760px; margin-inline: auto; font-size: 17px; line-height: 1.7; color: var(--text-2); }
+  .legal > * + * { margin-top: 16px; }
+  .legal h2 { margin-top: 56px; font-family: var(--font-display); font-weight: 800; text-transform: uppercase; font-size: clamp(28px, 3vw, 36px); line-height: 1; color: var(--text); scroll-margin-top: calc(var(--header-h) + 16px); }
+  .legal h3 { margin-top: 28px; font-size: 18px; font-weight: 800; color: var(--text); }
+  .legal h2 + p, .legal h2 + ul, .legal h3 + p { margin-top: 12px; }
+  .legal strong { color: var(--text); }
+  .legal a { color: var(--red); font-weight: 700; }
+  .legal ul { padding-left: 1.2em; list-style: disc; display: flex; flex-direction: column; gap: 8px; }
+  .legal ul li::marker { color: var(--red); }
+  .legal__notice { padding: 14px 18px; border-left: 4px solid var(--ink); background: var(--bg); font-size: 15px; font-weight: 700; color: var(--text); }
+  .legal__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; font-size: 14px; font-weight: 700; color: var(--text-3); }
+  .legal__toc { margin-top: 32px; padding: 24px; background: var(--bg); border-left: 4px solid var(--red); }
+  .legal__toc-h { font-size: 13px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--red); }
+  .legal__toc ol { margin-top: 12px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 4px 24px; }
+  .legal__toc a { display: inline-flex; min-height: 36px; align-items: center; color: var(--text); font-weight: 600; font-size: 15px; text-decoration: none; }
+  .legal__toc a:hover { color: var(--red); }
+  .legal__box { margin-top: 24px; padding: 24px; background: var(--sand); clip-path: var(--chamfer); }
+  .legal__box h3 { margin-top: 0; }
+  .legal__box p + p { margin-top: 8px; }
+  .legal .btn { color: var(--white); }
+</style>

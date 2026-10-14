@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Button from '../components/Button.astro';
+---
+<BaseLayout title="Página não encontrada" noindex stickyDonate={false}>
+  <PageHero eyebrow="Erro 404" title='Essa página saiu do <span class="accent">tatame.</span>' lead="O endereço pode ter mudado com o novo site. Use os atalhos abaixo para continuar.">
+    <Fragment slot="actions">
+      <Button href="/">Ir para o início</Button>
+      <Button href="/nucleos/" variant="light" icon="pin">Encontrar um núcleo</Button>
+    </Fragment>
+    <div class="container nf-langs">
+      <p lang="en">Page not found. This page stepped off the mat. <a href="/en/">Go to the English site</a></p>
+      <p lang="es">Página no encontrada. Esta página salió del tatami. <a href="/es/">Ir al sitio en español</a></p>
+    </div>
+  </PageHero>
+</BaseLayout>
+
+<style>
+  .nf-langs { position: relative; display: grid; gap: 6px; padding-bottom: clamp(48px, 6vw, 72px); margin-top: calc(-1 * clamp(40px, 5vw, 64px)); font-size: 15px; color: var(--on-dark-2, #cfcfcf); }
+  .nf-langs p { margin: 0; }
+  .nf-langs a { color: #fff; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+</style>

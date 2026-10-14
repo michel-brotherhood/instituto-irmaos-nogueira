@@ -1,0 +1,67 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import Button from './Button.astro';
+import { fmtTel, type Nucleo } from '../data/content';
+import { i18n } from '../i18n/config';
+import { t } from '../i18n/ui';
+import { SITE } from '../data/site';
+
+interface Props { n: Nucleo; variant?: 'teaser' | 'full' }
+const { n, variant = 'teaser' } = Astro.props;
+const maps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(n.mapsQuery ?? n.endereco)}`;
+const signup = SITE.links.signupForm;
+const { lang, l } = i18n(Astro.url);
+const ui = t(lang);
+const mod = (m: string) => ui.modalities[m] ?? m;
+const Tag = variant === 'teaser' ? 'a' : 'article';
+---
+<Tag class:list={['nuc', 'card-h', `nuc--${variant}`]} href={variant === 'teaser' ? l(`/nucleos/#${n.slug}`) : undefined} id={variant === 'full' ? n.slug : undefined} data-mods={n.modalidades.join('|')}>
+  <div class="nuc__media">
+    <Image src={n.foto} alt="" widths={[360, 640]} sizes="(max-width: 640px) 84vw, 400px" loading="lazy" />
+    <span class="nuc__region">{n.regiao}</span>
+  </div>
+  <div class="nuc__body">
+    <div class="nuc__meta">
+      <span class="status-open">{ui.nucleo.open}</span>
+      <span class="nuc__tags">{n.modalidades.map((m) => <span class="tag">{mod(m)}</span>)}</span>
+    </div>
+    {variant === 'full' ? <h2 class="display nuc__name">{n.nome}</h2> : <h3 class="display nuc__name">{n.nome}</h3>}
+    <p class="nuc__addr"><Icon name="pin" size={16} />{n.endereco}{n.cep && ` · ${ui.nucleo.zip} ${n.cep}`}{n.pendente && <span class="ph">{ui.nucleo.confirm}</span>}</p>
+    {variant === 'full' && (
+      <>
+        <ul class="nuc__tels" aria-label={ui.nucleo.phone}>
+          {n.tel.map((p) => (
+            <li><a href={`tel:+55${p.n}`} class="nuc__tel"><Icon name="phone" size={16} />{p.mod && <span class="nuc__telmod">{mod(p.mod)}</span>}{fmtTel(p.n)}</a></li>
+          ))}
+        </ul>
+        <p class="nuc__hours">{ui.nucleo.hours}: <span class="ph">{ui.nucleo.hoursPh}</span></p>
+        <div class="nuc__actions">
+          <Button href={signup ?? '#inscricao'} size="sm" block external={!!signup} data-track="signup_click" data-track-source={n.slug}>{ui.signup}</Button>
+          <Button href={maps} variant="dark" size="sm" block icon="pin" external>{ui.directions}</Button>
+        </div>
+      </>
+    )}
+  </div>
+</Tag>
+
+<style>
+  .nuc { display: flex; flex-direction: column; background: #fff; text-decoration: none; color: var(--ink); clip-path: var(--chamfer); scroll-margin-top: 96px; }
+  .nuc:hover { color: var(--ink); }
+  .nuc__media { position: relative; aspect-ratio: 16 / 9; background: var(--ink); overflow: hidden; }
+  .nuc__media :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .nuc__region { position: absolute; left: 12px; bottom: 12px; padding: 4px 10px; background: var(--ink); color: #fff; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; }
+  .nuc__body { padding: 22px 24px 24px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+  .nuc__meta { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; }
+  .nuc__tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .nuc__name { font-size: 34px; line-height: 1; }
+  .nuc__addr { display: flex; gap: 8px; align-items: flex-start; font-size: 14px; color: var(--text-3); }
+  .nuc__addr :global(svg) { flex: none; margin-top: 3px; color: var(--red); }
+  .nuc__hours { font-size: 14px; color: var(--text-3); }
+  .nuc__tels { display: flex; flex-wrap: wrap; gap: 0 18px; }
+  .nuc__tel { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-weight: 800; font-size: 16px; color: var(--ink); text-decoration: none; font-variant-numeric: tabular-nums; }
+  .nuc__tel:hover { color: var(--red-dk); }
+  .nuc__tel :global(svg) { color: var(--red); }
+  .nuc__telmod { font-size: 12px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-3); }
+  .nuc__actions { margin-top: auto; padding-top: 6px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(170px, 100%), 1fr)); gap: 8px; }
+</style>

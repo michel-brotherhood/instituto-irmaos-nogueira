@@ -1,0 +1,32 @@
+---
+/** Marca IIN (ícone vetorial provisório + palavra). Substituir pelo SVG oficial quando recebido. */
+interface Props { size?: number; variant?: 'light' | 'dark'; wordmark?: boolean }
+const { size = 46, variant = 'light', wordmark = true } = Astro.props;
+const plate = variant === 'dark' ? '#262626' : '#141414';
+---
+<span class:list={['logo', `logo--${variant}`]}>
+  <svg width={size} height={size} viewBox="0 0 100 100" aria-hidden="true" class="logo__mark">
+    <polygon points="29.3,0 70.7,0 100,29.3 100,70.7 70.7,100 29.3,100 0,70.7 0,29.3" fill={plate} stroke={variant === 'dark' ? '#3a3a3a' : 'none'} stroke-width="2" />
+    <rect x="19" y="30" width="10" height="7" fill="#D52A20" /><rect x="19" y="40" width="10" height="31" fill="#D52A20" />
+    <rect x="32" y="30" width="10" height="7" fill="#fff" /><rect x="32" y="40" width="10" height="31" fill="#fff" />
+    <path d="M45 30H70Q77 30 77 37V71H67V40H55V71H45Z" fill="#fff" />
+  </svg>
+  {wordmark && (
+    <span class="logo__word"><span class="logo__w1">Instituto</span> <span class="logo__w2">Irmãos Nogueira</span></span>
+  )}
+</span>
+
+<style>
+  .logo { display: inline-flex; align-items: center; gap: 12px; }
+  .logo__word { display: flex; flex-direction: column; line-height: 0.92; font-family: var(--font-display); font-weight: 800; text-transform: uppercase; }
+  .logo__w1 { color: var(--red); font-size: 23px; letter-spacing: 0.02em; }
+  .logo__w2 { color: var(--ink); font-size: 15.5px; letter-spacing: 0.05em; white-space: nowrap; }
+  .logo--dark .logo__w1 { color: var(--red-lt); }
+  .logo--dark .logo__w2 { color: #fff; }
+  @media (max-width: 520px) {
+    .logo { gap: 10px; }
+    .logo__mark { width: 40px; height: 40px; }
+    .logo__w1 { font-size: 19px; }
+    .logo__w2 { font-size: 12.5px; }
+  }
+</style>

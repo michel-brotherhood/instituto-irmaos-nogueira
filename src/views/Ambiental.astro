@@ -1,0 +1,358 @@
+---
+import { Image } from 'astro:assets';
+import { IMG } from '../data/content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+import { SITE } from '../data/site';
+import { i18n } from '../i18n/config';
+import { t } from '../i18n/ui';
+
+const { lang, l } = i18n(Astro.url);
+const ui = t(lang);
+
+/** Local do plantio (fornecido pelo Instituto) */
+const LOCAL = { rua: 'Rua Cabrália Paulista, 100', bairro: 'Estação', cidade: 'Itaquaquecetuba, SP', cep: '08571-020' };
+const MAPS = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`Parque Ecológico, ${LOCAL.rua}, ${LOCAL.bairro}, ${LOCAL.cidade}, ${LOCAL.cep}`)}`;
+
+const COPY = {
+  pt: {
+    home: 'Início',
+    crumb: 'Consciência Ambiental',
+    title: 'Consciência ambiental',
+    description: 'Alunos, professores e equipe do Instituto Irmãos Nogueira plantaram mudas de espécies nativas no Parque Ecológico de Itaquaquecetuba (SP), com a EMEB Vereador Augusto dos Santos. Formar cidadãos também é plantar.',
+    eyebrow: 'Ação · Consciência ambiental',
+    heroTitle: 'Formar cidadãos também é plantar.',
+    heroLead: 'Em 21 de setembro, alunos, professores e equipe plantaram mudas de espécies nativas num parque ecológico, ao lado da EMEB Vereador Augusto dos Santos.',
+    heroAlt: 'Crianças de quimono sorriem ao redor de uma muda recém-plantada no Parque Ecológico de Itaquaquecetuba',
+    whyEyebrow: 'Por que plantar',
+    whyTitle: 'Cada muda devolve algo à comunidade.',
+    beneficios: [
+      { t: 'Ar mais limpo', d: 'As árvores absorvem gás carbônico da atmosfera.' },
+      { t: 'Sombra', d: 'Ruas e praças mais frescas para quem vive ali.' },
+      { t: 'Vida', d: 'Espécies nativas são abrigo para a fauna local.' },
+      { t: 'Bem-estar', d: 'Mais verde, mais qualidade de vida para a comunidade.' },
+    ],
+    storyEyebrow: 'Sobre a ação',
+    storyTitle: 'Plantio no Parque Ecológico de Itaquaquecetuba',
+    story: [
+      'O plantio aconteceu no Parque Ecológico localizado na Rua Cabrália Paulista, 100, Estação, Itaquaquecetuba, SP, CEP: 08571-020. Essa iniciativa contou com o apoio fundamental da Prefeitura Municipal de Itaquaquecetuba, sob a liderança do Prefeito Eduardo Boigues Queroz, e da Secretária de Meio Ambiente, Maria Cristina Soares dos Santos Perpétuo. Agradecemos sinceramente pelo apoio dessas importantes figuras públicas.',
+      'O plantio de árvores é uma das ações mais eficazes para combater as mudanças climáticas e preservar nosso ambiente natural. Além de absorverem dióxido de carbono, as árvores fornecem sombra, abrigo e habitat para a vida selvagem local, melhorando significativamente a qualidade de vida de nossa comunidade.',
+      'A EMEB Vereador Augusto dos Santos desempenhou um papel central neste evento. Estudantes, professores e funcionários da escola se uniram para tornar este dia um grande sucesso. Juntos, plantamos diversas mudas de árvores nativas, promovendo o reflorestamento e a biodiversidade em nossa cidade. Este plantio de mudas é um exemplo inspirador de como a ação local pode ter um impacto global. As árvores que plantamos hoje contribuirão para um ambiente mais saudável e sustentável para as gerações futuras.',
+      'O plantio de mudas na EMEB Vereador Augusto dos Santos foi uma experiência memorável e transformadora. Agradecemos a todos os envolvidos por sua dedicação em proteger e preservar nosso meio ambiente. Este é apenas o começo de nossos esforços contínuos para tornar nossa comunidade mais verde e consciente. Juntos, podemos fazer a diferença. Fique ligado para mais iniciativas ambientais emocionantes no futuro!',
+    ],
+    factsTitle: 'Ficha da ação',
+    facts: { when: 'Quando', whenV: '21 de setembro', where: 'Onde', whereV: 'Parque Ecológico', school: 'Escola', support: 'Apoio', supportV: ['Prefeitura Municipal de Itaquaquecetuba', 'Prefeito Eduardo Boigues Queroz', 'Secretária de Meio Ambiente Maria Cristina Soares dos Santos Perpétuo'], zip: 'CEP' },
+    galTitle: 'Galeria da ação',
+    galHint: 'Clique em uma foto para ampliar.',
+    fotos: [
+      'Crianças de quimono sorriem ao redor de uma muda recém-plantada',
+      'Alunos de quimono firmam a muda e preparam a terra durante o plantio',
+      'Turma de alunos e professores de quimono reunida no Parque Ecológico',
+      'Alunos e professores em roda ouvem as orientações antes do plantio',
+    ],
+    open: 'Ampliar foto', prev: 'Foto anterior', next: 'Próxima foto', close: 'Fechar', of: 'de',
+    galNote: 'Com o apoio da Prefeitura Municipal de Itaquaquecetuba e da Secretaria de Meio Ambiente.',
+    ctaTitle: 'Sua empresa quer apoiar a próxima ação ambiental?',
+    ctaBtn: 'Fale com a gente',
+  },
+  en: {
+    home: 'Home',
+    crumb: 'Environmental awareness',
+    title: 'Environmental awareness',
+    description: 'Students, teachers and staff from Instituto Irmãos Nogueira planted native tree seedlings at the Ecological Park in Itaquaquecetuba (São Paulo), together with EMEB Vereador Augusto dos Santos. Raising citizens means planting, too.',
+    eyebrow: 'In action · Environmental awareness',
+    heroTitle: 'Raising citizens means planting, too.',
+    heroLead: 'On September 21, students, teachers and staff planted native tree seedlings in an ecological park next to EMEB Vereador Augusto dos Santos, a municipal public school.',
+    heroAlt: 'Children in gis smiling around a freshly planted seedling at the Ecological Park in Itaquaquecetuba',
+    whyEyebrow: 'Why we plant',
+    whyTitle: 'Every seedling gives back to the community.',
+    beneficios: [
+      { t: 'Cleaner air', d: 'Trees absorb carbon dioxide from the atmosphere.' },
+      { t: 'Shade', d: 'Cooler streets and squares for the people who live there.' },
+      { t: 'Life', d: 'Native species give shelter to local wildlife.' },
+      { t: 'Well-being', d: 'More green space, a better quality of life for the community.' },
+    ],
+    storyEyebrow: 'About the initiative',
+    storyTitle: 'Tree planting at the Itaquaquecetuba Ecological Park',
+    story: [
+      'The planting took place at the Ecological Park at Rua Cabrália Paulista, 100, Estação, Itaquaquecetuba, São Paulo state (postal code 08571-020). The initiative had the essential support of the City of Itaquaquecetuba, led by Mayor Eduardo Boigues Queroz, and of the Secretary of the Environment, Maria Cristina Soares dos Santos Perpétuo. We are sincerely grateful for their support.',
+      'Planting trees is one of the most effective ways to fight climate change and protect our natural environment. Besides absorbing carbon dioxide, trees provide shade, shelter and habitat for local wildlife, significantly improving our community’s quality of life.',
+      'EMEB Vereador Augusto dos Santos, a municipal public school, played a central role in the event. Students, teachers and school staff came together to make the day a great success. Together, we planted a variety of native tree seedlings, promoting reforestation and biodiversity in our city. This planting is an inspiring example of how local action can have a global impact. The trees we plant today will help build a healthier, more sustainable environment for future generations.',
+      'Planting seedlings with EMEB Vereador Augusto dos Santos was a memorable, transformative experience. We thank everyone involved for their dedication to protecting and preserving our environment. This is just the beginning of our ongoing efforts to make our community greener and more conscious. Together, we can make a difference. Stay tuned for more exciting environmental initiatives!',
+    ],
+    factsTitle: 'At a glance',
+    facts: { when: 'When', whenV: 'September 21', where: 'Where', whereV: 'Ecological Park', school: 'School', support: 'Supported by', supportV: ['City of Itaquaquecetuba', 'Mayor Eduardo Boigues Queroz', 'Secretary of the Environment Maria Cristina Soares dos Santos Perpétuo'], zip: 'Postal code' },
+    galTitle: 'Photo gallery',
+    galHint: 'Click a photo to enlarge it.',
+    fotos: [
+      'Children in gis smiling around a freshly planted seedling',
+      'Students in gis steadying a seedling and preparing the soil',
+      'Students and instructors in gis gathered at the Ecological Park',
+      'Students and instructors listening to instructions before the planting',
+    ],
+    open: 'Enlarge photo', prev: 'Previous photo', next: 'Next photo', close: 'Close', of: 'of',
+    galNote: 'With support from the City of Itaquaquecetuba and its Department of the Environment.',
+    ctaTitle: 'Want your company to back our next green initiative?',
+    ctaBtn: 'Get in touch',
+  },
+  es: {
+    home: 'Inicio',
+    crumb: 'Conciencia ambiental',
+    title: 'Conciencia ambiental',
+    description: 'Alumnos, profesores y equipo del Instituto Irmãos Nogueira plantaron árboles de especies nativas en el Parque Ecológico de Itaquaquecetuba (São Paulo), junto con la EMEB Vereador Augusto dos Santos. Formar ciudadanos también es sembrar.',
+    eyebrow: 'Acción · Conciencia ambiental',
+    heroTitle: 'Formar ciudadanos también es sembrar.',
+    heroLead: 'El 21 de septiembre, alumnos, profesores y equipo plantaron árboles de especies nativas en un parque ecológico, junto a la EMEB Vereador Augusto dos Santos, una escuela pública municipal.',
+    heroAlt: 'Niños con kimono sonríen alrededor de un árbol recién plantado en el Parque Ecológico de Itaquaquecetuba',
+    whyEyebrow: 'Por qué sembrar',
+    whyTitle: 'Cada árbol le devuelve algo a la comunidad.',
+    beneficios: [
+      { t: 'Aire más limpio', d: 'Los árboles absorben dióxido de carbono de la atmósfera.' },
+      { t: 'Sombra', d: 'Calles y plazas más frescas para quienes viven allí.' },
+      { t: 'Vida', d: 'Las especies nativas dan refugio a la fauna local.' },
+      { t: 'Bienestar', d: 'Más verde, más calidad de vida para la comunidad.' },
+    ],
+    storyEyebrow: 'Sobre la acción',
+    storyTitle: 'Plantación en el Parque Ecológico de Itaquaquecetuba',
+    story: [
+      'La plantación se realizó en el Parque Ecológico ubicado en Rua Cabrália Paulista, 100, Estação, Itaquaquecetuba, estado de São Paulo (código postal 08571-020). La iniciativa contó con el apoyo fundamental de la Alcaldía de Itaquaquecetuba, bajo el liderazgo del alcalde Eduardo Boigues Queroz, y de la secretaria de Medio Ambiente, Maria Cristina Soares dos Santos Perpétuo. Agradecemos sinceramente su apoyo.',
+      'Plantar árboles es una de las acciones más eficaces para combatir el cambio climático y preservar nuestro entorno natural. Además de absorber dióxido de carbono, los árboles dan sombra, refugio y hábitat a la fauna local, y mejoran de forma significativa la calidad de vida de nuestra comunidad.',
+      'La EMEB Vereador Augusto dos Santos, una escuela pública municipal, tuvo un papel central en este evento. Estudiantes, profesores y personal de la escuela se unieron para que el día fuera un gran éxito. Juntos plantamos diversos árboles de especies nativas, promoviendo la reforestación y la biodiversidad en nuestra ciudad. Esta plantación es un ejemplo inspirador de cómo una acción local puede tener un impacto global. Los árboles que plantamos hoy contribuirán a un ambiente más sano y sostenible para las generaciones futuras.',
+      'La plantación con la EMEB Vereador Augusto dos Santos fue una experiencia memorable y transformadora. Agradecemos a todos los participantes su dedicación a proteger y preservar nuestro medio ambiente. Este es solo el comienzo de nuestros esfuerzos continuos para hacer nuestra comunidad más verde y consciente. Juntos podemos marcar la diferencia. ¡Mantente atento a nuevas iniciativas ambientales!',
+    ],
+    factsTitle: 'Ficha de la acción',
+    facts: { when: 'Cuándo', whenV: '21 de septiembre', where: 'Dónde', whereV: 'Parque Ecológico', school: 'Escuela', support: 'Apoyo', supportV: ['Alcaldía de Itaquaquecetuba', 'Alcalde Eduardo Boigues Queroz', 'Secretaria de Medio Ambiente Maria Cristina Soares dos Santos Perpétuo'], zip: 'CP' },
+    galTitle: 'Galería de la acción',
+    galHint: 'Haz clic en una foto para ampliarla.',
+    fotos: [
+      'Niños con kimono sonríen alrededor de un árbol recién plantado',
+      'Alumnos con kimono sujetan el árbol y preparan la tierra durante la plantación',
+      'Grupo de alumnos y profesores con kimono reunido en el Parque Ecológico',
+      'Alumnos y profesores en ronda escuchan las indicaciones antes de plantar',
+    ],
+    open: 'Ampliar foto', prev: 'Foto anterior', next: 'Foto siguiente', close: 'Cerrar', of: 'de',
+    galNote: 'Con el apoyo de la Alcaldía de Itaquaquecetuba y de su Secretaría de Medio Ambiente.',
+    ctaTitle: '¿Tu empresa quiere apoyar la próxima acción ambiental?',
+    ctaBtn: 'Habla con nosotros',
+  },
+};
+const T = COPY[lang];
+
+// Galeria: ordem pensada para a grade (1 grande + 3)
+const FOTOS = [IMG.ambientalMuda, IMG.ambientalPlantio, IMG.ambientalTurma, IMG.ambiental].map((src, i) => ({ src, alt: T.fotos[i] }));
+
+const breadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: T.home, item: new URL(l('/'), SITE.url).href },
+    { '@type': 'ListItem', position: 2, name: T.crumb, item: new URL(l('/ambiental/'), SITE.url).href },
+  ],
+};
+const event = {
+  '@context': 'https://schema.org',
+  '@type': 'Event',
+  name: T.storyTitle,
+  description: T.description,
+  eventStatus: 'https://schema.org/EventScheduled',
+  organizer: { '@type': 'NGO', name: SITE.name, url: SITE.url },
+  location: {
+    '@type': 'Place',
+    name: 'Parque Ecológico de Itaquaquecetuba',
+    address: { '@type': 'PostalAddress', streetAddress: LOCAL.rua, addressLocality: 'Itaquaquecetuba', addressRegion: 'SP', postalCode: LOCAL.cep, addressCountry: 'BR' },
+  },
+};
+---
+<BaseLayout
+  title={T.title}
+  description={T.description}
+  jsonLd={[breadcrumb, event]}
+>
+  <PageHero
+    tone="green"
+    eyebrow={T.eyebrow}
+    title={T.heroTitle}
+    lead={T.heroLead}
+  >
+    <div slot="aside" class="amb-hero-ph">
+      <Image src={IMG.ambientalMuda} alt={T.heroAlt} widths={[480, 720, 1024]} sizes="(max-width: 1040px) 100vw, 560px" loading="eager" fetchpriority="high" />
+    </div>
+  </PageHero>
+
+  <!-- Sobre a ação: texto do Instituto + ficha rápida -->
+  <section class="section">
+    <div class="container story">
+      <div class="story__text">
+        <p class="eyebrow amb-eyebrow">{T.storyEyebrow}</p>
+        <h2 class="display h2 story__title">{T.storyTitle}</h2>
+        {T.story.map((p, i) => <p class:list={['story__p', i === 0 && 'story__p--lead']}>{p}</p>)}
+      </div>
+      <aside class="facts chamfer" aria-labelledby="facts-h">
+        <h3 id="facts-h" class="facts__t">{T.factsTitle}</h3>
+        <dl class="facts__list">
+          <div><dt>{T.facts.when}</dt><dd>{T.facts.whenV}</dd></div>
+          <div>
+            <dt>{T.facts.where}</dt>
+            <dd>{T.facts.whereV}<br />{LOCAL.rua} · {LOCAL.bairro}<br />{LOCAL.cidade} · {T.facts.zip} {LOCAL.cep}</dd>
+          </div>
+          <div><dt>{T.facts.school}</dt><dd>EMEB Vereador Augusto dos Santos</dd></div>
+          <div><dt>{T.facts.support}</dt><dd>{T.facts.supportV.map((s) => <span class="facts__line">{s}</span>)}</dd></div>
+        </dl>
+        <a class="lnk facts__map" href={MAPS} target="_blank" rel="noopener">
+          <Icon name="pin" size={18} />{ui.directions}<Icon name="external" size={14} /><span class="sr-only"> {ui.newTab}</span>
+        </a>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section section--sand">
+    <div class="container grid-auto" style="--min:320px; --gap:56px">
+      <div class="section-head">
+        <p class="eyebrow amb-eyebrow">{T.whyEyebrow}</p>
+        <h2 class="display h2">{T.whyTitle}</h2>
+      </div>
+      <ul class="grid-auto" style="--min:240px">
+        {T.beneficios.map((b) => (
+          <li class="card card-h chamfer benef">
+            <h3 class="display benef__t">{b.t}</h3>
+            <p class="benef__d">{b.d}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Galeria com ampliação (dialog nativo: Esc fecha, setas navegam) -->
+  <section class="section">
+    <div class="container stack amb-gal">
+      <div class="amb-gal__head">
+        <h2 class="display h2">{T.galTitle}</h2>
+        <p class="amb-gal__hint">{T.galHint}</p>
+      </div>
+      <ul class="gal" data-gal data-of={T.of}>
+        {FOTOS.map((f, i) => (
+          <li class:list={['gal__item', i === 0 && 'gal__item--big']}>
+            <button type="button" class="gal__btn" data-gal-open={i} data-full={f.src.src} data-alt={f.alt} aria-label={`${T.open}: ${f.alt}`}>
+              <Image src={f.src} alt={f.alt} widths={[400, 640, 960]} sizes={i === 0 ? '(max-width: 760px) 100vw, 60vw' : '(max-width: 760px) 100vw, 30vw'} loading="lazy" />
+            </button>
+          </li>
+        ))}
+      </ul>
+      <p class="amb-gal__note">{T.galNote}</p>
+    </div>
+    <dialog class="lb" data-lb aria-label={T.galTitle}>
+      <figure class="lb__fig">
+        <img data-lb-img alt="" />
+        <figcaption class="lb__cap"><span data-lb-cap></span> <span class="lb__count" data-lb-count></span></figcaption>
+      </figure>
+      <button type="button" class="lb__btn lb__btn--prev" data-lb-prev aria-label={T.prev}><Icon name="chevron" size={26} strokeWidth={2.4} /></button>
+      <button type="button" class="lb__btn lb__btn--next" data-lb-next aria-label={T.next}><Icon name="chevron" size={26} strokeWidth={2.4} /></button>
+      <button type="button" class="lb__close" data-lb-close aria-label={T.close}><Icon name="close" size={24} strokeWidth={2.2} /></button>
+    </dialog>
+  </section>
+
+  <CtaBand tone="dark" title={T.ctaTitle}>
+    <Button href={l('/empresas/')} variant="light" data-track="sponsor_click" data-track-source="ambiental-cta">{T.ctaBtn}</Button>
+  </CtaBand>
+</BaseLayout>
+
+<script>
+  const gal = document.querySelector<HTMLElement>('[data-gal]');
+  const lb = document.querySelector<HTMLDialogElement>('[data-lb]');
+  if (gal && lb) {
+    const items = Array.from(gal.querySelectorAll<HTMLButtonElement>('[data-gal-open]'));
+    const img = lb.querySelector<HTMLImageElement>('[data-lb-img]')!;
+    const cap = lb.querySelector<HTMLElement>('[data-lb-cap]')!;
+    const count = lb.querySelector<HTMLElement>('[data-lb-count]')!;
+    const of = gal.dataset.of ?? '/';
+    let i = 0, opener: HTMLElement | null = null;
+    const show = (n: number) => {
+      i = (n + items.length) % items.length;
+      const b = items[i];
+      img.src = b.dataset.full ?? '';
+      img.alt = b.dataset.alt ?? '';
+      cap.textContent = b.dataset.alt ?? '';
+      count.textContent = `${i + 1} ${of} ${items.length}`;
+    };
+    items.forEach((b, n) => b.addEventListener('click', () => { opener = b; show(n); lb.showModal(); document.documentElement.classList.add('lb-open'); }));
+    lb.querySelector('[data-lb-prev]')!.addEventListener('click', () => show(i - 1));
+    lb.querySelector('[data-lb-next]')!.addEventListener('click', () => show(i + 1));
+    lb.querySelector('[data-lb-close]')!.addEventListener('click', () => lb.close());
+    lb.addEventListener('keydown', (e) => { if (e.key === 'ArrowLeft') show(i - 1); if (e.key === 'ArrowRight') show(i + 1); });
+    // Clique fora da foto fecha
+    lb.addEventListener('click', (e) => { if (e.target === lb) lb.close(); });
+    lb.addEventListener('close', () => { document.documentElement.classList.remove('lb-open'); opener?.focus(); });
+    // Gesto de arrastar no celular
+    let x0 = 0;
+    lb.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+    lb.addEventListener('touchend', (e) => { const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) show(i + (dx < 0 ? 1 : -1)); });
+  }
+</script>
+
+<style>
+  .amb-hero-ph { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: #2c4f3a; clip-path: polygon(0 0, calc(100% - 56px) 0, 100% 56px, 100% 100%, 56px 100%, 0 calc(100% - 56px)); }
+  .amb-hero-ph :global(img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; }
+
+  .amb-eyebrow { color: var(--green); }
+
+  /* Sobre a ação */
+  .story { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr); gap: clamp(32px, 5vw, 72px); align-items: start; }
+  @media (max-width: 900px) { .story { grid-template-columns: 1fr; } }
+  .story__text { display: flex; flex-direction: column; gap: 18px; max-width: 720px; }
+  .story__title { margin-bottom: 8px; }
+  .story__p { font-size: 17px; line-height: 1.7; color: var(--text-2); }
+  .story__p--lead { font-size: clamp(18px, 1.5vw, 20px); color: var(--ink); }
+  .facts { position: sticky; top: 24px; padding: clamp(24px, 3vw, 32px); background: #1f3a2a; color: #fff; display: flex; flex-direction: column; gap: 20px; }
+  @media (max-width: 900px) { .facts { position: static; } }
+  .facts__t { font-family: var(--font-display); font-weight: 800; font-size: 26px; text-transform: uppercase; line-height: 1; }
+  .facts__list { display: flex; flex-direction: column; gap: 16px; }
+  .facts__list > div { display: flex; flex-direction: column; gap: 4px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.16); }
+  .facts__list dt { font-size: 12px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #a7d8b5; }
+  .facts__list dd { margin: 0; font-size: 15px; line-height: 1.5; color: #e9f2ec; }
+  .facts__line { display: block; }
+  .facts .facts__map { color: #fff; gap: 8px; }
+
+  .benef { padding: 28px; display: flex; flex-direction: column; gap: 10px; }
+  .benef__t { font-size: 28px; line-height: 1; color: var(--green); }
+  .benef__d { font-size: 15px; color: var(--text-2); }
+
+  /* Galeria: 1 grande + 3 */
+  .amb-gal { gap: 28px; }
+  .amb-gal__head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 8px 24px; }
+  .amb-gal__hint { font-size: 14px; color: var(--text-3); }
+  /* Bento: 1 grande (2×2) + 1 larga + 2 pequenas — 4 fotos sem sobra */
+  .gal { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: repeat(2, clamp(170px, 17vw, 250px)); gap: 10px; }
+  .gal__item--big { grid-column: 1 / 3; grid-row: 1 / 3; }
+  .gal__item:nth-child(2) { grid-column: 3 / 5; }
+  .gal__btn { position: relative; display: block; width: 100%; height: 100%; padding: 0; border: 0; overflow: hidden; cursor: zoom-in; background: #d9d5cc; }
+  .gal__btn :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s var(--ease); }
+  .gal__btn:hover :global(img), .gal__btn:focus-visible :global(img) { transform: scale(1.05); }
+  .gal__btn:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
+  .gal__item:first-child .gal__btn { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 48px), calc(100% - 48px) 100%, 0 100%); }
+  @media (max-width: 760px) {
+    .gal { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: none; grid-auto-rows: 150px; }
+    .gal__item--big { grid-column: 1 / -1; grid-row: span 2; }
+    .gal__item:nth-child(2) { grid-column: 1 / -1; }
+  }
+  .amb-gal__note { font-size: 15px; color: var(--text-2); }
+
+  /* Lightbox */
+  .lb { width: min(1100px, 100vw); max-width: 100vw; max-height: 100dvh; padding: 0; border: 0; background: transparent; overflow: visible; }
+  .lb::backdrop { background: rgba(8, 10, 9, 0.88); backdrop-filter: blur(4px); }
+  .lb__fig { margin: 0; display: flex; flex-direction: column; gap: 12px; padding: 56px 16px 16px; }
+  .lb__fig img { width: 100%; max-height: calc(100dvh - 160px); object-fit: contain; background: #111; }
+  .lb__cap { color: #e6e6e6; font-size: 15px; display: flex; justify-content: space-between; gap: 16px; }
+  .lb__count { color: #9a9a9a; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .lb__btn, .lb__close { position: absolute; display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border: 0; background: rgba(255, 255, 255, 0.12); color: #fff; cursor: pointer; transition: background-color 0.2s; }
+  .lb__btn:hover, .lb__close:hover { background: var(--red); }
+  .lb__btn--prev { left: 24px; top: 50%; }
+  .lb__btn--prev :global(svg) { transform: rotate(90deg); }
+  .lb__btn--next { right: 24px; top: 50%; }
+  .lb__btn--next :global(svg) { transform: rotate(-90deg); }
+  .lb__close { top: 0; right: 16px; }
+  :global(html.lb-open) { overflow: hidden; }
+  @media (max-width: 760px) { .lb__btn--prev { left: 20px; } .lb__btn--next { right: 20px; } .lb__btn { top: auto; bottom: 64px; } }
+</style>

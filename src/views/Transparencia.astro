@@ -1,0 +1,500 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Button from '../components/Button.astro';
+import Icon, { type IconName } from '../components/Icon.astro';
+import Logo from '../components/Logo.astro';
+import Deco from '../components/Deco.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { SITE } from '../data/site';
+import { getContent } from '../data/content';
+import { i18n } from '../i18n/config';
+import { t } from '../i18n/ui';
+
+const { lang, l } = i18n(Astro.url);
+const ui = t(lang);
+const { DOCUMENTOS } = getContent(lang);
+
+type MapItem = { t: string; d: string; href: string; icone: IconName; red?: boolean };
+type Txt = { t: string; d: string };
+
+const COPY = {
+  pt: {
+    title: 'Transparência',
+    description: 'Documentos, balanços, metodologia e recursos públicos do Instituto Irmãos Nogueira. Confira tudo, inclusive no Portal da Transparência do Governo.',
+    heroEyebrow: 'Transparência e prestação de contas',
+    heroTitle: 'Cada real vira <span class="accent">tatame, quimono e futuro.</span>',
+    heroLead: 'Quem confia no Instituto merece ver para onde vai cada recurso. Aqui estão nossos documentos, balanços, projetos incentivados e o caminho para conferir tudo no Portal da Transparência do Governo Federal.',
+    seeDocs: 'Ver documentos',
+    portal: 'Portal da Transparência',
+    factsLabel: 'Dados do Instituto',
+    fatos: { atuacao: 'Atuação', desde: 'Desde', metodologia: 'Metodologia', metodologiaV: 'Registrada no Ministério da Cultura', recursos: 'Recursos', recursosV: 'Leis de incentivo ao esporte' },
+    mapEyebrow: 'Mapa da transparência',
+    mapH: 'Tudo o que você pode conferir, em um só lugar.',
+    mapLead: 'Escolha o tipo de informação e vá direto ao dado. Nenhum cadastro, nenhuma burocracia.',
+    mapaEsq: [
+      { t: 'Documentos institucionais', d: 'Estatuto social e atas de nomeação da diretoria.' },
+      { t: 'Demonstrações financeiras', d: 'Balanço patrimonial, DRE e ECF.' },
+      { t: 'Relatórios recentes', d: 'Balanços e relatórios de atividades mais novos.' },
+    ] as Txt[],
+    mapaDir: [
+      { t: 'Recursos públicos', d: 'Convênios e repasses no Portal da Transparência do Governo.' },
+      { t: 'Metodologia', d: 'Registro da metodologia no Ministério da Cultura.' },
+      { t: 'Proteção de dados', d: 'Como protegemos dados e imagens das crianças (LGPD).' },
+    ] as Txt[],
+    portalEyebrow: 'Recursos públicos',
+    portalH: 'Confira no Portal da Transparência do Governo.',
+    portalLead: 'Nossos projetos são realizados com leis de incentivo ao esporte. Os recursos públicos ligados ao Instituto podem ser consultados por qualquer pessoa, direto na fonte oficial.',
+    portalBtn: 'Abrir o Portal da Transparência',
+    osc: 'Também no Mapa das Organizações da Sociedade Civil (IPEA) ↗',
+    passosPortal: [
+      { n: '1', t: 'Abra o Portal da Transparência', d: 'portaldatransparencia.gov.br, mantido pela Controladoria-Geral da União.' },
+      { n: '2', t: 'Busque pelo nosso CNPJ', d: 'Use o número abaixo no campo de busca do portal.' },
+      { n: '3', t: 'Veja os recursos recebidos', d: 'Convênios, repasses e transferências ligadas ao Instituto.' },
+    ],
+    cnpjLabel: 'CNPJ para a busca',
+    copyCnpj: 'Copiar CNPJ',
+    cnpjCopied: 'CNPJ copiado!',
+    copyFail: 'Não foi possível copiar',
+    copyStatus: 'CNPJ copiado para a área de transferência.',
+    docsEyebrow: 'Documentos',
+    docsH: 'Baixe e confira.',
+    docsLangNote: '',
+    download: 'Baixar',
+    pending: '[aguardando envio]',
+    lgpdEyebrow: 'LGPD · Proteção de dados',
+    lgpdH: 'Cuidar das nossas crianças também é proteger os dados delas.',
+    lgpdLead: 'Tratamos dados e imagens de crianças e adolescentes no seu melhor interesse, como determinam a Lei Geral de Proteção de Dados (Lei 13.709/2018, art. 14) e o Estatuto da Criança e do Adolescente (art. 17).',
+    lgpdPh: '[validar texto com o jurídico]',
+    lgpd: [
+      { t: 'Imagem só com autorização', d: 'Fotos e vídeos de alunos só são publicados com autorização por escrito de pai, mãe ou responsável legal.' },
+      { t: 'Sem identificação exposta', d: 'Não publicamos nome completo, escola ou endereço de crianças junto às imagens.' },
+      { t: 'Só o necessário', d: 'Na matrícula, coletamos apenas os dados necessários para a atividade e a segurança do aluno.' },
+      { t: 'Uso restrito', d: 'Os dados servem às atividades do Instituto e à prestação de contas exigida por lei. Nunca são vendidos.' },
+      { t: 'Direitos do responsável', d: 'Acesso, correção, exclusão e revogação da autorização, a qualquer momento.' },
+      { t: 'Exclusão segura', d: 'Ao fim da finalidade, os dados são eliminados ou anonimizados, salvo guarda exigida por lei.' },
+    ] as Txt[],
+    panelT: 'É responsável por um aluno?',
+    panelD: 'Peça acesso, correção ou exclusão dos dados, ou revogue a autorização de imagem a qualquer momento. Encarregado de dados:',
+    dpoPh: '[NOME · E-MAIL DO DPO]',
+    dpoBtn: 'Falar com o encarregado',
+    privacyBtn: 'Política de Privacidade',
+    ctaTitle: 'Confiança se constrói no detalhe. E transforma vidas.',
+    sponsor: 'Patrocinar',
+  },
+  en: {
+    title: 'Transparency',
+    description: 'Documents, financial statements, methodology and public funding of Instituto Irmãos Nogueira. Check it all, including on the Brazilian government’s Transparency Portal.',
+    heroEyebrow: 'Transparency and accountability',
+    heroTitle: 'Every donation becomes <span class="accent">mats, gis and a future.</span>',
+    heroLead: 'If you trust the Institute, you deserve to see where every resource goes. Here you’ll find our documents, financial statements, incentive-funded projects and how to check it all on the Brazilian federal government’s Transparency Portal (Portal da Transparência).',
+    seeDocs: 'See documents',
+    portal: 'Transparency Portal',
+    factsLabel: 'Institute facts',
+    fatos: { atuacao: 'Active', desde: 'Since', metodologia: 'Methodology', metodologiaV: 'Registered with the Ministry of Culture', recursos: 'Funding', recursosV: 'Sports incentive laws' },
+    mapEyebrow: 'Transparency map',
+    mapH: 'Everything you can check, all in one place.',
+    mapLead: 'Pick the kind of information and go straight to it. No sign-up, no red tape.',
+    mapaEsq: [
+      { t: 'Institutional documents', d: 'Bylaws and board appointment minutes.' },
+      { t: 'Financial statements', d: 'Balance sheet, income statement and ECF tax filing.' },
+      { t: 'Recent reports', d: 'Our latest financial statements and activity reports.' },
+    ] as Txt[],
+    mapaDir: [
+      { t: 'Public funding', d: 'Agreements and transfers on the government’s Transparency Portal.' },
+      { t: 'Methodology', d: 'Our methodology, registered with Brazil’s Ministry of Culture.' },
+      { t: 'Data protection', d: 'How we protect children’s data and images (LGPD).' },
+    ] as Txt[],
+    portalEyebrow: 'Public funding',
+    portalH: 'Check it on the government’s Transparency Portal.',
+    portalLead: 'Our projects are funded through Brazilian sports incentive laws. Anyone can look up the public funds linked to the Institute, straight from the official source.',
+    portalBtn: 'Open the Transparency Portal',
+    osc: 'Also listed on IPEA’s Map of Civil Society Organizations ↗',
+    passosPortal: [
+      { n: '1', t: 'Open the Transparency Portal', d: 'portaldatransparencia.gov.br, run by Brazil’s Office of the Comptroller General (CGU).' },
+      { n: '2', t: 'Search for our CNPJ', d: 'Enter the tax ID below in the portal’s search box.' },
+      { n: '3', t: 'See the funds received', d: 'Agreements, grants and transfers linked to the Institute.' },
+    ],
+    cnpjLabel: 'CNPJ to search',
+    copyCnpj: 'Copy CNPJ',
+    cnpjCopied: 'CNPJ copied!',
+    copyFail: 'Couldn’t copy',
+    copyStatus: 'CNPJ copied to the clipboard.',
+    docsEyebrow: 'Documents',
+    docsH: 'Download and check.',
+    docsLangNote: 'Official documents are available in Portuguese only.',
+    download: 'Download',
+    pending: '[awaiting upload]',
+    lgpdEyebrow: 'LGPD · Data protection',
+    lgpdH: 'Caring for our kids means protecting their data, too.',
+    lgpdLead: 'We handle the data and images of children and teenagers in their best interest, as required by Brazil’s General Data Protection Law (LGPD, Law 13.709/2018, art. 14) and the Brazilian Child and Adolescent Statute (ECA, art. 17).',
+    lgpdPh: '[have legal review this text]',
+    lgpd: [
+      { t: 'Images only with consent', d: 'Photos and videos of students are published only with written consent from a parent or legal guardian.' },
+      { t: 'No exposed identities', d: 'We never publish a child’s full name, school or address alongside their image.' },
+      { t: 'Only what’s needed', d: 'At enrollment, we collect only the data needed for the activity and the student’s safety.' },
+      { t: 'Restricted use', d: 'Data is used only for the Institute’s activities and the accountability required by law. It is never sold.' },
+      { t: 'Guardians’ rights', d: 'Access, correct or delete data, or withdraw consent, at any time.' },
+      { t: 'Secure deletion', d: 'Once its purpose is fulfilled, data is deleted or anonymized, unless the law requires us to keep it.' },
+    ] as Txt[],
+    panelT: 'Are you a student’s parent or guardian?',
+    panelD: 'Request access to, correction or deletion of the data, or withdraw image consent at any time. Data protection officer:',
+    dpoPh: '[DPO NAME · EMAIL]',
+    dpoBtn: 'Contact the DPO',
+    privacyBtn: 'Privacy policy',
+    ctaTitle: 'Trust is built in the details. And it changes lives.',
+    sponsor: 'Sponsor',
+  },
+  es: {
+    title: 'Transparencia',
+    description: 'Documentos, estados financieros, metodología y recursos públicos del Instituto Irmãos Nogueira. Revísalo todo, incluso en el Portal de la Transparencia del Gobierno de Brasil.',
+    heroEyebrow: 'Transparencia y rendición de cuentas',
+    heroTitle: 'Cada aporte se convierte en <span class="accent">tatami, kimono y futuro.</span>',
+    heroLead: 'Si confías en el Instituto, mereces ver a dónde va cada recurso. Aquí están nuestros documentos, estados financieros, proyectos con incentivo fiscal y cómo revisarlo todo en el Portal de la Transparencia del Gobierno Federal de Brasil (Portal da Transparência).',
+    seeDocs: 'Ver documentos',
+    portal: 'Portal de la Transparencia',
+    factsLabel: 'Datos del Instituto',
+    fatos: { atuacao: 'Trayectoria', desde: 'Desde', metodologia: 'Metodología', metodologiaV: 'Registrada en el Ministerio de Cultura', recursos: 'Recursos', recursosV: 'Leyes de incentivo al deporte' },
+    mapEyebrow: 'Mapa de la transparencia',
+    mapH: 'Todo lo que puedes revisar, en un solo lugar.',
+    mapLead: 'Elige el tipo de información y ve directo al dato. Sin registros ni burocracia.',
+    mapaEsq: [
+      { t: 'Documentos institucionales', d: 'Estatutos y actas de nombramiento de la junta directiva.' },
+      { t: 'Estados financieros', d: 'Balance general, estado de resultados y declaración fiscal ECF.' },
+      { t: 'Informes recientes', d: 'Nuestros estados financieros e informes de actividades más recientes.' },
+    ] as Txt[],
+    mapaDir: [
+      { t: 'Recursos públicos', d: 'Convenios y transferencias en el Portal de la Transparencia del Gobierno.' },
+      { t: 'Metodología', d: 'Registro de la metodología en el Ministerio de Cultura de Brasil.' },
+      { t: 'Protección de datos', d: 'Cómo protegemos los datos y las imágenes de los niños (LGPD).' },
+    ] as Txt[],
+    portalEyebrow: 'Recursos públicos',
+    portalH: 'Revísalo en el Portal de la Transparencia.',
+    portalLead: 'Nuestros proyectos se realizan con leyes brasileñas de incentivo al deporte. Cualquier persona puede consultar los recursos públicos vinculados al Instituto, directo en la fuente oficial.',
+    portalBtn: 'Abrir el Portal de la Transparencia',
+    osc: 'También en el Mapa de las Organizaciones de la Sociedad Civil (IPEA) ↗',
+    passosPortal: [
+      { n: '1', t: 'Abre el Portal de la Transparencia', d: 'portaldatransparencia.gov.br, a cargo de la Contraloría General de la Unión (CGU).' },
+      { n: '2', t: 'Busca nuestro CNPJ', d: 'Ingresa el número de abajo en el buscador del portal.' },
+      { n: '3', t: 'Mira los recursos recibidos', d: 'Convenios, aportes y transferencias vinculados al Instituto.' },
+    ],
+    cnpjLabel: 'CNPJ para la búsqueda',
+    copyCnpj: 'Copiar CNPJ',
+    cnpjCopied: '¡CNPJ copiado!',
+    copyFail: 'No se pudo copiar',
+    copyStatus: 'CNPJ copiado al portapapeles.',
+    docsEyebrow: 'Documentos',
+    docsH: 'Descarga y revisa.',
+    docsLangNote: 'Los documentos oficiales están disponibles solo en portugués.',
+    download: 'Descargar',
+    pending: '[pendiente de envío]',
+    lgpdEyebrow: 'LGPD · Protección de datos',
+    lgpdH: 'Cuidar a nuestros niños también es proteger sus datos.',
+    lgpdLead: 'Tratamos los datos y las imágenes de niños y adolescentes en su mejor interés, como lo exigen la Ley General de Protección de Datos de Brasil (LGPD, Ley 13.709/2018, art. 14) y el Estatuto del Niño y del Adolescente de Brasil (ECA, art. 17).',
+    lgpdPh: '[validar el texto con el área jurídica]',
+    lgpd: [
+      { t: 'Imagen solo con permiso', d: 'Las fotos y videos de los alumnos solo se publican con autorización por escrito de la madre, el padre o el tutor legal.' },
+      { t: 'Sin identificación expuesta', d: 'Nunca publicamos el nombre completo, la escuela ni la dirección de un niño junto a sus imágenes.' },
+      { t: 'Solo lo necesario', d: 'En la inscripción, recopilamos únicamente los datos necesarios para la actividad y la seguridad del alumno.' },
+      { t: 'Uso restringido', d: 'Los datos sirven a las actividades del Instituto y a la rendición de cuentas que exige la ley. Nunca se venden.' },
+      { t: 'Derechos del tutor', d: 'Acceso, corrección, eliminación y revocación de la autorización, en cualquier momento.' },
+      { t: 'Eliminación segura', d: 'Cuando se cumple su finalidad, los datos se eliminan o se anonimizan, salvo que la ley exija conservarlos.' },
+    ] as Txt[],
+    panelT: '¿Eres tutor de un alumno?',
+    panelD: 'Solicita el acceso, la corrección o la eliminación de los datos, o revoca la autorización de imagen en cualquier momento. Encargado de protección de datos:',
+    dpoPh: '[NOMBRE · CORREO DEL DPO]',
+    dpoBtn: 'Contactar al encargado',
+    privacyBtn: 'Política de privacidad',
+    ctaTitle: 'La confianza se construye en los detalles. Y transforma vidas.',
+    sponsor: 'Patrocinar',
+  },
+};
+const T = COPY[lang];
+
+/** Divide um texto em partes normais e placeholders `[...]`. */
+const parts = (s: string) => s.split(/(\[[^\]]+\])/).filter(Boolean).map((t) => ({ t, ph: /^\[.*\]$/.test(t) }));
+
+const fatos = [
+  { k: 'CNPJ', v: SITE.cnpj },
+  { k: T.fatos.atuacao, v: `${T.fatos.desde} ${SITE.foundingYear}` },
+  { k: T.fatos.metodologia, v: T.fatos.metodologiaV },
+  { k: T.fatos.recursos, v: T.fatos.recursosV },
+];
+
+const iconesEsq: { href: string; icone: IconName; red?: boolean }[] = [
+  { href: '#institucionais', icone: 'doc' },
+  { href: '#financeiro', icone: 'chart' },
+  { href: '#recentes', icone: 'list' },
+];
+const iconesDir: { href: string; icone: IconName; red?: boolean }[] = [
+  { href: '#portal', icone: 'gov', red: true },
+  { href: '#metodologia', icone: 'book' },
+  { href: '#lgpd', icone: 'shield' },
+];
+const mapaEsq: MapItem[] = iconesEsq.map((m, i) => ({ ...T.mapaEsq[i], ...m }));
+const mapaDir: MapItem[] = iconesDir.map((m, i) => ({ ...T.mapaDir[i], ...m }));
+
+const passosPortal = T.passosPortal;
+
+const lgpdIcones: IconName[] = ['cam', 'eye', 'list', 'lock', 'users', 'trash'];
+const lgpd: { t: string; d: string; icone: IconName }[] = T.lgpd.map((x, i) => ({ ...x, icone: lgpdIcones[i] }));
+
+const dpo = SITE.contact.dpoEmail;
+---
+<BaseLayout
+  title={T.title}
+  description={T.description}
+>
+  <PageHero
+    eyebrow={T.heroEyebrow}
+    title={T.heroTitle}
+    lead={T.heroLead}
+  >
+    <Fragment slot="actions">
+      <Button href="#documentos" icon="down">{T.seeDocs}</Button>
+      <Button href={SITE.links.portalTransparencia} variant="light" external>{T.portal}</Button>
+    </Fragment>
+  </PageHero>
+
+  <section class="facts" aria-label={T.factsLabel}>
+    <dl class="container facts__list">
+      {fatos.map((f) => (
+        <div class="facts__item"><dt>{f.k}</dt><dd>{f.v}</dd></div>
+      ))}
+    </dl>
+  </section>
+
+  <section class="section">
+    <div class="container stack tmap-wrap">
+      <div class="section-head">
+        <p class="eyebrow">{T.mapEyebrow}</p>
+        <h2 class="display h2">{T.mapH}</h2>
+        <p class="lead">{T.mapLead}</p>
+      </div>
+      <div class="tmap">
+        {mapaEsq.map((m) => (
+          <a class="tmap__card tmap__card--l card-h" href={m.href}>
+            <span class="tmap__wire" aria-hidden="true"></span>
+            <span class:list={['tmap__ico', m.red && 'tmap__ico--red']}><Icon name={m.icone} size={22} strokeWidth={2} /></span>
+            <span class="tmap__txt"><span class="tmap__t">{m.t}</span><span class="tmap__d">{m.d}</span></span>
+          </a>
+        ))}
+        <div class="tmap__center" aria-hidden="true">
+          <div class="tmap__oct">
+            <Logo size={64} variant="dark" wordmark={false} />
+            <span class="tmap__name">Instituto<br />Irmãos Nogueira</span>
+            <span class="tmap__cnpj">CNPJ {SITE.cnpj}</span>
+          </div>
+        </div>
+        {mapaDir.map((m) => (
+          <a class="tmap__card tmap__card--r card-h" href={m.href}>
+            <span class="tmap__wire" aria-hidden="true"></span>
+            <span class:list={['tmap__ico', m.red && 'tmap__ico--red']}><Icon name={m.icone} size={22} strokeWidth={2} /></span>
+            <span class="tmap__txt"><span class="tmap__t">{m.t}</span><span class="tmap__d">{m.d}</span></span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="portal" class="section section--dark clip">
+    <Deco grain="dark" />
+    <div class="container split rel">
+      <div class="stack portal__text">
+        <p class="eyebrow">{T.portalEyebrow}</p>
+        <h2 class="display h2">{T.portalH}</h2>
+        <p class="lead">{T.portalLead}</p>
+        <div class="btn-row">
+          <Button href={SITE.links.portalTransparencia} variant="light" external>{T.portalBtn}</Button>
+        </div>
+        <a class="lnk lnk--light portal__osc" href={SITE.links.mapaOsc} target="_blank" rel="noopener">
+          {T.osc}<span class="sr-only"> {ui.newTab}</span>
+        </a>
+      </div>
+      <ol class="steps">
+        {passosPortal.map((p) => (
+          <li class="steps__item">
+            <span class="oct-badge oct-badge--red steps__n">{p.n}</span>
+            <span class="stack"><span class="steps__t">{p.t}</span><span class="steps__d">{p.d}</span></span>
+          </li>
+        ))}
+        <li class="steps__cnpj">
+          <label for="cnpj">{T.cnpjLabel}</label>
+          <input id="cnpj" readonly value={SITE.cnpj} />
+          <button type="button" class="btn btn--sm cnpj-btn" data-copy-cnpj={SITE.cnpjDigits} data-msg-ok={T.cnpjCopied} data-msg-fail={T.copyFail} data-msg-status={T.copyStatus}>
+            <span class="btn__label" data-label>{T.copyCnpj}</span>
+          </button>
+          <span class="sr-only" aria-live="polite" data-copy-status></span>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="documentos" class="section">
+    <div class="container stack docs">
+      <div class="section-head">
+        <p class="eyebrow">{T.docsEyebrow}</p>
+        <h2 class="display h2">{T.docsH}</h2>
+        {T.docsLangNote && <p class="docs__lang">{T.docsLangNote}</p>}
+      </div>
+      {DOCUMENTOS.map((g) => (
+        <div id={g.id} class="docs__group">
+          <h3 class="display h3">{g.titulo}</h3>
+          <ul class="docs__list chamfer">
+            {g.docs.map((d) => {
+              const isPdf = !!d.href && /\.pdf$/i.test(d.href);
+              return (
+                <li class="docs__item">
+                  <span class:list={['docs__type', !d.href && 'docs__type--pend']} aria-hidden="true">{d.tipo ?? 'PDF'}</span>
+                  <span class="docs__txt">
+                    <span class="docs__t">{d.t}</span>
+                    <span class="docs__meta">{parts(d.meta).map((p) => (p.ph ? <span class="ph">{p.t}</span> : p.t))}</span>
+                  </span>
+                  {d.href ? (
+                    <Button href={d.href} variant="dark" size="sm" icon={d.externo ? 'external' : 'download'} external={isPdf || !!d.externo}>
+                      {d.acao ?? T.download}<span class="sr-only">: {d.t}</span>
+                    </Button>
+                  ) : (
+                    <span class="ph">{T.pending}</span>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section id="lgpd" class="section section--sand">
+    <div class="container stack lgpd">
+      <div class="lgpd__head">
+        <div class="stack lgpd__title">
+          <p class="eyebrow">{T.lgpdEyebrow}</p>
+          <h2 class="display h2">{T.lgpdH}</h2>
+        </div>
+        <p class="lead">{T.lgpdLead} <span class="ph">{T.lgpdPh}</span></p>
+      </div>
+      <div class="grid-auto" style="--min:280px">
+        {lgpd.map((l) => (
+          <div class="lgpd__card chamfer card-h">
+            <span class="lgpd__ico"><Icon name={l.icone} size={20} strokeWidth={2} /></span>
+            <h3 class="lgpd__t">{l.t}</h3>
+            <p class="lgpd__d">{l.d}</p>
+          </div>
+        ))}
+      </div>
+      <div class="lgpd__panel chamfer">
+        <div class="stack lgpd__panel-txt">
+          <p class="lgpd__panel-t">{T.panelT}</p>
+          <p class="lgpd__panel-d">
+            {T.panelD}{' '}
+            {dpo ? <a href={`mailto:${dpo}`}>{dpo}</a> : <span class="ph">{T.dpoPh}</span>}
+          </p>
+        </div>
+        {dpo ? (
+          <Button href={`mailto:${dpo}`} variant="light">{T.dpoBtn}</Button>
+        ) : (
+          <Button href={l('/politica-de-privacidade/')} variant="light">{T.privacyBtn}</Button>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <CtaBand tone="red" title={T.ctaTitle}>
+    <Button href={l('/doar/')} variant="light-on-red" data-track="donate_click" data-track-source="transparencia_cta">{ui.donateNow}</Button>
+    <Button href={l('/empresas/')} variant="dark" data-track="sponsor_click" data-track-source="transparencia_cta">{T.sponsor}</Button>
+  </CtaBand>
+</BaseLayout>
+
+<script>
+  import { copyText } from '../scripts/pix';
+
+  document.querySelectorAll<HTMLButtonElement>('[data-copy-cnpj]').forEach((btn) => {
+    const label = btn.querySelector<HTMLElement>('[data-label]')!;
+    const status = btn.parentElement?.querySelector<HTMLElement>('[data-copy-status]');
+    const original = label.textContent;
+    btn.addEventListener('click', async () => {
+      const ok = await copyText(btn.dataset.copyCnpj ?? '');
+      label.textContent = ok ? (btn.dataset.msgOk ?? '') : (btn.dataset.msgFail ?? '');
+      btn.classList.toggle('is-done', ok);
+      if (status) status.textContent = ok ? (btn.dataset.msgStatus ?? '') : '';
+      setTimeout(() => { label.textContent = original; btn.classList.remove('is-done'); }, 2400);
+    });
+  });
+</script>
+
+<style>
+  /* Faixa de dados */
+  .facts { background: var(--white); border-bottom: 1px solid var(--line-2); }
+  .facts__list { margin-block: 0; padding-block: 28px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 20px 32px; }
+  .facts__item { display: flex; flex-direction: column; gap: 2px; padding-left: 16px; border-left: 2px solid var(--red); }
+  .facts__item dt { font-size: 12px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3); }
+  .facts__item dd { margin: 0; font-weight: 800; font-size: 17px; }
+
+  /* Mapa da transparência */
+  .tmap-wrap { gap: 48px; }
+  .tmap { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .tmap__card { position: relative; display: flex; gap: 16px; align-items: flex-start; padding: 22px; background: var(--white); border: 1px solid var(--line); text-decoration: none; color: var(--text); }
+  .tmap__card:hover { color: var(--text); }
+  .tmap__wire { display: none; position: absolute; top: 50%; width: 56px; border-top: 2px dashed var(--red); }
+  .tmap__ico { flex: none; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: var(--ink); color: var(--white); clip-path: var(--oct); }
+  .tmap__ico--red { background: var(--red); }
+  .tmap__txt { display: flex; flex-direction: column; gap: 4px; }
+  .tmap__t { font-family: var(--font-display); font-weight: 800; font-size: 24px; line-height: 1; text-transform: uppercase; }
+  .tmap__d { font-size: 14px; color: var(--text-3); }
+  .tmap__center { display: flex; align-items: center; justify-content: center; order: -1; }
+  .tmap__oct { width: 240px; max-width: 100%; aspect-ratio: 1; padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; background: var(--ink); color: var(--white); clip-path: var(--oct); }
+  .tmap__name { font-family: var(--font-display); font-weight: 800; font-size: 22px; line-height: 1; text-transform: uppercase; }
+  .tmap__cnpj { font-size: 12px; color: #bdbdbd; }
+  @media (min-width: 901px) {
+    .tmap { grid-template-columns: 1fr 260px 1fr; grid-auto-flow: dense; gap: 28px 56px; align-items: center; }
+    .tmap__center { grid-column: 2; grid-row: 1 / span 3; order: 0; }
+    .tmap__card--l { grid-column: 1; }
+    .tmap__card--r { grid-column: 3; }
+    .tmap__wire { display: block; }
+    .tmap__card--l .tmap__wire { right: -56px; }
+    .tmap__card--r .tmap__wire { left: -56px; }
+  }
+
+  /* Portal */
+  .portal__text { gap: 20px; }
+  .portal__osc { align-self: flex-start; font-weight: 700; }
+  .steps { display: flex; flex-direction: column; gap: 12px; }
+  .steps__item { display: flex; gap: 18px; align-items: center; padding: 22px; background: rgba(255, 255, 255, 0.05); border: 1px solid #333; }
+  .steps__n { font-size: 26px; }
+  .steps__t { font-weight: 800; font-size: 17px; }
+  .steps__d { font-size: 14px; color: #bdbdbd; }
+  .steps__cnpj { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding-top: 6px; }
+  .steps__cnpj label { font-size: 13px; font-weight: 800; color: #bdbdbd; }
+  .steps__cnpj input { flex: 1 1 180px; min-width: 0; min-height: 46px; padding: 10px 12px; font-weight: 800; font-size: 18px; border: 1px solid #444; background: var(--ink-2); color: var(--white); border-radius: 0; }
+  .cnpj-btn { --btn-bg: #333; }
+  .cnpj-btn.is-done { --btn-bg: var(--green); }
+
+  /* Documentos */
+  .docs { gap: 48px; }
+  .docs__group { display: flex; flex-direction: column; gap: 14px; scroll-margin-top: calc(var(--header-h) + 24px); }
+  .docs__list { background: var(--white); border: 1px solid var(--line); }
+  .docs__item { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 18px 22px; border-bottom: 1px solid #eceae5; }
+  .docs__item:last-child { border-bottom: 0; }
+  .docs__type { flex: none; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: var(--red); color: var(--white); font-size: 11px; font-weight: 800; }
+  .docs__type--pend { background: #6b6b6b; }
+  .docs__txt { flex: 1 1 240px; display: flex; flex-direction: column; }
+  .docs__t { font-weight: 800; }
+  .docs__meta { font-size: 14px; color: var(--text-3); }
+  .docs__lang { font-size: 14px; color: var(--text-3); }
+
+  /* LGPD */
+  .lgpd { gap: 44px; }
+  .lgpd__head { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr)); gap: 40px; align-items: end; }
+  .lgpd__title { gap: 14px; }
+  .lgpd__card { background: var(--white); padding: 28px 26px; display: flex; flex-direction: column; gap: 12px; }
+  .lgpd__ico { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: var(--ink); color: var(--white); clip-path: var(--oct); }
+  .lgpd__t { font-family: var(--font-display); font-weight: 800; font-size: 24px; line-height: 1; text-transform: uppercase; }
+  .lgpd__d { font-size: 15px; color: var(--text-2); }
+  .lgpd__panel { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; padding: 28px; background: var(--ink); color: var(--white); }
+  .lgpd__panel-txt { gap: 4px; flex: 1 1 320px; }
+  .lgpd__panel-t { font-family: var(--font-display); font-weight: 800; font-size: 26px; line-height: 1; text-transform: uppercase; }
+  .lgpd__panel-d { font-size: 15px; color: var(--on-dark-2); }
+  .lgpd__panel-d a { color: var(--white); font-weight: 700; }
+</style>

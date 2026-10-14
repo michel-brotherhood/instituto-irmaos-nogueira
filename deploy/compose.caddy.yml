@@ -1,0 +1,30 @@
+# Override para VPS SEM proxy reverso: adiciona o Caddy na frente (portas 80/443, HTTPS automático).
+# Uso:  docker compose -f docker-compose.yml -f deploy/compose.caddy.yml up -d --build
+# (ou defina COMPOSE_FILE=docker-compose.yml:deploy/compose.caddy.yml no .env e use o deploy.sh normalmente)
+services:
+  caddy:
+    image: caddy:2.8-alpine
+    container_name: iin-caddy
+    restart: unless-stopped
+    depends_on:
+      - web
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      # Único dado persistente do projeto: certificados TLS (recriáveis, mas evita limite do Let's Encrypt)
+      - caddy_data:/data
+      - caddy_config:/config
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  caddy_data:
+  caddy_config:

@@ -1,0 +1,454 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+import Deco from '../components/Deco.astro';
+import NucleoCard from '../components/NucleoCard.astro';
+import OdsGrid from '../components/OdsGrid.astro';
+import PartnerGrid from '../components/PartnerGrid.astro';
+import PixCard from '../components/PixCard.astro';
+import HomeHero from '../components/home/HomeHero.astro';
+import Manifesto from '../components/home/Manifesto.astro';
+import { IMG, getContent } from '../data/content';
+import { SITE } from '../data/site';
+import { i18n } from '../i18n/config';
+import { t } from '../i18n/ui';
+
+const { lang, l } = i18n(Astro.url);
+const { STATS, PRINCIPIOS, NUCLEOS, TIMELINE } = getContent(lang);
+
+const COPY = {
+  pt: {
+    statsLabel: 'Nosso impacto',
+    videoLabel: 'Vídeo do Instituto Irmãos Nogueira',
+    instEyebrow: 'O Instituto',
+    instTitle: 'Superação, disciplina e resiliência.',
+    instLead1: 'Sempre estiveram presentes na vida dos Irmãos Nogueira. Em 2010, Minotauro e Minotouro começaram um trabalho voluntário para levar essa mesma base a crianças e jovens que mais precisam dela.',
+    instLead2: 'Desde então, o Instituto usa as artes marciais como ferramenta de educação, com projetos apoiados por empresas e pelo poder público.',
+    instCta: 'Conheça nossa história',
+    projWord: 'Escola da Vida',
+    projEyebrow: 'Projeto em destaque',
+    projLead: 'O Jiu-Jitsu e as artes marciais entram na rede municipal de ensino como ferramenta de transformação: disciplina, valores e formação cidadã que vão além do tatame e chegam à sala de aula.',
+    projFact1N: '+930',
+    projFact1T: 'crianças previstas',
+    projFact2N: 'Rede',
+    projFact2T: 'municipal de',
+    projCity: '[CIDADE]',
+    projCta: 'Conheça o projeto',
+    projAlt: 'Turma do Luta Escola da Vida reunida no tatame, de camiseta do Instituto e luvas de Muay Thai, diante do banner do projeto',
+    princEyebrow: 'Nosso compromisso',
+    princTitle: 'Os 6 princípios da faixa preta',
+    princLead: 'Todo aluno se compromete a usar a arte marcial apenas para o bem, de forma defensiva e positiva, para ajudar a si mesmo e aos outros.',
+    princLink: 'Leia o compromisso',
+    nucEyebrow: 'Núcleos',
+    nucTitle: 'Estamos onde mais precisam de nós.',
+    nucLead: 'Encontre o núcleo mais perto de você e inscreva seu filho.',
+    nucCta: 'Ver núcleos e inscrever',
+    tlEyebrow: 'Nossa trajetória',
+    tlTitle: 'Mais de uma década no tatame.',
+    odsEyebrow: 'Agenda 2030 · ONU',
+    odsTitle: 'Nosso tatame contribui com os ODS.',
+    odsLead: 'Os Objetivos de Desenvolvimento Sustentável são o apelo global para acabar com a pobreza, proteger o planeta e garantir paz e prosperidade. Estes são os objetivos para os quais o Instituto contribui.',
+    bizEyebrow: 'Para empresas',
+    bizTitle: 'Sua empresa pode patrocinar com parte do imposto devido.',
+    bizLead: 'Nossos projetos são realizados por meio de leis de incentivo ao esporte, federais e estaduais (ICMS). A empresa direciona parte do imposto para um projeto social com resultado comprovado e associa sua marca a dois ídolos do esporte.',
+    bizCta: 'Quero patrocinar',
+    bizPartners: 'Já apoiaram nossos projetos',
+    donEyebrow: 'Faça parte',
+    donTitle: 'Ajude a formar faixas-pretas na vida.',
+    donLead: 'Sua doação vira equipamento esportivo, professores, assistentes sociais, lanche e transporte para as atividades das crianças.',
+    donCta: 'Doar com cartão ou mensalmente',
+    envEyebrow: 'Ação',
+    envTitle: 'Consciência ambiental',
+    envLead: 'Alunos, professores e equipe plantando mudas nativas para devolver sombra, vida e qualidade de vida à comunidade.',
+    envMore: 'Ver a ação',
+    envAlt: 'Alunos e professores de quimono em atividade ao ar livre em parque de Itaquaquecetuba',
+  },
+  en: {
+    statsLabel: 'Our impact',
+    videoLabel: 'Instituto Irmãos Nogueira video',
+    instEyebrow: 'The Institute',
+    instTitle: 'Grit, discipline and resilience.',
+    instLead1: 'They have always been part of the Nogueira Brothers’ lives. In 2010, Minotauro and Minotouro started volunteering to pass that same foundation on to the children and teens who need it most.',
+    instLead2: 'Ever since, the Institute has used martial arts as a tool for education, with projects backed by companies and the government.',
+    instCta: 'Discover our story',
+    projWord: 'Escola da Vida',
+    projEyebrow: 'Featured project',
+    projLead: 'With Luta Escola da Vida (“Fight, School of Life”), Jiu-Jitsu and martial arts enter public schools as a tool for change: discipline, values and citizenship that go beyond the mat and into the classroom.',
+    projFact1N: '+930',
+    projFact1T: 'children expected',
+    projFact2N: 'Public',
+    projFact2T: 'schools in',
+    projCity: '[CITY]',
+    projCta: 'Explore the project',
+    projAlt: 'A Luta Escola da Vida class gathered on the mat in Institute T-shirts and Muay Thai wraps, in front of the project banner',
+    princEyebrow: 'Our commitment',
+    princTitle: 'The 6 black belt principles',
+    princLead: 'Every student pledges to use martial arts only for good, defensively and positively, to help themselves and others.',
+    princLink: 'Read the pledge',
+    nucEyebrow: 'Centers',
+    nucTitle: 'We go where we’re needed most.',
+    nucLead: 'Find the training center closest to you and sign up your child.',
+    nucCta: 'See centers and sign up',
+    tlEyebrow: 'Our journey',
+    tlTitle: 'Over a decade on the mat.',
+    odsEyebrow: '2030 Agenda · UN',
+    odsTitle: 'Our mat supports the SDGs.',
+    odsLead: 'The Sustainable Development Goals are the global call to end poverty, protect the planet and ensure peace and prosperity for all. These are the goals the Institute contributes to.',
+    bizEyebrow: 'For companies',
+    bizTitle: 'Your company can sponsor us with part of the taxes it owes.',
+    bizLead: 'Our projects run through federal and state sports incentive laws, including Brazil’s Federal Sports Incentive Law and state tax-incentive (ICMS) programs. Your company directs part of its taxes to a social project with proven results and links its brand to two sports legends.',
+    bizCta: 'I want to sponsor',
+    bizPartners: 'They’ve backed our projects',
+    donEyebrow: 'Get involved',
+    donTitle: 'Help raise black belts for life.',
+    donLead: 'Your donation becomes sports gear, coaches, social workers, snacks and transportation for the kids’ activities.',
+    donCta: 'Give by card or monthly',
+    envEyebrow: 'Action',
+    envTitle: 'Environmental awareness',
+    envLead: 'Students, coaches and staff planting native seedlings to bring shade, life and a better quality of life back to the community.',
+    envMore: 'See the initiative',
+    envAlt: 'Students and instructors in gis during an outdoor activity in a park in Itaquaquecetuba',
+  },
+  es: {
+    statsLabel: 'Nuestro impacto',
+    videoLabel: 'Video del Instituto Irmãos Nogueira',
+    instEyebrow: 'El Instituto',
+    instTitle: 'Superación, disciplina y resiliencia.',
+    instLead1: 'Siempre han estado presentes en la vida de los Hermanos Nogueira. En 2010, Minotauro y Minotouro comenzaron un trabajo voluntario para llevar esa misma base a los niños y jóvenes que más la necesitan.',
+    instLead2: 'Desde entonces, el Instituto usa las artes marciales como herramienta educativa, con proyectos apoyados por empresas y por el sector público.',
+    instCta: 'Conoce nuestra historia',
+    projWord: 'Escola da Vida',
+    projEyebrow: 'Proyecto destacado',
+    projLead: 'Con Luta Escola da Vida (“Lucha, Escuela de la Vida”), el Jiu-Jitsu y las artes marciales llegan a las escuelas públicas como herramienta de transformación: disciplina, valores y formación ciudadana que van más allá del tatami y llegan al aula.',
+    projFact1N: '+930',
+    projFact1T: 'niños previstos',
+    projFact2N: 'Red',
+    projFact2T: 'municipal de',
+    projCity: '[CIUDAD]',
+    projCta: 'Conoce el proyecto',
+    projAlt: 'Grupo de Luta Escola da Vida reunido en el tatami, con camiseta del Instituto y vendas de Muay Thai, frente al banner del proyecto',
+    princEyebrow: 'Nuestro compromiso',
+    princTitle: 'Los 6 principios del cinturón negro',
+    princLead: 'Cada alumno se compromete a usar el arte marcial solo para el bien, de forma defensiva y positiva, para ayudarse a sí mismo y a los demás.',
+    princLink: 'Lee el compromiso',
+    nucEyebrow: 'Centros',
+    nucTitle: 'Estamos donde más nos necesitan.',
+    nucLead: 'Encuentra el centro más cercano y inscribe a tu hijo.',
+    nucCta: 'Ver centros e inscribirse',
+    tlEyebrow: 'Nuestra trayectoria',
+    tlTitle: 'Más de una década en el tatami.',
+    odsEyebrow: 'Agenda 2030 · ONU',
+    odsTitle: 'Nuestro tatami contribuye a los ODS.',
+    odsLead: 'Los Objetivos de Desarrollo Sostenible son el llamado mundial para acabar con la pobreza, proteger el planeta y garantizar la paz y la prosperidad. Estos son los objetivos a los que contribuye el Instituto.',
+    bizEyebrow: 'Para empresas',
+    bizTitle: 'Tu empresa puede patrocinar con parte de sus impuestos.',
+    bizLead: 'Nuestros proyectos se realizan mediante leyes de incentivo al deporte, federales y estatales, como la Ley Federal de Incentivo al Deporte de Brasil y el incentivo fiscal estatal (ICMS). La empresa destina parte de sus impuestos a un proyecto social con resultados comprobados y asocia su marca a dos ídolos del deporte.',
+    bizCta: 'Quiero patrocinar',
+    bizPartners: 'Ya apoyaron nuestros proyectos',
+    donEyebrow: 'Sé parte',
+    donTitle: 'Ayuda a formar cinturones negros para la vida.',
+    donLead: 'Tu donación se convierte en equipamiento deportivo, profesores, trabajadores sociales, meriendas y transporte para las actividades de los niños.',
+    donCta: 'Donar con tarjeta o cada mes',
+    envEyebrow: 'Acción',
+    envTitle: 'Conciencia ambiental',
+    envLead: 'Alumnos, profesores y equipo plantando árboles nativos para devolverle sombra, vida y calidad de vida a la comunidad.',
+    envMore: 'Ver la acción',
+    envAlt: 'Alumnos y profesores con kimono en una actividad al aire libre en un parque de Itaquaquecetuba',
+  },
+};
+const T = COPY[lang];
+
+const pad = (i: number) => String(i + 1).padStart(2, '0');
+---
+<BaseLayout title={SITE.name} description={t(lang).siteDescription}>
+  <HomeHero />
+
+  <!-- Números -->
+  <section class="stats" aria-label={T.statsLabel}>
+    <ul class="container stats__grid">
+      {STATS.map((s) => (
+        <li class="stats__item">
+          <span class="display stats__n">{s.n}</span>
+          <span class="stats__t">{s.t}</span>
+          <span class="stats__d">{s.d}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <Manifesto />
+
+  <!-- O Instituto + vídeo -->
+  <section id="video" class="section">
+    <div class="container split">
+      <div class="inst__media">
+        <div class="inst__corner" aria-hidden="true"></div>
+        <div class="video-frame">
+          <video controls preload="none" playsinline poster="/media/poster-instituto-2022.webp" aria-label={T.videoLabel} data-track-video="home_instituto">
+            <source src="/media/video-instituto-2022.mp4" type="video/mp4" />
+          </video>
+        </div>
+      </div>
+      <div class="stack inst__text">
+        <p class="eyebrow">{T.instEyebrow}</p>
+        <h2 class="display h2">{T.instTitle}</h2>
+        <p class="lead">{T.instLead1}</p>
+        <p class="lead">{T.instLead2}</p>
+        <div><Button href={l('/quem-somos/')} variant="dark">{T.instCta}</Button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projeto em destaque -->
+  <section class="section section--dark clip">
+    <Deco grain="dark" />
+    <div class="outline-word proj__word" aria-hidden="true">{T.projWord}</div>
+    <div class="container split rel">
+      <div class="stack proj__text">
+        <p class="eyebrow">{T.projEyebrow}</p>
+        <h2 class="display proj__title">Luta<br /><span class="accent">Escola</span><br />da Vida</h2>
+        <p class="lead">{T.projLead}</p>
+        <dl class="proj__facts">
+          <div><dt class="display">{T.projFact1N}</dt><dd>{T.projFact1T}</dd></div>
+          <div><dt class="display">{T.projFact2N}</dt><dd>{T.projFact2T} <span class="ph">{T.projCity}</span></dd></div>
+        </dl>
+        <div><Button href={l('/projetos-a-escola-da-vida/')} variant="light">{T.projCta}</Button></div>
+      </div>
+      <div class="proj__media">
+        <div class="proj__frame" aria-hidden="true"></div>
+        <div class="proj__photo">
+          <Image src={IMG.escolaMuayThai} alt={T.projAlt} widths={[480, 720, 960, 1200]} sizes="(max-width: 1024px) 100vw, 600px" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Princípios -->
+  <section class="section">
+    <div class="container stack sec-gap">
+      <div class="section-head section-head--row">
+        <div>
+          <p class="eyebrow">{T.princEyebrow}</p>
+          <h2 class="display h2">{T.princTitle}</h2>
+          <p class="lead">{T.princLead}</p>
+        </div>
+        <a class="lnk" href={l('/compromisso/')}>{T.princLink}<Icon name="arrow" /></a>
+      </div>
+      <ol class="princ">
+        {PRINCIPIOS.map((p, i) => (
+          <li class="princ__card card-h chamfer">
+            <span class="princ__bg" aria-hidden="true" data-n={pad(i)}></span>
+            <span class="oct-badge princ__n" aria-hidden="true">{pad(i)}</span>
+            <span class="display princ__t">{p}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- Núcleos -->
+  <section class="section section--sand">
+    <div class="container stack sec-gap">
+      <div class="section-head section-head--row">
+        <div>
+          <p class="eyebrow">{T.nucEyebrow}</p>
+          <h2 class="display h2">{T.nucTitle}</h2>
+          <p class="lead">{T.nucLead}</p>
+        </div>
+        <Button href={l('/nucleos/')} variant="dark" data-track="signup_click" data-track-source="home_nucleos">{T.nucCta}</Button>
+      </div>
+      <div class="grid-auto hscroll" style="--min:280px">
+        {NUCLEOS.map((n) => <NucleoCard n={n} variant="teaser" />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- Trajetória -->
+  <section class="section">
+    <div class="container stack tl-gap">
+      <div class="section-head">
+        <p class="eyebrow">{T.tlEyebrow}</p>
+        <h2 class="display h2">{T.tlTitle}</h2>
+      </div>
+      <ol class="tl">
+        {TIMELINE.map((t) => (
+          <li class="tl__item">
+            <span class="tl__mark" aria-hidden="true"></span>
+            <span class="display tl__year">{t.ano}</span>
+            <span class="tl__txt">{t.resumo}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ODS -->
+  <section id="ods" class="section ods-sec">
+    <div class="container stack ods-gap">
+      <div class="ods-head">
+        <div class="stack ods-head__title">
+          <p class="eyebrow">{T.odsEyebrow}</p>
+          <h2 class="display h2">{T.odsTitle}</h2>
+        </div>
+        <p class="lead">{T.odsLead}</p>
+      </div>
+      <OdsGrid />
+    </div>
+  </section>
+
+  <!-- Para empresas -->
+  <section class="section section--white biz">
+    <div class="container biz__grid">
+      <div class="stack biz__text">
+        <p class="eyebrow">{T.bizEyebrow}</p>
+        <h2 class="display biz__title">{T.bizTitle}</h2>
+        <p class="lead">{T.bizLead}</p>
+        <div><Button href={l('/empresas/')} variant="dark" data-track="sponsor_click" data-track-source="home_empresas">{T.bizCta}</Button></div>
+      </div>
+      <div class="stack biz__partners">
+        <h3 class="biz__label">{T.bizPartners}</h3>
+        <PartnerGrid />
+      </div>
+    </div>
+  </section>
+
+  <!-- Doação -->
+  <section id="doar" class="section section--red clip">
+    <Deco rings="red" ringsStyle="left:-12%;top:-40%;width:60%;height:180%" />
+    <div class="container don__grid rel">
+      <div class="stack don__text">
+        <p class="eyebrow">{T.donEyebrow}</p>
+        <h2 class="display don__title">{T.donTitle}</h2>
+        <p class="lead">{T.donLead}</p>
+        <div><Button href={l('/doar/')} variant="light-on-red" data-track="donate_click" data-track-source="home_doacao">{T.donCta}</Button></div>
+      </div>
+      <PixCard />
+    </div>
+  </section>
+
+  <!-- Consciência ambiental -->
+  <section class="env-sec">
+    <div class="container">
+      <a class="env card-h" href={l('/ambiental/')}>
+        <div class="env__text">
+          <p class="eyebrow env__eyebrow">{T.envEyebrow}</p>
+          <h2 class="display env__title">{T.envTitle}</h2>
+          <p class="env__lead">{T.envLead}</p>
+          <span class="env__more">{T.envMore}<Icon name="arrow" /></span>
+        </div>
+        <div class="env__media"><Image src={IMG.ambiental} alt={T.envAlt} widths={[480, 720, 1024]} sizes="(max-width: 900px) 100vw, 50vw" loading="lazy" /></div>
+      </a>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // Evento video_play (uma vez por player) para o rastreamento com consentimento.
+  document.querySelectorAll<HTMLVideoElement>('video[data-track-video]').forEach((v) => {
+    v.addEventListener('play', () => {
+      const w = window as unknown as { iinTrack?: (e: string, p?: Record<string, string>) => void };
+      w.iinTrack?.('video_play', { source: v.dataset.trackVideo ?? location.pathname });
+    }, { once: true });
+  });
+</script>
+
+<style>
+  .sec-gap { gap: 48px; }
+  .tl-gap { gap: 56px; }
+  .ods-gap { gap: 40px; }
+
+  /* Números */
+  .stats { position: relative; background: var(--red); color: var(--white); }
+  .stats__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr)); gap: 32px 20px; padding-block: 56px; }
+  .stats__item { display: flex; flex-direction: column; gap: 6px; padding-left: 20px; border-left: 2px solid rgba(255, 255, 255, 0.45); }
+  .stats__n { font-size: clamp(40px, 10vw, 60px); line-height: 1; }
+  .stats__t { font-size: 15px; font-weight: 700; }
+  .stats__d { font-size: 13px; color: #ffe1de; }
+  @media (max-width: 520px) {
+    .stats__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 16px; padding-block: 36px; }
+    .stats__item { padding-left: 14px; }
+    .stats__item:last-child:nth-child(odd) { grid-column: 1 / -1; }
+    .stats__n { font-size: 44px; }
+  }
+
+  /* Instituto */
+  .inst__media { position: relative; }
+  .inst__corner { position: absolute; left: -16px; top: -16px; width: 120px; height: 120px; border-left: 3px solid var(--red); border-top: 3px solid var(--red); }
+  .inst__text { gap: 22px; align-items: flex-start; }
+  .inst__text .lead { font-size: 18px; max-width: none; }
+  @media (max-width: 520px) { .inst__corner { left: -8px; top: -8px; width: 72px; height: 72px; } }
+
+  /* Projeto */
+  .proj__word { left: -2%; bottom: -60px; font-size: clamp(120px, 20vw, 260px); }
+  .proj__text { gap: 24px; }
+  .proj__title { font-size: clamp(56px, 6.4vw, 92px); line-height: 0.88; }
+  .proj__text .lead { max-width: 500px; color: var(--on-dark-2); }
+  .proj__facts { display: flex; flex-wrap: wrap; gap: 40px; margin: 0; }
+  .proj__facts dt { font-size: 48px; line-height: 1; }
+  .proj__facts dd { margin: 0; font-size: 14px; color: #b5b5b5; }
+  .proj__media { position: relative; }
+  .proj__frame { position: absolute; right: -18px; bottom: -18px; width: 60%; height: 60%; border: 2px solid var(--red); clip-path: polygon(0 0, 100% 0, 100% 100%, 64px 100%, 0 calc(100% - 64px)); }
+  .proj__photo { position: relative; aspect-ratio: 4 / 3.4; background: #262626; overflow: hidden; clip-path: polygon(0 0, calc(100% - 64px) 0, 100% 64px, 100% 100%, 64px 100%, 0 calc(100% - 64px)); }
+  .proj__photo :global(img) { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+  @media (max-width: 520px) { .proj__frame { right: -8px; bottom: -8px; } }
+
+  /* Princípios */
+  .princ { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr)); gap: 12px; }
+  .princ__card { position: relative; min-width: 0; min-height: 210px; overflow: hidden; display: flex; flex-direction: column; gap: 44px; padding: 30px clamp(14px, 1.8vw, 22px); background: var(--white); }
+  .princ__bg { position: absolute; right: -10px; bottom: -26px; font-family: var(--font-display); font-weight: 800; font-size: 120px; line-height: 1; color: #f1efea; }
+  .princ__bg::after { content: attr(data-n); }
+  .princ__n, .princ__t { position: relative; }
+  .princ__t { font-size: clamp(20px, 5vw, 26px); line-height: 1; }
+  @media (max-width: 520px) {
+    .princ { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .princ__card { min-height: 0; gap: 18px; padding: 18px 14px; }
+    .princ__n { width: 38px; height: 38px; font-size: 15px; }
+    .princ__t { font-size: 20px; }
+  }
+
+  /* Trajetória */
+  .tl { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 32px 0; }
+  .tl__item { position: relative; display: flex; flex-direction: column; gap: 10px; padding: 28px 22px 0 0; border-top: 3px solid var(--ink); }
+  .tl__mark { position: absolute; top: -10px; left: 0; width: 17px; height: 17px; background: var(--red); clip-path: var(--oct); }
+  .tl__year { font-size: 44px; line-height: 1; }
+  .tl__txt { font-size: 15px; color: var(--text-2); text-wrap: pretty; }
+
+  /* ODS */
+  .ods-sec { padding-top: 0; }
+  .ods-head { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr)); gap: 32px; align-items: end; }
+  .ods-head__title { gap: 16px; }
+  .ods-head .lead { font-size: 18px; max-width: none; }
+
+  /* Empresas */
+  .biz { border-block: 1px solid var(--line-2); padding-block: clamp(64px, 8vw, 96px); }
+  .biz__grid { display: flex; flex-direction: column; gap: clamp(40px, 5vw, 64px); }
+  .biz__text { max-width: 820px; }
+  .biz__text { gap: 20px; }
+  .biz__title { font-size: clamp(38px, 4vw, 54px); line-height: 0.95; }
+  .biz__partners { gap: 24px; }
+  .biz__label { display: flex; align-items: center; gap: 16px; font-size: 13px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-3); }
+  .biz__label::after { content: ''; flex: 1; height: 1px; background: var(--line-2); }
+
+  /* Doação */
+  .don__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(460px, 100%), 1fr)); gap: 56px; align-items: center; }
+  .don__text { gap: 22px; }
+  .don__title { font-size: clamp(48px, 5.6vw, 80px); line-height: 0.9; }
+  .don__text .lead { max-width: 520px; }
+
+  /* Ambiental */
+  .env-sec { padding-block: clamp(56px, 7vw, 88px); }
+  .env { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr)); text-decoration: none; color: var(--white); background: #1f3a2a; clip-path: polygon(0 0, calc(100% - 32px) 0, 100% 32px, 100% 100%, 32px 100%, 0 calc(100% - 32px)); }
+  .env:hover { color: var(--white); }
+  .env__text { min-width: 0; padding: clamp(28px, 6vw, 48px); display: flex; flex-direction: column; justify-content: center; gap: 16px; }
+  .env__eyebrow { color: #a7d8b5; }
+  .env__title { font-size: clamp(34px, 9vw, 46px); line-height: 0.95; }
+  .env__lead { font-size: 17px; color: #dcebe0; }
+  .env__more { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; }
+  .env__more :global(svg) { transition: transform 0.35s var(--ease); }
+  .env:hover .env__more :global(svg) { transform: translateX(5px); }
+  .env__media { position: relative; min-height: 300px; overflow: hidden; background: #2c4f3a; }
+  .env__media :global(img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s var(--ease); }
+  .env:hover .env__media :global(img) { transform: scale(1.04); }
+</style>

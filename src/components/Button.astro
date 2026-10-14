@@ -1,0 +1,35 @@
+---
+import Icon, { type IconName } from './Icon.astro';
+
+type Variant = 'red' | 'dark' | 'light' | 'light-on-red' | 'ghost';
+interface Props {
+  href?: string;
+  variant?: Variant;
+  size?: 'sm' | 'md' | 'lg';
+  block?: boolean;
+  icon?: IconName | null;
+  iconFirst?: boolean;
+  external?: boolean;
+  type?: 'button' | 'submit';
+  class?: string;
+  [key: string]: unknown;
+}
+const { href, variant = 'red', size = 'md', block = false, icon = 'arrow', iconFirst = false, external = false, type = 'button', class: cls, ...rest } = Astro.props;
+const classes = ['btn', variant !== 'red' && `btn--${variant}`, size !== 'md' && `btn--${size}`, block && 'btn--block', cls];
+const ext = external ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+const iconSize = size === 'sm' ? 16 : 18;
+---
+{href ? (
+  <a href={href} class:list={classes} {...ext} {...rest}>
+    {iconFirst && icon && <span class="btn__icon"><Icon name={icon} size={iconSize} strokeWidth={2.4} /></span>}
+    <span class="btn__label"><slot /></span>
+    {!iconFirst && icon && <span class="btn__icon"><Icon name={external && icon === 'arrow' ? 'external' : icon} size={iconSize} strokeWidth={2.4} /></span>}
+    {external && <span class="sr-only">(abre em nova aba)</span>}
+  </a>
+) : (
+  <button type={type} class:list={classes} {...rest}>
+    {iconFirst && icon && <span class="btn__icon"><Icon name={icon} size={iconSize} strokeWidth={2.4} /></span>}
+    <span class="btn__label"><slot /></span>
+    {!iconFirst && icon && <span class="btn__icon"><Icon name={icon} size={iconSize} strokeWidth={2.4} /></span>}
+  </button>
+)}

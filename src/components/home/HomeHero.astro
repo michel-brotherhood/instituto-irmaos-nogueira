@@ -1,0 +1,112 @@
+---
+/**
+ * Hero da Home — direção "cinematográfica": retratos de estúdio originais (fundo preto) sangrando à direita,
+ * tipografia grande à esquerda, um CTA primário + um secundário. Sem 3D/badges: menos ruído, mais autoridade.
+ */
+import { Image } from 'astro:assets';
+import Button from '../Button.astro';
+import { getContent } from '../../data/content';
+import { i18n } from '../../i18n/config';
+
+const { lang, l } = i18n(Astro.url);
+const { NUCLEOS } = getContent(lang);
+const COPY = {
+  pt: { eyebrow: 'Desde 2010 · Rio de Janeiro', t1: 'Formamos', accent: 'faixas-pretas', t2: 'na vida.', lead: 'Jiu-Jitsu, Muay Thai e Boxe que ensinam os princípios da faixa preta — disciplina, respeito e persistência — a crianças e jovens de comunidades e escolas públicas. Um projeto dos campeões de MMA Minotauro e Minotouro.', donate: 'Quero doar', find: 'Encontre um núcleo', live: (n: number) => `Inscrições abertas em ${n} núcleos`, sign: 'Idealizadores do Instituto' },
+  en: { eyebrow: 'Since 2010 · Rio de Janeiro', t1: 'Raising', accent: 'black belts', t2: 'for life.', lead: 'Jiu-Jitsu, Muay Thai and Boxing that teach the principles of the black belt — discipline, respect and perseverance — to children and young people from underserved communities and public schools. A project by MMA champions Minotauro and Minotouro.', donate: 'Donate now', find: 'Find a center', live: (n: number) => `Enrollment open at ${n} centers`, sign: 'Founders of the Institute' },
+  es: { eyebrow: 'Desde 2010 · Río de Janeiro', t1: 'Formamos', accent: 'cinturones negros', t2: 'para la vida.', lead: 'Jiu-Jitsu, Muay Thai y Boxeo que enseñan los principios del cinturón negro —disciplina, respeto y perseverancia— a niños y jóvenes de comunidades vulnerables y escuelas públicas. Un proyecto de los campeones de MMA Minotauro y Minotouro.', donate: 'Quiero donar', find: 'Encuentra un centro', live: (n: number) => `Inscripciones abiertas en ${n} centros`, sign: 'Fundadores del Instituto' },
+};
+const T = COPY[lang];
+import irmaoBranco from '../../assets/img/irmao-branco.png';
+import irmaoPreto from '../../assets/img/irmao-preto.png';
+---
+<section class="hero">
+  <div class="hero__media" aria-hidden="true">
+    <Image class="hero__pt hero__pt--l" src={irmaoBranco} alt="" widths={[360, 540, 720, 960]} sizes="(max-width: 960px) 56vw, 32vw" loading="eager" fetchpriority="high" />
+    <Image class="hero__pt hero__pt--r" src={irmaoPreto} alt="" widths={[360, 540, 720, 960]} sizes="(max-width: 960px) 56vw, 32vw" loading="eager" />
+    <div class="hero__fade"></div>
+  </div>
+
+  <div class="container hero__in">
+    <div class="hero__text">
+      <p class="hero__eyebrow"><span class="hero__bar" aria-hidden="true"></span>{T.eyebrow}</p>
+      <h1 class="display hero__title">{T.t1} <span class:list={['hero__accent', lang === 'pt' && 'hero__accent--nowrap']}>{T.accent}</span> {T.t2}</h1>
+      <p class="hero__lead">{T.lead}</p>
+      <div class="btn-row hero__ctas">
+        <Button href={l('/doar/')} size="lg" data-track="donate_click" data-track-source="home_hero">{T.donate}</Button>
+        <Button href={l('/nucleos/')} size="lg" variant="ghost" icon="pin" data-track="signup_click" data-track-source="home_hero">{T.find}</Button>
+      </div>
+      <p class="hero__live">{T.live(NUCLEOS.length)}</p>
+    </div>
+  </div>
+
+  <p class="hero__sign"><strong>Minotauro &amp; Minotouro</strong><span>{T.sign}</span></p>
+</section>
+
+<style>
+  .hero {
+    --hero-bg: #0c0b0f;
+    position: relative; overflow: hidden; isolation: isolate; background: var(--hero-bg); color: #fff;
+    min-height: clamp(620px, calc(100svh - 72px), 880px); display: flex; align-items: center;
+  }
+
+  /* Retratos: os dois se sobrepõem 12% e se fundem pelo fundo preto original */
+  .hero__media { position: absolute; inset: 0 0 0 auto; width: 60%; z-index: -1; }
+  .hero__pt { position: absolute; top: 0; height: 100%; width: 56%; object-fit: cover; object-position: 50% 12%; }
+  .hero__pt--l { left: 0; -webkit-mask-image: linear-gradient(90deg, #000 78%, transparent); mask-image: linear-gradient(90deg, #000 78%, transparent); }
+  .hero__pt--r { right: 0; -webkit-mask-image: linear-gradient(90deg, transparent, #000 22%); mask-image: linear-gradient(90deg, transparent, #000 22%); }
+  .hero__fade {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(90deg, var(--hero-bg) 0%, rgba(12, 11, 15, 0.55) 16%, rgba(12, 11, 15, 0) 34%),
+      linear-gradient(0deg, var(--hero-bg) 0%, rgba(12, 11, 15, 0) 26%);
+  }
+
+
+  .hero__in { position: relative; width: 100%; padding-block: clamp(72px, 9vw, 120px); }
+  .hero__text { max-width: 720px; display: flex; flex-direction: column; gap: clamp(22px, 2.4vw, 30px); }
+  .hero__eyebrow { display: flex; align-items: center; gap: 14px; font-size: 13px; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: #bdbdbd; }
+  .hero__bar { width: 36px; height: 3px; background: var(--red); }
+  .hero__title { font-size: clamp(54px, 7.6vw, 116px); line-height: 0.86; letter-spacing: -0.01em; color: #fff; }
+  .hero__accent { color: #e5281e; }
+  /* Só o PT tem hífen ('faixas-pretas'): não deixa quebrar nele */
+  .hero__accent--nowrap { white-space: nowrap; }
+  .hero__lead { max-width: 500px; font-size: clamp(16px, 1.25vw, 18px); line-height: 1.6; color: #c4c4c4; }
+  .hero__ctas { padding-top: 6px; }
+  .hero__live { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; color: #a9a9a9; }
+  .hero__live::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #34c46b; box-shadow: 0 0 0 4px rgba(52, 196, 107, 0.18); animation: pulse 2.4s ease-in-out infinite; }
+  @keyframes pulse { 50% { box-shadow: 0 0 0 7px rgba(52, 196, 107, 0); } }
+
+  .hero__sign { position: absolute; right: clamp(20px, 4vw, 56px); bottom: clamp(24px, 4vw, 48px); display: flex; flex-direction: column; align-items: flex-end; gap: 4px; text-align: right; }
+  .hero__sign strong { font-family: var(--font-display); font-weight: 800; font-size: 22px; letter-spacing: 0.02em; text-transform: uppercase; line-height: 1; }
+  .hero__sign span { font-size: 12px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: #a9a9a9; }
+  .hero__sign::before { content: ''; width: 36px; height: 3px; margin-bottom: 8px; background: var(--red); }
+
+  /* Tablet/mobile: retratos viram uma faixa no topo e o texto sobe sobre o degradê */
+  @media (max-width: 960px) and (orientation: portrait), (max-width: 600px) {
+    .hero { display: block; min-height: 0; }
+    .hero__media { position: relative; inset: auto; width: 100%; height: min(clamp(300px, 78vw, 520px), 60svh); min-height: 220px; z-index: 0; }
+    .hero__pt { width: 58%; object-position: 50% 8%; }
+    .hero__fade { background: linear-gradient(0deg, var(--hero-bg) 2%, rgba(12, 11, 15, 0) 42%); }
+    .hero__in { margin-top: clamp(-96px, -12vw, -48px); padding-block: 0 56px; }
+    .hero__sign { display: none; }
+  }
+  /* Celular/tablet deitado: lado a lado, texto à esquerda e retratos à direita (sem texto sobre os rostos) */
+  @media (max-width: 960px) and (orientation: landscape) and (min-width: 601px) {
+    .hero { min-height: 0; }
+    .hero__media { width: 50%; }
+    .hero__fade { background: linear-gradient(90deg, var(--hero-bg) 0%, rgba(12, 11, 15, 0) 30%), linear-gradient(0deg, var(--hero-bg) 0%, rgba(12, 11, 15, 0) 26%); }
+    .hero__in { padding-block: 36px 40px; }
+    .hero__text { max-width: 52%; gap: 16px; }
+    .hero__title { font-size: clamp(40px, 6.6vw, 64px); }
+    .hero__lead { font-size: 15px; }
+    .hero__sign { display: none; }
+  }
+  @media (max-width: 520px) {
+    .hero__title { font-size: 14.2vw; }
+    .hero__eyebrow { letter-spacing: 0.14em; font-size: 12px; }
+    .hero__ctas { flex-direction: column; align-items: stretch; }
+    .hero__ctas :global(.btn) { display: flex; width: 100%; }
+    .hero__ctas :global(.btn__label) { flex: 1; justify-content: center; }
+  }
+  @media (prefers-reduced-motion: reduce) { .hero__live::before { animation: none; } }
+</style>

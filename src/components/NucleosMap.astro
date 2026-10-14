@@ -1,0 +1,142 @@
+---
+/**
+ * Mapa interativo dos núcleos (Leaflet + base CARTO/OpenStreetMap).
+ * - Carrega a biblioteca só quando o mapa entra na tela (não pesa no carregamento inicial).
+ * - Sem JS: a lista por região ao lado continua sendo o caminho acessível.
+ * - Ouve `nucleos:filter` (detail: modalidade) para mostrar/ocultar marcadores.
+ */
+import { getContent, fmtTel } from '../data/content';
+import { i18n } from '../i18n/config';
+import { t } from '../i18n/ui';
+
+const { lang } = i18n(Astro.url);
+const ui = t(lang);
+const { NUCLEOS } = getContent(lang);
+const mod = (m: string) => ui.modalities[m] ?? m;
+const points = NUCLEOS.map((n) => ({
+  slug: n.slug, nome: n.nome, regiao: n.regiao, endereco: n.endereco, mods: n.modalidades.map(mod),
+  tel: n.tel.map((p) => ({ href: `tel:+55${p.n}`, label: (p.mod ? `${mod(p.mod)}: ` : '') + fmtTel(p.n) })),
+  lat: n.geo.lat, lng: n.geo.lng, aprox: !!n.geo.aprox || !!n.pendente,
+  maps: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(n.mapsQuery ?? n.endereco)}`,
+}));
+---
+<div class="nmapx" data-nmap data-points={JSON.stringify(points)} data-t={JSON.stringify({ approx: ui.nucleo.approx, see: ui.nucleo.see, go: ui.directions, error: ui.nucleo.mapError, center: { pt: 'Núcleo', en: 'Center', es: 'Centro' }[lang] })}>
+  <div class="nmapx__bar" role="group" aria-label={ui.nucleo.mapArea}>
+    <button type="button" class="nmapx__area" aria-pressed="true" data-area="rio">{lang === 'es' ? 'Río de Janeiro' : 'Rio de Janeiro'}</button>
+    <button type="button" class="nmapx__area" aria-pressed="false" data-area="macae">Macaé</button>
+  </div>
+  <div class="nmapx__canvas" data-canvas role="region" aria-label={ui.nucleo.mapLabel}>
+    <p class="nmapx__loading">{ui.nucleo.mapLoading}</p>
+  </div>
+  <noscript><p class="nmapx__noscript">{ui.nucleo.mapNoJs}</p></noscript>
+</div>
+
+<script>
+  type Pt = { slug: string; nome: string; regiao: string; endereco: string; mods: string[]; tel: { href: string; label: string }[]; lat: number; lng: number; aprox: boolean; maps: string };
+
+  const root = document.querySelector<HTMLElement>('[data-nmap]');
+  if (root) {
+    const canvas = root.querySelector<HTMLElement>('[data-canvas]')!;
+    const points: Pt[] = JSON.parse(root.dataset.points ?? '[]');
+    const T = JSON.parse(root.dataset.t ?? '{}') as { approx: string; see: string; go: string; error: string; center: string };
+
+    const init = async () => {
+      const [{ default: L }] = await Promise.all([import('leaflet'), import('leaflet/dist/leaflet.css')]);
+      canvas.innerHTML = '';
+      const map = L.map(canvas, { scrollWheelZoom: false, zoomControl: true, attributionControl: true, zoomSnap: 0.25 });
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        subdomains: 'abcd', maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      }).addTo(map);
+
+      const icon = (active = false) => L.divIcon({
+        className: 'nmapx__pin' + (active ? ' is-active' : ''),
+        html: '<span></span>', iconSize: [26, 26], iconAnchor: [13, 13], popupAnchor: [0, -16],
+      });
+
+      const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
+      const markers = points.map((p) => {
+        const m = L.marker([p.lat, p.lng], { icon: icon(), title: `${T.center} ${p.nome}`, alt: `${T.center} ${p.nome}`, keyboard: true });
+        m.bindPopup(
+          `<div class="nmapx__pop"><strong>${esc(p.nome)}</strong><span class="nmapx__popreg">${esc(p.regiao)}</span>` +
+          `<span class="nmapx__popmods">${p.mods.map(esc).join(' · ')}</span>` +
+          `<span class="nmapx__popaddr">${esc(p.endereco)}${p.aprox ? ` <em>(${esc(T.approx)})</em>` : ''}</span>` +
+          p.tel.map((x) => `<a class="nmapx__poptel" href="${x.href}">${esc(x.label)}</a>`).join('') +
+          `<span class="nmapx__popact"><a href="#${p.slug}">${esc(T.see)}</a><a href="${p.maps}" target="_blank" rel="noopener">${esc(T.go)} ↗</a></span></div>`,
+          { closeButton: true, maxWidth: 260 }
+        );
+        m.on('popupopen', () => m.setIcon(icon(true)));
+        m.on('popupclose', () => m.setIcon(icon(false)));
+        m.addTo(map);
+        return { p, m };
+      });
+
+      const rio = L.latLngBounds(points.filter((p) => p.slug !== 'macae').map((p) => [p.lat, p.lng] as [number, number]));
+      const macae = points.find((p) => p.slug === 'macae');
+      const show = (area: string) => {
+        if (area === 'macae' && macae) map.setView([macae.lat, macae.lng], 12);
+        else map.fitBounds(rio, { padding: innerWidth < 600 ? [18, 18] : [40, 40] });
+        root.querySelectorAll<HTMLButtonElement>('[data-area]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.area === area)));
+      };
+      show('rio');
+      root.querySelectorAll<HTMLButtonElement>('[data-area]').forEach((b) => b.addEventListener('click', () => show(b.dataset.area!)));
+
+      // Ativa o zoom pela roda do mouse só depois de clicar no mapa (evita "prender" a rolagem da página)
+      map.once('focus click', () => map.scrollWheelZoom.enable());
+
+      document.addEventListener('nucleos:filter', (e) => {
+        const mod = (e as CustomEvent<string>).detail;
+        markers.forEach(({ p, m }) => {
+          const on = mod === 'Todos' || p.mods.includes(mod);
+          if (on && !map.hasLayer(m)) m.addTo(map);
+          if (!on && map.hasLayer(m)) m.remove();
+        });
+      });
+
+      // Foca o marcador quando o usuário clica num núcleo da lista
+      document.querySelectorAll<HTMLAnchorElement>('[data-map-focus]').forEach((a) => {
+        a.addEventListener('click', (ev) => {
+          const hit = markers.find(({ p }) => p.slug === a.dataset.mapFocus);
+          if (!hit) return;
+          ev.preventDefault();
+          if (hit.p.slug === 'macae') show('macae');
+          map.flyTo([hit.p.lat, hit.p.lng], 14, { duration: 0.6 });
+          hit.m.openPopup();
+          canvas.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+      });
+    };
+
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((en) => en.isIntersecting)) { io.disconnect(); init().catch(() => { canvas.innerHTML = `<p class="nmapx__loading">${T.error}</p>`; }); }
+    }, { rootMargin: '300px' });
+    io.observe(canvas);
+  }
+</script>
+
+<style>
+  .nmapx { position: relative; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .nmapx__bar { display: flex; gap: 8px; flex-wrap: wrap; }
+  .nmapx__area { min-height: 44px; padding: 0 18px; border: 2px solid var(--ink); background: #fff; font-weight: 700; font-size: 14px; cursor: pointer; }
+  .nmapx__area[aria-pressed='true'] { background: var(--ink); color: #fff; }
+  .nmapx__canvas { position: relative; height: clamp(360px, 52vw, 560px); background: var(--line-2); clip-path: var(--chamfer); z-index: 0; }
+  .nmapx__loading, .nmapx__noscript { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; margin: 0; color: var(--text-3); font-weight: 600; }
+  .nmapx :global(.leaflet-container) { font-family: var(--font-body); }
+  .nmapx :global(.nmapx__pin span) { display: block; width: 26px; height: 26px; background: var(--red); clip-path: var(--oct); position: relative; transition: transform 0.2s; }
+  .nmapx :global(.nmapx__pin span::after) { content: ''; position: absolute; inset: 8px; background: #fff; clip-path: var(--oct); }
+  .nmapx :global(.nmapx__pin.is-active span) { background: var(--ink); transform: scale(1.18); }
+  .nmapx :global(.leaflet-marker-icon:focus-visible) { outline: 3px solid var(--ink); outline-offset: 3px; }
+  .nmapx :global(.leaflet-bar a) { width: 44px; height: 44px; line-height: 44px; font-size: 22px; border-radius: 0; }
+  .nmapx :global(.leaflet-bar) { border-radius: 0; border: 2px solid var(--ink); }
+  .nmapx :global(.leaflet-control-attribution) { font-size: 11px; }
+  .nmapx :global(.leaflet-popup-close-button) { width: 32px; height: 32px; font-size: 22px; }
+  .nmapx :global(.leaflet-popup-content-wrapper) { border-radius: 0; box-shadow: 0 16px 40px rgba(20, 20, 20, 0.2); }
+  .nmapx :global(.nmapx__pop) { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--ink); }
+  .nmapx :global(.nmapx__pop strong) { font-family: var(--font-display); font-size: 22px; text-transform: uppercase; line-height: 1; }
+  .nmapx :global(.nmapx__popreg) { font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--red-dk); }
+  .nmapx :global(.nmapx__popmods) { font-weight: 700; }
+  .nmapx :global(.nmapx__popaddr) { color: var(--text-3); }
+  .nmapx :global(.nmapx__poptel) { font-weight: 800; color: var(--ink); min-height: 28px; display: inline-flex; align-items: center; }
+  .nmapx :global(.nmapx__popact) { display: flex; gap: 14px; margin-top: 6px; }
+  .nmapx :global(.nmapx__popact a) { font-weight: 800; color: var(--red-dk); min-height: 32px; display: inline-flex; align-items: center; }
+</style>
