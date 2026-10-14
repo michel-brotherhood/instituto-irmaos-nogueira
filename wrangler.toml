@@ -1,4 +1,5 @@
-# Cloudflare Pages (homologação). Deploy pela CLI:  npx wrangler pages deploy
-name = "iin-site"
-pages_build_output_dir = "./dist"
-compatibility_date = "2026-10-01"
+name = "instituto-irmaos-nogueira"
+compatibility_date = "2026-10-14"
+
+[assets]
+directory = "./dist"
