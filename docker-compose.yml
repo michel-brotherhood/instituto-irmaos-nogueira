@@ -23,6 +23,7 @@ services:
         PUBLIC_SPONSOR_FORM_ENDPOINT: ${PUBLIC_SPONSOR_FORM_ENDPOINT:-}
         PUBLIC_DPO_EMAIL: ${PUBLIC_DPO_EMAIL:-}
         PUBLIC_GA_ID: ${PUBLIC_GA_ID:-}
+        PUBLIC_MAP_TILE_KEY: ${PUBLIC_MAP_TILE_KEY:-}
     image: iin-site:latest
     container_name: iin-site
     restart: unless-stopped

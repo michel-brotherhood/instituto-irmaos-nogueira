@@ -38,6 +38,8 @@ export const SITE = {
     mapaOsc: 'https://mapaosc.ipea.gov.br',
   },
   gaId: clean(env.PUBLIC_GA_ID),
+  /** Chave gratuita da CARTO (basemaps). Sem chave, o mapa usa OpenStreetMap. Ver DEPLOY.md › Mapa. */
+  mapKey: clean(env.PUBLIC_MAP_TILE_KEY),
 } as const;
 
 export type NavItem = { label: string; href: string; children?: NavItem[] };

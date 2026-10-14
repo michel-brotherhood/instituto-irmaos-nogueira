@@ -1,0 +1,9 @@
+# Cloudflare Pages: redirecionamentos do site antigo (WordPress) — iguais aos do deploy/nginx.conf. 301 preserva SEO.
+/venha-fazer-parte    /doar/  301
+/venha-fazer-parte/   /doar/  301
+/feed                 /       301
+/feed/                /       301
+/comments/feed        /       301
+/comments/feed/       /       301
+/wp-login.php         /       301
+/xmlrpc.php           /       301

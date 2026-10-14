@@ -8,11 +8,22 @@
 import { getContent, fmtTel } from '../data/content';
 import { i18n } from '../i18n/config';
 import { t } from '../i18n/ui';
+import { SITE } from '../data/site';
 
 const { lang } = i18n(Astro.url);
 const ui = t(lang);
 const { NUCLEOS } = getContent(lang);
 const mod = (m: string) => ui.modalities[m] ?? m;
+
+// Provedores de mapa base (sem API paga):
+// - CARTO "Positron" (claro, combina com o site) — exige chave gratuita desde 25/09/2026 (PUBLIC_MAP_TILE_KEY)
+// - OpenStreetMap — sem chave; usado quando não há chave ou se a CARTO falhar
+const OSM_ATTR = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
+const OSM = { url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', subdomains: '', maxZoom: 19, attribution: OSM_ATTR, muted: true };
+const CARTO = SITE.mapKey
+  ? { url: `https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}{r}.png?key=${encodeURIComponent(SITE.mapKey)}`, subdomains: 'abcd', maxZoom: 20, attribution: `${OSM_ATTR} &copy; <a href="https://carto.com/attributions">CARTO</a>`, muted: false }
+  : null;
+const tiles = { primary: CARTO ?? OSM, fallback: CARTO ? OSM : null };
 const points = NUCLEOS.map((n) => ({
   slug: n.slug, nome: n.nome, regiao: n.regiao, endereco: n.endereco, mods: n.modalidades.map(mod),
   tel: n.tel.map((p) => ({ href: `tel:+55${p.n}`, label: (p.mod ? `${mod(p.mod)}: ` : '') + fmtTel(p.n) })),
@@ -20,7 +31,7 @@ const points = NUCLEOS.map((n) => ({
   maps: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(n.mapsQuery ?? n.endereco)}`,
 }));
 ---
-<div class="nmapx" data-nmap data-points={JSON.stringify(points)} data-t={JSON.stringify({ approx: ui.nucleo.approx, see: ui.nucleo.see, go: ui.directions, error: ui.nucleo.mapError, center: { pt: 'Núcleo', en: 'Center', es: 'Centro' }[lang] })}>
+<div class="nmapx" data-nmap data-points={JSON.stringify(points)} data-tiles={JSON.stringify(tiles)} data-t={JSON.stringify({ approx: ui.nucleo.approx, see: ui.nucleo.see, go: ui.directions, error: ui.nucleo.mapError, center: { pt: 'Núcleo', en: 'Center', es: 'Centro' }[lang] })}>
   <div class="nmapx__bar" role="group" aria-label={ui.nucleo.mapArea}>
     <button type="button" class="nmapx__area" aria-pressed="true" data-area="rio">{lang === 'es' ? 'Río de Janeiro' : 'Rio de Janeiro'}</button>
     <button type="button" class="nmapx__area" aria-pressed="false" data-area="macae">Macaé</button>
@@ -44,10 +55,22 @@ const points = NUCLEOS.map((n) => ({
       const [{ default: L }] = await Promise.all([import('leaflet'), import('leaflet/dist/leaflet.css')]);
       canvas.innerHTML = '';
       const map = L.map(canvas, { scrollWheelZoom: false, zoomControl: true, attributionControl: true, zoomSnap: 0.25 });
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        subdomains: 'abcd', maxZoom: 19,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
-      }).addTo(map);
+      type Tiles = { url: string; subdomains: string; maxZoom: number; attribution: string; muted: boolean };
+      const TL = JSON.parse(root.dataset.tiles ?? '{}') as { primary: Tiles; fallback: Tiles | null };
+      const addTiles = (cfg: Tiles) => {
+        canvas.classList.toggle('is-osm', cfg.muted);
+        return L.tileLayer(cfg.url, { subdomains: cfg.subdomains || 'abc', maxZoom: cfg.maxZoom, attribution: cfg.attribution }).addTo(map);
+      };
+      let layer = addTiles(TL.primary);
+      // Se o provedor principal falhar (chave inválida, limite, fora do ar) antes de carregar, troca para o OSM
+      if (TL.fallback) {
+        let errors = 0, loaded = false;
+        layer.on('tileload', () => { loaded = true; });
+        layer.on('tileerror', () => {
+          if (loaded || ++errors < 3 || !TL.fallback) return;
+          map.removeLayer(layer); layer = addTiles(TL.fallback); TL.fallback = null;
+        });
+      }
 
       const icon = (active = false) => L.divIcon({
         className: 'nmapx__pin' + (active ? ' is-active' : ''),
@@ -129,6 +152,8 @@ const points = NUCLEOS.map((n) => ({
   .nmapx :global(.leaflet-bar a) { width: 44px; height: 44px; line-height: 44px; font-size: 22px; border-radius: 0; }
   .nmapx :global(.leaflet-bar) { border-radius: 0; border: 2px solid var(--ink); }
   .nmapx :global(.leaflet-control-attribution) { font-size: 11px; }
+  /* OSM é colorido: dessatura para ficar próximo do estilo claro do site (os pins vermelhos se destacam) */
+  .nmapx__canvas.is-osm :global(.leaflet-tile-pane) { filter: grayscale(0.85) contrast(0.95) brightness(1.04); }
   .nmapx :global(.leaflet-popup-close-button) { width: 32px; height: 32px; font-size: 22px; }
   .nmapx :global(.leaflet-popup-content-wrapper) { border-radius: 0; box-shadow: 0 16px 40px rgba(20, 20, 20, 0.2); }
   .nmapx :global(.nmapx__pop) { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--ink); }

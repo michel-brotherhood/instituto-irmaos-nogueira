@@ -65,3 +65,51 @@ ssh usuario@vps 'cd /opt/iin-site && ./scripts/deploy.sh'
 - `.env` não entra no git nem na imagem (`.gitignore` / `.dockerignore`).
 - Firewall recomendado: `ufw allow OpenSSH && ufw allow 80,443/tcp && ufw enable`. A porta 8080 não precisa de regra, porque só escuta em 127.0.0.1.
   Atenção: o Docker ignora o UFW para portas publicadas em 0.0.0.0. Por isso o compose publica só em 127.0.0.1.
+
+## Mapa dos núcleos (sem API paga)
+- Biblioteca **Leaflet** (open source, já no projeto). Os links "Como chegar" abrem o Google Maps por URL, sem API e sem chave.
+- **Mapa base**:
+  - **Com `PUBLIC_MAP_TILE_KEY`**: CARTO "Positron" (estilo claro, combina com o site). Gratuito para uso não comercial/ONG até 5 milhões de tiles por mês.
+    - Pedir a chave em https://carto.com/basemaps/apikey/ (chega por e-mail, sem conta paga).
+    - No painel (dashboard.basemaps.carto.com), restringir a chave ao domínio `institutoirmaosnogueira.com.br`.
+  - **Sem chave**: OpenStreetMap, dessaturado por CSS para ficar no mesmo tom. Não exige cadastro.
+  - Se a CARTO falhar (chave inválida, limite, fora do ar), o mapa troca sozinho para o OpenStreetMap.
+- A chave é pública por natureza: tiles são pedidos pelo navegador. A proteção é a restrição de domínio, não o sigilo.
+- Depois de pôr a chave no `.env`, rode `./scripts/deploy.sh` (ela entra no build).
+- Atribuição "© OpenStreetMap © CARTO" fica visível no canto do mapa (obrigatória pelos termos).
+
+## Homologação no Cloudflare Pages (antes da Hostinger)
+O mesmo build roda no Pages, sem Docker e sem nginx. A configuração equivalente ao `deploy/nginx.conf` está em:
+- `public/_headers`: segurança, CSP e cache. Domínios `*.pages.dev` recebem `X-Robots-Tag: noindex`, para a homologação não competir com o site oficial no Google.
+- `public/_redirects`: 301 do WordPress (`/venha-fazer-parte/` → `/doar/` etc.).
+- `.node-version` (Node 22) e `wrangler.toml`.
+
+Os dois foram testados no runtime local do Cloudflare (`wrangler pages dev`): headers, CSP, cache, 301 e 404 iguais ao nginx.
+
+### Opção A: conectado ao Git (recomendado; cada push gera um deploy)
+1. Cloudflare → **Workers & Pages** → **Create** → **Pages** → **Connect to Git** → escolher o repositório.
+2. Configurar o build:
+
+   | Campo | Valor |
+   |---|---|
+   | Framework preset | Astro |
+   | Build command | `npm run build` |
+   | Build output directory | `dist` |
+   | Branch de produção | `main` |
+
+   Cada branch ou PR ganha uma URL de preview própria.
+3. **Settings → Environment variables**: as mesmas `PUBLIC_*` do `.env`. Recomendações para a homologação:
+   - `PUBLIC_GA_ID` vazio, para não misturar dados de teste no Analytics;
+   - `PUBLIC_MAP_TILE_KEY`: a mesma chave da CARTO, com o domínio `*.pages.dev` incluído nas restrições da chave.
+4. Para mudar uma variável é preciso um novo deploy: **Retry deployment** ou um push.
+
+### Opção B: pela linha de comando
+```bash
+npx wrangler login
+npm run build && npx wrangler pages deploy      # usa o wrangler.toml (projeto iin-site, pasta dist)
+```
+
+### Cuidados
+- **PDFs da Transparência:** rode `sh scripts/baixar-pdfs-antigos.sh` e faça commit de `public/wp-content/`. Sem isso, os links dão 404 no Pages.
+- **Restringir o acesso (opcional):** para só o cliente ver a homologação, use Cloudflare **Zero Trust → Access**, que é grátis até 50 pessoas. Proteja `*.iin-site.pages.dev` com login por e-mail.
+- **Ida para a Hostinger:** nada muda no código. O `_headers` e o `_redirects` são ignorados pelo nginx (respondem 404).
