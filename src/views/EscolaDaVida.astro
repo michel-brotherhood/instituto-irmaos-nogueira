@@ -9,7 +9,7 @@ import { IMG, getContent } from '../data/content';
 import { i18n } from '../i18n/config';
 
 const { lang, l } = i18n(Astro.url);
-const { STATS, NUCLEOS } = getContent(lang);
+const { NUCLEOS } = getContent(lang);
 
 const COPY = {
   pt: {
@@ -123,9 +123,7 @@ const COPY = {
 };
 const T = COPY[lang];
 
-// O índice vem da versão PT (rótulo estável); os STATS têm a mesma ordem nos três idiomas.
-const criancasIdx = getContent('pt').STATS.findIndex((s) => s.t === 'Crianças previstas');
-const criancas = STATS[criancasIdx]?.n ?? T.childrenFallback;
+const criancas = T.childrenFallback;
 const signup = SITE.links.signupForm;
 ---
 <BaseLayout

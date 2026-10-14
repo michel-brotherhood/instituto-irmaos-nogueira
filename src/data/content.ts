@@ -86,11 +86,11 @@ const TXT = {
   pt: {
     regioes: { sul: 'Zona Sul', norte: 'Zona Norte', oeste: 'Zona Oeste', nf: 'Norte Fluminense' } as Record<RegiaoKey, string>,
     stats: [
-      { n: '2010', t: 'Início do trabalho', d: 'voluntário dos Irmãos Nogueira' },
-      { n: '+4.200', t: 'Alunos atendidos', d: 'em 3 anos e meio (2016–2020)' },
-      { n: '+930', t: 'Crianças previstas', d: 'no Luta Escola da Vida' },
-      { n: '7', t: 'Núcleos ativos', d: 'com inscrições abertas' },
-      { n: '3', t: 'Modalidades', d: 'Jiu-Jitsu, Muay Thai e Boxe' },
+      { k: 'alunos', t: 'Alunos atendidos', d: 'em projetos desde 2013' },
+      { k: 'anos', t: 'Anos de atuação', d: 'desde 2010' },
+      { k: 'nucleos', t: 'Núcleos ativos', d: 'com inscrições abertas' },
+      { k: 'parceiros', t: 'Parceiros', d: 'empresas e poder público' },
+      { k: 'modalidades', t: 'Modalidades', d: 'Jiu-Jitsu, Muay Thai e Boxe' },
     ],
     principios: ['Disciplina', 'Honestidade', 'Modéstia', 'Respeito', 'Autocontrole', 'Persistência'],
     compromissos: [
@@ -170,11 +170,11 @@ const TXT = {
   en: {
     regioes: { sul: 'South Zone', norte: 'North Zone', oeste: 'West Zone', nf: 'Northern Rio de Janeiro State' } as Record<RegiaoKey, string>,
     stats: [
-      { n: '2010', t: 'Where it began', d: 'as the Nogueira brothers’ volunteer work' },
-      { n: '4,200+', t: 'Students served', d: 'in three and a half years (2016–2020)' },
-      { n: '930+', t: 'Children expected', d: 'in the Luta Escola da Vida program' },
-      { n: '7', t: 'Active centers', d: 'with enrollment open' },
-      { n: '3', t: 'Martial arts', d: 'Jiu-Jitsu, Muay Thai and Boxing' },
+      { k: 'alunos', t: 'Students served', d: 'in projects since 2013' },
+      { k: 'anos', t: 'Years of work', d: 'since 2010' },
+      { k: 'nucleos', t: 'Active centers', d: 'with enrollment open' },
+      { k: 'parceiros', t: 'Partners', d: 'companies and government' },
+      { k: 'modalidades', t: 'Martial arts', d: 'Jiu-Jitsu, Muay Thai and Boxing' },
     ],
     principios: ['Discipline', 'Honesty', 'Modesty', 'Respect', 'Self-control', 'Perseverance'],
     compromissos: [
@@ -254,11 +254,11 @@ const TXT = {
   es: {
     regioes: { sul: 'Zona Sur', norte: 'Zona Norte', oeste: 'Zona Oeste', nf: 'Norte del estado de Río' } as Record<RegiaoKey, string>,
     stats: [
-      { n: '2010', t: 'Inicio del trabajo', d: 'voluntario de los hermanos Nogueira' },
-      { n: '+4.200', t: 'Alumnos atendidos', d: 'en tres años y medio (2016–2020)' },
-      { n: '+930', t: 'Niños previstos', d: 'en Luta Escola da Vida' },
-      { n: '7', t: 'Centros activos', d: 'con inscripciones abiertas' },
-      { n: '3', t: 'Modalidades', d: 'Jiu-Jitsu, Muay Thai y Boxeo' },
+      { k: 'alunos', t: 'Alumnos atendidos', d: 'en proyectos desde 2013' },
+      { k: 'anos', t: 'Años de trayectoria', d: 'desde 2010' },
+      { k: 'nucleos', t: 'Centros activos', d: 'con inscripciones abiertas' },
+      { k: 'parceiros', t: 'Aliados', d: 'empresas y sector público' },
+      { k: 'modalidades', t: 'Modalidades', d: 'Jiu-Jitsu, Muay Thai y Boxeo' },
     ],
     principios: ['Disciplina', 'Honestidad', 'Modestia', 'Respeto', 'Autocontrol', 'Perseverancia'],
     compromissos: [
@@ -340,6 +340,15 @@ const TXT = {
 export type Doc = { t: string; meta: string; href?: string; tipo?: string; acao?: string; externo?: boolean };
 export type DocGroup = { id: string; titulo: string; docs: Doc[] };
 
+type StatKey = 'alunos' | 'anos' | 'nucleos' | 'parceiros' | 'modalidades';
+const STAT_VALUES = (nucleos: number): Record<StatKey, { v: number; pre?: string }> => ({
+  alunos: { v: 5400, pre: '+' },
+  anos: { v: new Date().getFullYear() - 2010 },
+  nucleos: { v: nucleos },
+  parceiros: { v: PARCEIROS.length },
+  modalidades: { v: 3 },
+});
+
 /** Todo o conteúdo estruturado no idioma pedido. */
 export function getContent(lang: Lang) {
   const x = TXT[lang];
@@ -350,7 +359,8 @@ export function getContent(lang: Lang) {
     endereco: end,
   }));
   return {
-    STATS: x.stats,
+    // Números com fonte: site do Instituto (out/2026). Alunos = 500 (2013) + 4.200 (2016–2020) + 200 (2021) + 500 (2022).
+    STATS: x.stats.map((s) => ({ ...s, ...STAT_VALUES(NUCLEOS.length)[s.k as StatKey] })),
     PRINCIPIOS: x.principios,
     COMPROMISSOS: x.compromissos,
     NUCLEOS,

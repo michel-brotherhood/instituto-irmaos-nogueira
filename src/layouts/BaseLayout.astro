@@ -53,6 +53,7 @@ const org = {
 };
 import IntroLoader from '../components/IntroLoader.astro';
 import ScrollTop from '../components/ScrollTop.astro';
+import Reveal from '../components/Reveal.astro';
 ---
 <!doctype html>
 <html lang={LANG_META[lang].html}>
@@ -100,6 +101,7 @@ import ScrollTop from '../components/ScrollTop.astro';
     <Footer />
     {stickyDonate && <StickyDonate />}
     <ScrollTop />
+    <Reveal />
     <CookieConsent gaId={SITE.gaId} />
   </body>
 </html>

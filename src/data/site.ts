@@ -19,6 +19,9 @@ export const SITE = {
   bank: { name: 'Bradesco', agency: '01075', account: '0226996-1' },
   contact: {
     email: or(env.PUBLIC_CONTACT_EMAIL, 'contato@iinbrasil.org'),
+    // Número que atende Rocinha, Macaé, Realengo e Freguesia no site atual; definido como canal central
+    phone: or(env.PUBLIC_CONTACT_PHONE, '21981874270'),
+    city: or(env.PUBLIC_CONTACT_ADDRESS, 'Rio de Janeiro, RJ'),
     whatsapp: clean(env.PUBLIC_WHATSAPP),
     // Sem encarregado nomeado, o canal de privacidade é o e-mail oficial
     dpoEmail: or(env.PUBLIC_DPO_EMAIL, or(env.PUBLIC_CONTACT_EMAIL, 'contato@iinbrasil.org')),
@@ -43,7 +46,8 @@ export const SITE = {
   mapKey: clean(env.PUBLIC_MAP_TILE_KEY),
 } as const;
 
-export type NavItem = { label: string; href: string; children?: NavItem[] };
+/** match: outras rotas que acendem o item como página atual. */
+export type NavItem = { label: string; href: string; external?: boolean; match?: string[]; children?: NavItem[] };
 
 /** Menu principal no idioma pedido (links já com prefixo /en/ ou /es/). */
 export function navFor(lang: Lang): NavItem[] {
@@ -55,12 +59,15 @@ export function navFor(lang: Lang): NavItem[] {
       href: l('/quem-somos/'),
       children: [
         { label: n.about, href: l('/quem-somos/') },
-        { label: n.commitment, href: l('/compromisso/') },
         { label: n.environment, href: l('/ambiental/') },
       ],
     },
-    { label: n.project, href: l('/projetos-a-escola-da-vida/') },
+    // Compromisso e Empresas são acessados de dentro de Metodologia e Parceiros (menu enxuto)
+    { label: n.method, href: l('/metodologia/'), match: [l('/compromisso/')] },
     { label: n.centers, href: l('/nucleos/') },
+    { label: n.partners, href: l('/parceiros/'), match: [l('/empresas/')] },
     { label: n.transparency, href: l('/transparencia/') },
+    // "Doação" é o botão vermelho do header (CTA principal), não um link de texto
+    { label: n.platform, href: SITE.links.ead, external: true },
   ];
 }

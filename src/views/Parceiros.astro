@@ -1,0 +1,140 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Button from '../components/Button.astro';
+import PartnerGrid from '../components/PartnerGrid.astro';
+import OdsGrid from '../components/OdsGrid.astro';
+import { SITE } from '../data/site';
+import { getContent } from '../data/content';
+import { i18n } from '../i18n/config';
+
+const { lang, l } = i18n(Astro.url);
+const { PARCEIROS } = getContent(lang);
+
+const COPY = {
+  pt: {
+    home: 'Início',
+    crumb: 'Parceiros',
+    title: 'Parceiros',
+    description: 'Empresas e órgãos públicos que viabilizaram os projetos do Instituto Irmãos Nogueira, e como sua empresa pode patrocinar com parte do imposto devido.',
+    eyebrow: 'Parceiros',
+    heroTitle: 'Quem acredita no <span class="accent">tatame</span>.',
+    heroLead: 'Nossos projetos existem graças a empresas e ao poder público, por meio de leis de incentivo ao esporte e de parcerias.',
+    sponsor: 'Quero patrocinar',
+    gridLabel: 'Já apoiaram nossos projetos',
+    count: (n: number) => `${n} marcas`,
+    howEyebrow: 'Para empresas',
+    howTitle: 'Sua empresa pode patrocinar com parte do imposto devido.',
+    howLead: 'Nossos projetos são realizados por meio de leis de incentivo ao esporte, federais e estaduais (ICMS). A empresa direciona parte do imposto para um projeto social com resultado comprovado e associa sua marca a dois ídolos do esporte.',
+    howCta: 'Como funciona o patrocínio',
+    odsEyebrow: 'Agenda 2030 · ONU',
+    odsTitle: 'Impacto alinhado aos ODS.',
+    odsLead: 'Indicadores de impacto social ligados aos Objetivos de Desenvolvimento Sustentável, prontos para o relatório ESG da empresa.',
+    ctaTitle: 'Coloque sua marca ao lado de quem forma faixas-pretas na vida.',
+  },
+  en: {
+    home: 'Home',
+    crumb: 'Partners',
+    title: 'Partners',
+    description: 'The companies and public bodies that made Instituto Irmãos Nogueira’s projects possible, and how your company can sponsor us with part of the taxes it owes.',
+    eyebrow: 'Partners',
+    heroTitle: 'They believe in the <span class="accent">mat</span>.',
+    heroLead: 'Our projects exist thanks to companies and the government, through sports incentive laws and partnerships.',
+    sponsor: 'I want to sponsor',
+    gridLabel: 'They’ve backed our projects',
+    count: (n: number) => `${n} brands`,
+    howEyebrow: 'For companies',
+    howTitle: 'Your company can sponsor us with part of the taxes it owes.',
+    howLead: 'Our projects run through federal and state sports incentive laws, including Brazil’s Federal Sports Incentive Law and state tax-incentive (ICMS) programs. Your company directs part of its taxes to a social project with proven results and links its brand to two sports legends.',
+    howCta: 'How sponsorship works',
+    odsEyebrow: '2030 Agenda · UN',
+    odsTitle: 'Impact aligned with the SDGs.',
+    odsLead: 'Social impact indicators linked to the Sustainable Development Goals, ready for your company’s ESG report.',
+    ctaTitle: 'Put your brand next to the people raising black belts for life.',
+  },
+  es: {
+    home: 'Inicio',
+    crumb: 'Aliados',
+    title: 'Aliados',
+    description: 'Las empresas y los organismos públicos que hicieron posibles los proyectos del Instituto Irmãos Nogueira, y cómo tu empresa puede patrocinar con parte de sus impuestos.',
+    eyebrow: 'Aliados',
+    heroTitle: 'Creen en el <span class="accent">tatami</span>.',
+    heroLead: 'Nuestros proyectos existen gracias a empresas y al sector público, mediante leyes de incentivo al deporte y alianzas.',
+    sponsor: 'Quiero patrocinar',
+    gridLabel: 'Ya apoyaron nuestros proyectos',
+    count: (n: number) => `${n} marcas`,
+    howEyebrow: 'Para empresas',
+    howTitle: 'Tu empresa puede patrocinar con parte de sus impuestos.',
+    howLead: 'Nuestros proyectos se realizan mediante leyes de incentivo al deporte, federales y estatales, como la Ley Federal de Incentivo al Deporte de Brasil y el incentivo fiscal estatal (ICMS). La empresa destina parte de sus impuestos a un proyecto social con resultados comprobados y asocia su marca a dos ídolos del deporte.',
+    howCta: 'Cómo funciona el patrocinio',
+    odsEyebrow: 'Agenda 2030 · ONU',
+    odsTitle: 'Impacto alineado con los ODS.',
+    odsLead: 'Indicadores de impacto social vinculados a los Objetivos de Desarrollo Sostenible, listos para el informe ESG de la empresa.',
+    ctaTitle: 'Pon tu marca junto a quienes forman cinturones negros para la vida.',
+  },
+};
+const T = COPY[lang];
+
+const breadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: T.home, item: new URL(l('/'), SITE.url).href },
+    { '@type': 'ListItem', position: 2, name: T.crumb, item: new URL(l('/parceiros/'), SITE.url).href },
+  ],
+};
+---
+<BaseLayout title={T.title} description={T.description} jsonLd={[breadcrumb]}>
+  <PageHero eyebrow={T.eyebrow} title={T.heroTitle} lead={T.heroLead}>
+    <Fragment slot="actions">
+      <Button href={l('/empresas/')} data-track="sponsor_click" data-track-source="parceiros-hero">{T.sponsor}</Button>
+    </Fragment>
+  </PageHero>
+
+  <section class="section section--white pa-logos">
+    <div class="container stack pa-gap">
+      <h2 class="pa-label">{T.gridLabel}<span>{T.count(PARCEIROS.length)}</span></h2>
+      <PartnerGrid />
+    </div>
+  </section>
+
+  <section class="section section--sand">
+    <div class="container pa-how">
+      <div class="stack pa-how__text">
+        <p class="eyebrow">{T.howEyebrow}</p>
+        <h2 class="display h2">{T.howTitle}</h2>
+      </div>
+      <div class="stack pa-how__body">
+        <p class="lead">{T.howLead}</p>
+        <div><Button href={l('/empresas/')} variant="dark" data-track="sponsor_click" data-track-source="parceiros-como">{T.howCta}</Button></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container stack pa-gap">
+      <div class="section-head">
+        <p class="eyebrow">{T.odsEyebrow}</p>
+        <h2 class="display h2">{T.odsTitle}</h2>
+        <p class="lead">{T.odsLead}</p>
+      </div>
+      <OdsGrid />
+    </div>
+  </section>
+
+  <CtaBand tone="dark" title={T.ctaTitle}>
+    <Button href={l('/empresas/')} data-track="sponsor_click" data-track-source="parceiros-cta">{T.sponsor}</Button>
+  </CtaBand>
+</BaseLayout>
+
+<style>
+  .pa-gap { gap: clamp(32px, 4vw, 48px); }
+  .pa-logos { border-bottom: 1px solid var(--line-2); }
+  .pa-label { display: flex; align-items: center; gap: 16px; font-size: 13px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-3); }
+  .pa-label::after { content: ''; flex: 1; height: 1px; background: var(--line-2); order: 1; }
+  .pa-label span { order: 2; color: var(--red); }
+  .pa-how { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr)); gap: clamp(28px, 5vw, 72px); align-items: end; }
+  .pa-how__text, .pa-how__body { gap: 20px; }
+  .pa-how__body .lead { max-width: none; }
+</style>

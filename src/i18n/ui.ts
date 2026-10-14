@@ -8,8 +8,9 @@ const ui = {
     skip: 'Pular para o conteúdo',
     home: 'página inicial',
     nav: {
-      institute: 'O Instituto', about: 'Quem somos', commitment: 'Compromisso', environment: 'Consciência Ambiental',
+      institute: 'Instituto', about: 'Quem somos', commitment: 'Compromisso', environment: 'Consciência Ambiental',
       project: 'Projeto Escola da Vida', centers: 'Núcleos', transparency: 'Transparência', companies: 'Para empresas',
+      method: 'Metodologia', partners: 'Parceiros', platform: 'Plataforma',
     },
     navMain: 'Principal', navMobile: 'Menu móvel', menu: 'Menu', openMenu: 'Abrir menu', closeMenu: 'Fechar menu',
     donateNow: 'Doar agora', donate: 'Doar', donatePix: 'Doar via PIX', signup: 'Inscrever', directions: 'Como chegar',
@@ -17,7 +18,7 @@ const ui = {
     lang: { label: 'Idioma', choose: 'Escolha o idioma', suggest: 'Este site está disponível em português.', switch: 'Ver em português', dismiss: 'Fechar aviso' },
     footer: {
       about: 'Artes marciais como ferramenta de educação e transformação social, desde 2010.',
-      institute: 'O Instituto', support: 'Apoie', contact: 'Contato', sponsor: 'Seja patrocinador', ead: 'Plataforma EAD',
+      institute: 'Instituto', centers: 'Núcleos', social: 'Redes sociais', allCenters: 'Ver todos no mapa', support: 'Apoie', contact: 'Contato', sponsor: 'Seja patrocinador', ead: 'Plataforma EAD',
       privacy: 'Privacidade e LGPD', cookies: 'Preferências de cookies', word: 'Faixa preta',
     },
     consent: {
@@ -47,8 +48,9 @@ const ui = {
     skip: 'Skip to content',
     home: 'home page',
     nav: {
-      institute: 'The Institute', about: 'About us', commitment: 'Our commitment', environment: 'Environmental awareness',
-      project: 'Escola da Vida Project', centers: 'Training centers', transparency: 'Transparency', companies: 'For companies',
+      institute: 'Institute', about: 'About us', commitment: 'Our commitment', environment: 'Environmental awareness',
+      project: 'Escola da Vida Project', centers: 'Centers', transparency: 'Transparency', companies: 'For companies',
+      method: 'Methodology', partners: 'Partners', platform: 'Platform',
     },
     navMain: 'Main', navMobile: 'Mobile menu', menu: 'Menu', openMenu: 'Open menu', closeMenu: 'Close menu',
     donateNow: 'Donate now', donate: 'Donate', donatePix: 'Donate via PIX', signup: 'Sign up', directions: 'Directions',
@@ -56,7 +58,7 @@ const ui = {
     lang: { label: 'Language', choose: 'Choose a language', suggest: 'This site is available in English.', switch: 'View in English', dismiss: 'Dismiss' },
     footer: {
       about: 'Martial arts as a tool for education and social change since 2010.',
-      institute: 'The Institute', support: 'Support us', contact: 'Contact', sponsor: 'Become a sponsor', ead: 'Online learning platform',
+      institute: 'Institute', centers: 'Centers', social: 'Social media', allCenters: 'See all on the map', support: 'Support us', contact: 'Contact', sponsor: 'Become a sponsor', ead: 'Online learning platform',
       privacy: 'Privacy policy', cookies: 'Cookie preferences', word: 'Black belt',
     },
     consent: {
@@ -86,8 +88,9 @@ const ui = {
     skip: 'Saltar al contenido',
     home: 'página de inicio',
     nav: {
-      institute: 'El Instituto', about: 'Quiénes somos', commitment: 'Compromiso', environment: 'Conciencia ambiental',
+      institute: 'Instituto', about: 'Quiénes somos', commitment: 'Compromiso', environment: 'Conciencia ambiental',
       project: 'Proyecto Escola da Vida', centers: 'Centros', transparency: 'Transparencia', companies: 'Para empresas',
+      method: 'Metodología', partners: 'Aliados', platform: 'Plataforma',
     },
     navMain: 'Principal', navMobile: 'Menú móvil', menu: 'Menú', openMenu: 'Abrir menú', closeMenu: 'Cerrar menú',
     donateNow: 'Donar ahora', donate: 'Donar', donatePix: 'Donar vía PIX', signup: 'Inscribirse', directions: 'Cómo llegar',
@@ -95,7 +98,7 @@ const ui = {
     lang: { label: 'Idioma', choose: 'Elige el idioma', suggest: 'Este sitio está disponible en español.', switch: 'Ver en español', dismiss: 'Cerrar aviso' },
     footer: {
       about: 'Artes marciales como herramienta de educación y transformación social desde 2010.',
-      institute: 'El Instituto', support: 'Apóyanos', contact: 'Contacto', sponsor: 'Sé patrocinador', ead: 'Plataforma de formación en línea',
+      institute: 'Instituto', centers: 'Centros', social: 'Redes sociales', allCenters: 'Ver todos en el mapa', support: 'Apóyanos', contact: 'Contacto', sponsor: 'Sé patrocinador', ead: 'Plataforma de formación en línea',
       privacy: 'Privacidad', cookies: 'Preferencias de cookies', word: 'Cinturón negro',
     },
     consent: {

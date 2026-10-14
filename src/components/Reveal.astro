@@ -1,0 +1,50 @@
+---
+/**
+ * Entrada suave das seções ao rolar (fade + leve subida), com cascata nos itens de grade.
+ * - As classes só são aplicadas por JS: sem JS, nada fica escondido.
+ * - Usa `translate` (não `transform`) para não brigar com o hover dos cards.
+ * - O que já está na tela ao carregar não anima (sem "piscar" acima da dobra).
+ * - Respeita prefers-reduced-motion.
+ */
+---
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce && 'IntersectionObserver' in window) {
+    const ITEMS = '.grid-auto > *, .princ > *, .stats__grid > *, .tl > *, .mt-vals > *, .mt-princ > *, .ods > *, .lgpd__card, .nstep, .perk, .step';
+    const sections = Array.from(document.querySelectorAll<HTMLElement>('main > section')).slice(1);
+    const targets: HTMLElement[] = [];
+    sections.forEach((sec) => {
+      const box = sec.querySelector<HTMLElement>(':scope > .container') ?? sec;
+      targets.push(box);
+      box.querySelectorAll<HTMLElement>(ITEMS).forEach((el, i) => { el.style.setProperty('--rv-i', String(i % 8)); targets.push(el); });
+    });
+    const vh = innerHeight;
+    const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      const el = e.target as HTMLElement;
+      el.classList.add('rv-in');
+      io.unobserve(el);
+      // Ao terminar, devolve o elemento ao estado normal (o hover dos cards volta a ter a própria transição)
+      const done = (ev: TransitionEvent) => {
+        if (ev.target !== el || ev.propertyName !== 'translate') return;
+        el.classList.remove('rv', 'rv-in'); el.style.removeProperty('--rv-i');
+        el.removeEventListener('transitionend', done);
+      };
+      el.addEventListener('transitionend', done);
+    }), { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    targets.forEach((el) => {
+      if (el.getBoundingClientRect().top < vh * 0.92) return; // já visível: não anima
+      el.classList.add('rv');
+      io.observe(el);
+    });
+  }
+</script>
+
+<style is:global>
+  .rv { opacity: 0; translate: 0 28px; }
+  .rv.rv-in {
+    opacity: 1; translate: 0 0;
+    transition: opacity 0.7s var(--ease-out), translate 0.8s var(--ease-out);
+    transition-delay: calc(var(--rv-i, 0) * 70ms);
+  }
+</style>

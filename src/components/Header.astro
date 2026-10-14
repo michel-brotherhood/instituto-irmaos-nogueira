@@ -13,8 +13,9 @@ const l = (p: string) => localizePath(p, lang);
 const path = Astro.url.pathname;
 // A 404 não tem tradução por rota: o seletor leva à home de cada idioma
 const basePath = path.startsWith('/404') ? '/' : stripLang(path);
-const isActive = (href: string, children?: { href: string }[]) =>
-  path === href || (children ?? []).some((c) => path === c.href);
+const isActive = (item: { href: string; match?: string[]; children?: { href: string }[] }) =>
+  path === item.href || (item.match ?? []).includes(path) || (item.children ?? []).some((c) => path === c.href);
+const ext = { target: '_blank', rel: 'noopener' };
 // Mesmo conteúdo nos outros idiomas
 const langs = LANGS.map((code) => ({ code, ...LANG_META[code], href: localizePath(basePath, code), current: code === lang }));
 ---
@@ -38,9 +39,11 @@ const langs = LANGS.map((code) => ({ code, ...LANG_META[code], href: localizePat
       <ul class="hdr__list">
         {NAV.map((item) => (
           <li class:list={['hdr__item', item.children && 'hdr__item--dd']}>
-            <a href={item.href} class="hdr__link" aria-current={isActive(item.href, item.children) ? 'page' : undefined}>
+            <a href={item.href} class="hdr__link" aria-current={isActive(item) ? 'page' : undefined} {...(item.external ? ext : {})}>
               {item.label}
               {item.children && <Icon name="chevron" size={14} strokeWidth={2.5} />}
+              {item.external && <Icon name="external" size={13} strokeWidth={2.4} class="hdr__ext" />}
+              {item.external && <span class="sr-only">{ui.newTab}</span>}
             </a>
             {item.children && (
               <ul class="hdr__dd">
@@ -90,15 +93,18 @@ const langs = LANGS.map((code) => ({ code, ...LANG_META[code], href: localizePat
       <ul class="mnav__list">
         {NAV.map((item) => (
           <li>
-            <a href={item.href} class="mnav__main" aria-current={path === item.href ? 'page' : undefined}>{item.label}</a>
+            <a href={item.href} class="mnav__main" aria-current={isActive(item) ? 'page' : undefined} {...(item.external ? ext : {})}>
+              {item.label}
+              {item.external && <Icon name="external" size={18} strokeWidth={2.4} class="mnav__ext" />}
+              {item.external && <span class="sr-only">{ui.newTab}</span>}
+            </a>
             {item.children && (
               <ul class="mnav__sub">
-                {item.children.filter((c) => c.href !== item.href).map((c) => <li><a href={c.href} aria-current={path === c.href ? 'page' : undefined}>{c.label}</a></li>)}
+                {item.children.map((c) => <li><a href={c.href} aria-current={path === c.href ? 'page' : undefined}>{c.label}</a></li>)}
               </ul>
             )}
           </li>
         ))}
-        <li><a href={l('/empresas/')} class="mnav__main" aria-current={path === l('/empresas/') ? 'page' : undefined}>{ui.nav.companies}</a></li>
       </ul>
       <div class="mnav__foot">
         <ul class="mnav__langs" aria-label={ui.lang.choose}>
@@ -190,6 +196,7 @@ const langs = LANGS.map((code) => ({ code, ...LANG_META[code], href: localizePat
   .hdr__link::after { content: ""; position: absolute; left: 0; right: 100%; bottom: 4px; height: 2px; background: var(--red); transition: right 0.3s var(--ease); }
   .hdr__link:hover::after, .hdr__link[aria-current='page']::after { right: 0; }
   .hdr__link[aria-current='page'] { color: var(--red); }
+  .hdr__link :global(.hdr__ext) { opacity: 0.55; }
   .hdr__dd { position: absolute; top: 100%; left: -18px; display: none; flex-direction: column; min-width: 230px; padding: 10px; background: #fff; border: 1px solid var(--line-2); box-shadow: 0 18px 40px rgba(20, 20, 20, 0.12); }
   .hdr__dd a { display: block; padding: 10px 12px; text-decoration: none; }
   .hdr__dd a[aria-current='page'] { color: var(--red); }
@@ -227,6 +234,8 @@ const langs = LANGS.map((code) => ({ code, ...LANG_META[code], href: localizePat
   .mnav__close { width: 46px; height: 46px; display: inline-flex; align-items: center; justify-content: center; background: var(--red); color: #fff; border: 0; cursor: pointer; }
   .mnav__body { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: space-between; gap: clamp(12px, 3dvh, 28px); padding-block: clamp(8px, 2.5dvh, 28px) calc(clamp(16px, 3dvh, 32px) + env(safe-area-inset-bottom)); }
   .mnav__main { display: block; padding-block: clamp(7px, 1.7dvh, 14px); border-bottom: 1px solid #2e2e2e; color: #fff; text-decoration: none; font-family: var(--font-display); font-weight: 800; font-size: clamp(22px, 4.4dvh, 34px); line-height: 1.05; text-transform: uppercase; }
+  .mnav__main { display: flex; align-items: center; gap: 10px; }
+  .mnav__main :global(.mnav__ext) { opacity: 0.5; }
   .mnav__main[aria-current='page'], .mnav__sub a[aria-current='page'] { color: var(--red-lt); }
   .mnav__sub { display: flex; flex-wrap: wrap; gap: 0 20px; padding-block: 4px; border-bottom: 1px solid #2e2e2e; }
   .mnav__sub a { display: inline-flex; align-items: center; min-height: clamp(36px, 5.6dvh, 44px); color: #bdbdbd; text-decoration: none; font-weight: 600; font-size: 15px; }
